@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=no">
+    <title>大数之路</title>
+    <style>
+    *{
+    -moz-user-select: none;
+    -o-user-select:none;
+    -khtml-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    }
+    .button1 {
+    background-color: #d0d0d0;
+    border: 3px solid #222222;
+    color: #000000;
+    padding: 6px 6px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+    .button1_1 {
+    background-color: #d0d0d0;
+    border: 3px solid #222222;
+    color: #000000;
+    padding: 7px 3.5px;
+    text-decoration: none;
+    cursor: pointer;
+    }
+    .button2 {
+    background-color: #eeeeee;
+    border: 3px solid #444444;
+    border-radius: 4px;
+    color: #000000;
+    padding: 6px 24px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 15px;
+    }
+    .smallButton1 {
+    background-color: #eeeeee;
+    border: 2.5px solid #000000;
+    color: #000000;
+    padding: 4px 0px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 12.5px;
+    }
+    .button3 {
+    background-color: #fa2020;
+    border: 3px solid #b90000;
+    color: #000000;
+    padding: 6px 6px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+    .button4 {
+    background-color: #eeeeee;
+    border: 2.6px solid #000000;
+    color: #000000;
+    padding: 6px 24px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+    .button5 {
+    background-color: #7fd6f0;
+    border: 3px solid #004682;
+    border-radius: 4px;
+    color: #000000;
+    padding: 6px 24px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 15px;
+    }
+    .button6 {
+    background-color: #7fd6f0;
+    border: 3px solid #004682;
+    color: #000000;
+    padding: 6px 6px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+    .button6_1 {
+    background-color: #7fd6f0;
+    border: 3px solid #004682;
+    color: #000000;
+    padding: 7px 3.5px;
+    text-decoration: none;
+    cursor: pointer;
+    }
+    .resetButton {
+    background-color: #7fd6f0;
+    border: 3px solid #004682;
+    border-radius: 6px;
+    color: #000000;
+    padding: 28px 14px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+    .smallButton2 {
+    background-color: #7fd6f0;
+    border: 2.5px solid #004682;
+    color: #000000;
+    padding: 4px 0px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 12.5px;
+    }
+    .achievementButton1{
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    background-color: #dddddd;
+    border: 3px solid #666666;
+    color: #000000;
+    width: 106px;
+    height: 106px;
+    text-align: center;
+    text-decoration: none;
+    margin: 2px 0.1px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 15px;
+    line-height: 106px;
+    }
+    .achievementButton1 .goal1{
+    visibility: hidden;
+    width: 120px;
+    height: 20px;
+    line-height: 22px;
+    background-color: #505050;
+    color: #ffffff;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 90%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    }
+    .achievementButton1 .goal1::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+    }
+    .achievementButton1:hover .goal1 {
+    visibility: visible;
+    opacity: 1;
+    }
+    
+    .input1 {
+    background-color: #f5f5f5;
+    border: 1.5px solid #000000;
+    color: #000000;
+    width: 250px;
+    height: 100px;
+    padding: 5px 6px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    }
+
+    .btn-group button {
+    background-color: #eeeeee;
+    border: 2.5px solid #000000;
+    color: #000000;
+    padding: 8px 20px;
+    cursor: pointer;
+    float: left;
+    font-size: 15px;
+    }
+
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+
+/* 点击效果 */
+.button2:hover {
+    background-color: #c2c2c2;
+}
+.button5:hover {
+    background-color: #64b0c6;
+}
+.btn-group button:hover {
+    background-color: #cccccc;
+}
+table
+{
+    border-collapse:collapse;
+}
+table,th, td
+{
+    border: 0px solid black;
+}
+    </style>
+</head>
+<body style="background-color:#ffffff" onselectstart ='return false'>
+    <div style="padding:0 16px">
+        <p align="center"><span id='text2' style='font-size: 20px'>你有 </span><span id='number' style='font-size: 28px'>0</span><span id='en1' style='font-size: 28px'>e<span id='en2'>0</span></span><span id='text3' style='font-size: 20px'> 大数点</span></p>
+        <p id='MP' align="center"><span id='text4' style='font-size: 15px'>你有 </span><span id='number2' style='font-size: 23px;color: #2897D2'>0</span><span id='en3' style='font-size: 23px;color: #2897D2'>e<span id='en4'>0</span></span><span id='text5' style='font-size: 15px'> 乘法点</span></p>
+        <button class='button4' id="p1" onclick='add1()'>点击按钮增加数字</button>
+    <span id='u0'><button class="button1" id='u1' onclick='unlock1()'>解锁加法</button>价格：100</span>
+    <br/ >
+    <span id='buttonA'>
+        <button class='button2' style="width:108.3px" id="achievement1" onclick='achievement1()'>成就</button>
+        <button class='button2' style="width:108.3px" id="s1" onclick='setting1()'>设置</button>
+        <button class='button2' style="width:108.3px" id="s10" onclick='setting2()'>关于</button>
+        <button class='button2' style="width:108.3px" id="o1" onclick='open1()'>加法</button>
+        <button class='button5' style="width:108.3px" id="o2" onclick='open2()'>乘法</button>
+    </span>
+    <span id='achievement'>
+        <div class='achievementButton1' id="achievement1.1">开始<span class="goal1">点击后继按钮</span></div>
+        <div class='achievementButton1' id="achievement1.2">增长率为1<span class="goal1">解锁加法</span></div>
+        <div class='achievementButton1' id="achievement1.3">自动化<span class="goal1">购买自动化</span></div>
+        <div class='achievementButton1' id="achievement1.5">百万富翁<span class="goal1">数字达到1e6</span></div>
+        <div class='achievementButton1' id="achievement1.4">增长率为2<span class="goal1">解锁乘法</span></div>
+        <div class='achievementButton1' id="achievement1.6">准备好了？<span class="goal1" style="width: 130px;height: 40px;margin-left: -65px;">重置<br />奖励：双倍大数点获取</span></div>
+        <div class='achievementButton1' id="achievement1.7">无效能量<span class="goal1">乘法能量超过10</span></div>
+        <div class='achievementButton1' id="achievement1.8">加足马力<span class="goal1">自动化速度达到20/s</span></div>
+    </span>
+    <span id='level1'>
+        <div style='text-align:center'>
+        <button class='smallButton1' style="width:47px" id="o3" onclick='open3()'>升级</button>
+        <button class='smallButton1' style="width:57px" id="auto0" onclick='auto()'>自动化</button><br />
+        </div>
+        <span id='level1.1'>
+        加法增益：+<span id='n1'>0</span><br />
+        <table border='1' cellpadding="2">
+        <tr id='b10'>
+        <td width='105px'>后继增强器Ⅰ</td><td width='64px'>等级 <span id='upgradeLevel1'>0</span></td><td width='115px'>价格：<span id='price1'>20</span></td><td width='40px'><button class='button1_1' id="b1" onclick='buy1()'>升级</button></td>
+        </tr>
+        <tr id='b3'>
+        <td width='105px'>后继增强器Ⅱ</td><td width='64px'>等级 <span id='upgradeLevel2'>0</span></td><td width='115px'>价格：<span id='price2'>1000</span></td><td width='40px'><button class='button1_1' id="b2" onclick='buy2()'>升级</button></td>
+        </tr>
+        <tr id='b12'>
+        <td width='105px'>后继增强器Ⅲ</td><td width='64px'>等级 <span id='upgradeLevel3'>0</span></td><td width='115px'>价格：<span id='price7'>100000</span></td><td width='40px'><button class='button1_1' id="b13" onclick='buy6()'>升级</button></td>
+        </tr>
+        <tr id='b5'>
+        <td width='105px'>加法强化器</td><td width='64px'>等级 <span id='upgradeLevel4'>0</span></td><td width='115px'>价格：<span id='price6'>10000</span></td><td width='40px'><button class='button1_1' id="b4" onclick='buy3()'>升级</button></td>
+        </tr>
+        </table>
+        <span id='u3'><button class='button1' id="u4" onclick='unlock2()'>解锁乘法</button>价格：3e7</span>
+        </span>
+        <span id='auto1'>
+        <table border='1' cellpadding="2">
+        <tr>
+        <td width='140px'>自动点击后继按钮</td><td width='32px'><span id='autoSpeed1'>0</span>/s</td><td width='105px'>价格：<span id='price3'>1000</span></td><td width='40px'><button class='button1_1' id="buyAuto2" onclick='buyAuto1()'>升级</button></td>
+        </tr>
+        </table>
+        </span>
+    </span>
+    <span id='level2'>
+        <div style='text-align:center'>
+        <button class='smallButton2' style="width:47px" id="o4" onclick='open4()'>升级</button>
+        </div>
+        <div style='text-align:center'>
+        <button class='resetButton' id="reset2" onclick='reset2()'>重置以获得<span id='showMP'>0</span>乘法点</button>
+        </div>
+        <span id='level2.1'>
+        乘法能量：<span id='mup2'>0.00</span>(+<span id='mup1'>0</span>/s)<br />
+        <button class='button6' id="mu1" onclick='mu4()'>消耗乘法能量将数字×<span id='mup3'>1.00</span></button>冷却：<span id='cooldown0'>10</span>s<br />
+        <table border='1' cellpadding="2">
+        <tr id='b7'>
+        <td width='105px'>能量发生器</td><td width='64px'>等级 <span id='upgradeLevel5'>0</span></td><td width='115px'><span id='price4'>1</span>乘法点</td><td width='40px'><button class='button6_1' id="b6" onclick='buy4()'>升级</button></td>
+        </tr>
+        <tr id='b9'>
+        <td width='105px'>自动化增效器</td><td width='64px'>等级 <span id='upgradeLevel6'>0</span></td><td width='115px'><span id='price5'>1乘法点</span></td><td width='40px'><button class='button6_1' id="b8" onclick='buy5()'>升级</button></td>
+        </tr>
+        </table>
+        </span>
+    </span>
+    <span id='s2'>
+        <button class='button1' id="theme" onclick='changeTheme()'>主题：<span id='themeText'>明亮</span></button>
+        <button class='button1' id="export" onclick='export1()'>导出存档</button>
+        <button class='button1' id="import" onclick='import1()'>导入存档</button>
+        <button class='button3' id="reset" onclick='reset1()'>硬重置</button>
+        <form>
+        存档：<br /><textarea class='input1' type="text" name="save1" id='save';></textarea><!--<button class='button2' id="copy" onclick='copy1()'>复制</button>-->
+        </form>
+    </span>
+    <span id='s11'>
+        <b>大数之路v0.1.1</b><br /><span style="color:#ee6622"><span style="font-weight:bold">作者：</span>静火Ω</span>
+        <details>
+        <summary>特别感谢</summary>
+            <div style="height:180px;width:250px;font-family:verdana;background-color: #eeeeee;padding:8px 20px;border-radius:10px;border:7px solid #444444">
+                <p><b>建议&测试（不分先后）</b></p>
+                @小精灵斯马特º、@用户1986Ω、@增量游戏君、@智神星Pallas、@EdenGameMaster、@efreygrt、@五年高考💯
+            </div>
+        </details>
+        <details>
+        <summary>更新记录</summary>
+            <div style="height:340px;width:200px;font-family:verdana;background-color: #eeeeee;padding:8px 20px;border-radius:10px;border:7px solid #444444;overflow:scroll">
+            <p><b>v0.1.1</b><br />-增加“特别感谢”<br />-增加一个成就奖励<br />-更改升级价格<br />-修复数值显示的bug<br />-修复重置后价格的bug</p >
+            <p><b>v0.1.0</b><br />-增加新的重置层<br />-增加一些新的成就<br />-更改升级按钮布局<br />-更改部分元素外观<br />-更改一些升级的价格<br />-修复价格显示的bug</p>
+            <p><b>v0.0.6</b><br />-增加一个新的升级<br />-更改升级按钮布局<br />-更改“乘法”效果<br />-更改一些升级的价格</p>
+            <p><b>v0.0.5</b><br />-增加“成就”选项<br />-增加科学计数法<br />-更改元素布局</p>
+            <p><b>v0.0.4</b><br />-增加一个新的升级<br />-更改按钮布局<br />-更改存档形式<br />-更改一些升级的价格</p>
+            <p><b>v0.0.3</b><br />-增加“乘法”选项<br />-更改文本及部分元素外观<br />-修复自动化的bug<br />-修复导入存档的bug</p>
+            <p><b>v0.0.2</b><br />-增加“自动化”选项<br />-增加“加法增益”显示<br />-增加“更新记录”<br />-更改按钮外观<br />-修复导入存档的bug</p>
+            <p><b>v0.0.1</b><br />-增加“加法”选项<br />-增加“设置”选项<br />-增加“关于”选项</p>
+        </div>
+        </details>
+    </span>
+    </div>
+</body>
+</html>
+<script>
+        var div2_1=document.getElementById("achievement1.1");
+        var div2_2=document.getElementById("achievement1.2");
+        var div2_3=document.getElementById("achievement1.3");
+        var div2_4=document.getElementById("achievement1.4");
+        var div2_5=document.getElementById("achievement1.5");
+        var div2_6=document.getElementById("achievement1.6");
+        var div2_7=document.getElementById("achievement1.7");
+        var div2_8=document.getElementById("achievement1.8");
+        var value1=1
+        var showNumber=0
+        var realNumber=0
+        var numberDigits=0
+        var numberCoefficient=0
+        var firstUpgradeLevel=1
+        var realFirstUpgradePrice=20
+        var showFirstUpgradePrice=20
+        var secondUpgradeLevel=0
+        var realSecondUpgradePrice=1000
+        var showSecondUpgradePrice=1000
+        var thirdUpgradeLevel=0
+        var realThirdUpgradePrice=100000
+        var showThirdUpgradePrice=100000
+        var realFifthUpgradePrice=1
+        var showFifthUpgradePrice=1
+        var multiplicationPointGainSpeed=0.00
+        var showMultiplicationPoint=0.00
+        var mu3=1.00
+        var realMultiplicationPoint=0.00
+        var gainMP=0
+        var showMP=0
+        var realMP=0
+        var u2=0
+        var isAchievement1open=false
+        var isAuto1open=false
+        var islevel1open=false
+        var islevel2open=false
+        var isSetting1open=false
+        var isSetting2open=false
+        var auto1=0
+        var autoPrice1=1000
+        var autoPrice2=1000
+        var auto2=1
+        var m1=1
+        var m2=1
+        var t=1000
+        var cooldown1=10
+        var goal1_1=0
+        var goal1_3=0
+        var goal1_7=0//如果以后加入的重置层会影响“加法”“乘法”是否已解锁，则必须补全goal1_2和goal1_4，自动化相关成就同理
+        var resetTimes=0
+        var transitNumber=0
+        var transitNumberDigits=0
+        var transitNumberCoefficient=0
+        var transitShowNumber=0
+        var finalShowNumber=0
+        var theme=1
+        var achievementCheck=setInterval(function(){
+            if (resetTimes>=1){
+                document.getElementById("MP").style.display="block";
+            }else{
+                document.getElementById("MP").style.display="none";
+            }
+            if (realNumber>=10000000){
+                gainMP=Math.floor(((Math.LOG10E*Math.log(realNumber))-6)**1.2)
+                var showMP=document.getElementById("showMP");
+                showMP.innerHTML=parseInt(showMP.innerHTML)*0+gainMP
+            }else{
+                gainMP=0
+                var showMP=document.getElementById("showMP");
+                showMP.innerHTML=parseInt(showMP.innerHTML)*0+gainMP
+            }
+            if (realNumber>=1||goal1_1>=1){
+            div2_1.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+                if (goal1_1==0){goal1_1+=1}
+            }else{
+            div2_1.style.cssText="";
+            }
+            if (u2>=1){
+            div2_2.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+            }else{
+            div2_2.style.cssText="";
+            }
+            if (auto1>=1||goal1_3>=1){
+            div2_3.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+                if (goal1_3==0){goal1_3+=1}
+            }else{
+            div2_3.style.cssText="";
+            }
+            if (u2>=2){
+            div2_4.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+            }else{
+            div2_4.style.cssText="";
+            }
+            if (realNumber>=1000000||goal1_1>=2){
+            div2_5.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+                if (goal1_1==1){goal1_1+=1}
+            }else{
+            div2_5.style.cssText="";
+            }
+            if (resetTimes>=1){
+            div2_6.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+            m2=2
+            }else{
+            div2_6.style.cssText="";
+            m2=1
+            }
+            if (realMultiplicationPoint>=10||goal1_7>=1){
+            div2_7.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+                if (goal1_7==0){goal1_7+=1}
+            }else{
+            div2_7.style.cssText="";
+            }
+            if ((auto1*auto2)>=20||goal1_3>=2){
+            div2_8.style.cssText="background-color: #5ede5e;border: 3px solid #007400;";
+                if (goal1_3==1){goal1_3+=1}
+            }else{
+            div2_8.style.cssText="";
+            }
+            if (resetTimes>=1){
+            document.getElementById("level2.1").style.display="block";
+            document.getElementById("b9").style.display="block";
+            }
+            else{
+            document.getElementById("level2.1").style.display="none";
+            }
+        },0)
+        function auto3(){
+        if (realNumber>=1000000){
+            document.getElementById("en1").style.display="inline";
+            numberDigits=Math.floor(Math.LOG10E*Math.log(realNumber))
+            var a4=document.getElementById("en2");
+            a4.innerHTML=parseInt(a4.innerHTML)*0+numberDigits;
+            numberCoefficient=realNumber/(10**numberDigits)
+            var showNumber=document.getElementById("number");
+            showNumber.innerHTML=parseInt(showNumber.innerHTML)*0+Number(numberCoefficient.toFixed(2));
+            if (Number(numberCoefficient.toFixed(2))==10){
+            var showNumber=document.getElementById("number");
+            showNumber.innerHTML=parseInt(showNumber.innerHTML)*0+1;
+            var a4=document.getElementById("en2");
+            a4.innerHTML=parseInt(a4.innerHTML)*0+numberDigits+1;
+            }
+        }else{
+            document.getElementById("en1").style.display="none";
+            var showNumber=document.getElementById("number");
+            showNumber.innerHTML=parseInt(showNumber.innerHTML)*0+realNumber;
+        }
+        }
+        function transporter1000(){
+            transitNumberDigits=Math.floor(Math.LOG10E*Math.log(transitNumber))
+            transitNumberCoefficient=transitNumber/(10**transitNumberDigits)
+            transitShowNumber=Number(transitNumberCoefficient.toFixed(2));
+            if (Number(transitNumberCoefficient.toFixed(2))==10){
+            transitShowNumber=1;
+            transitNumberDigits+=1
+            }
+            finalShowNumber=transitShowNumber+'e'+transitNumberDigits
+        }
+        var time1=setInterval(function(){
+            if (auto1>=1){
+                realNumber+=((firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1+1)*m2
+                auto3();
+                if (realNumber>=5000){
+                document.getElementById("b5").style.display="block";
+                }
+                if (realNumber>=10000000&&u2==1){
+                document.getElementById("u3").style.display="block";
+                }
+            }
+        },t)
+        var time2=setInterval(function(){
+        if (cooldown1>0){
+            cooldown1-=1
+            var cooldown=document.getElementById("cooldown0");
+            cooldown.innerHTML=parseInt(cooldown.innerHTML)-1;
+        }  
+        },1000)
+        document.getElementById("level1").style.display="none";
+        document.getElementById("level2").style.display="none";
+        document.getElementById("u0").style.display="none";
+        document.getElementById("o1").style.display="none";
+        document.getElementById("o2").style.display="none";
+        document.getElementById("b3").style.display="none";
+        document.getElementById("b10").style.display="block";
+        document.getElementById("s2").style.display="none";
+        document.getElementById("s11").style.display="none";
+        document.getElementById("b5").style.display="none";
+        document.getElementById("level2.1").style.display="none";
+        document.getElementById("b7").style.display="block";
+        document.getElementById("b12").style.display="none";
+        document.getElementById("u3").style.display="none";
+        document.getElementById("en1").style.display="none";
+        document.getElementById("en3").style.display="none";
+        document.getElementById("auto1").style.display="none";
+        document.getElementById("achievement").style.display="none";
+        document.getElementById("MP").style.display="none";
+        document.getElementById("theme").style.display="none";
+        function changeTheme(){
+        if (theme==1){
+            theme=2
+            document.getElementById("themeText").innerHTML='黑暗';
+        }
+        else if (theme==2){
+            theme=1
+            document.getElementById("themeText").innerHTML='明亮';
+        }
+        }
+        function add1(){
+        realNumber+=((firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1+1)*m2
+        auto3();
+        if (realNumber>=50&&u2==0){
+            document.getElementById("u0").style.display="inline";
+        }
+        if (realNumber>=5000){
+            document.getElementById("b5").style.display="block";
+        }
+        if (realNumber>=10000000&&u2==1){
+            document.getElementById("u3").style.display="block";
+        }
+        }
+        function buyAuto1(){
+        if (realNumber>=autoPrice1){
+            realNumber-=autoPrice1
+            auto3();
+            auto1+=1
+            t=1000/(auto1*auto2)
+            var autoSpeed2=document.getElementById("autoSpeed1");
+            autoSpeed2.innerHTML=parseInt(autoSpeed2.innerHTML)+(1*auto2);
+            var autoPrice2=document.getElementById("price3");
+            autoPrice2.innerHTML=parseInt(autoPrice2.innerHTML)*10;
+            autoPrice1*=10
+            if (autoPrice1>=1000000){
+            transitNumber=autoPrice1
+            transporter1000();
+            var autoPrice2=document.getElementById("price3");
+            autoPrice2.innerHTML=parseInt(autoPrice2.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+            clearInterval(time1);
+            time1=setInterval(function(){
+            if (auto1>=1){
+                realNumber+=((firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1+1)*m2
+                auto3();
+                if (realNumber>=5000){
+                document.getElementById("b5").style.display="block";
+                }
+                if (realNumber>=10000000&&u2==1){
+                document.getElementById("u3").style.display="block";
+                }
+            }
+            },t)
+        }
+        }
+        function buy1(){
+        if (realNumber>=realFirstUpgradePrice){
+            realNumber-=realFirstUpgradePrice
+            auto3();
+            firstUpgradeLevel+=1
+            var n3=document.getElementById("n1");
+            n3.innerHTML=parseInt(n3.innerHTML)+1*m1;
+            var n4=document.getElementById("upgradeLevel1");
+            n4.innerHTML=parseInt(n4.innerHTML)*0+firstUpgradeLevel-1;
+            var showFirstUpgradePrice=document.getElementById("price1");
+            showFirstUpgradePrice.innerHTML=parseInt(showFirstUpgradePrice.innerHTML)+firstUpgradeLevel*firstUpgradeLevel-1;
+            realFirstUpgradePrice+=firstUpgradeLevel*firstUpgradeLevel-1
+            if (realFirstUpgradePrice>=1000000){
+            transitNumber=realFirstUpgradePrice
+            transporter1000();
+            var showFirstUpgradePrice=document.getElementById("price1");
+            showFirstUpgradePrice.innerHTML=parseInt(showFirstUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+        }
+        if (firstUpgradeLevel>=11){
+            document.getElementById("b3").style.display="block";
+        }
+        }
+        function unlock1(){
+        if (realNumber>=100){
+            document.getElementById("u0").style.display="none";
+            realNumber-=100
+            auto3();
+            u2+=1
+            document.getElementById("o1").style.display="inline";
+            document.getElementById("auto1").style.display="none";
+            document.getElementById("level1.1").style.display="block";
+        }
+        }
+        function unlock2(){
+        if (realNumber>=30000000){
+            document.getElementById("u3").style.display="none";
+            realNumber-=30000000
+            auto3();
+            u2+=1
+            document.getElementById("o2").style.display="inline";
+        }
+        }
+        function buy2(){
+        if (realNumber>=realSecondUpgradePrice){
+            realNumber-=realSecondUpgradePrice
+            auto3();
+            secondUpgradeLevel+=10
+            var n3=document.getElementById("n1");
+            n3.innerHTML=parseInt(n3.innerHTML)+10*m1;
+            var n5=document.getElementById("upgradeLevel2");
+            n5.innerHTML=parseInt(n5.innerHTML)*0+secondUpgradeLevel/10;
+            var showSecondUpgradePrice=document.getElementById("price2");
+            showSecondUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)+secondUpgradeLevel*secondUpgradeLevel*2;
+            realSecondUpgradePrice+=secondUpgradeLevel*secondUpgradeLevel*2
+            if (realSecondUpgradePrice>=1000000){
+            transitNumber=realSecondUpgradePrice
+            transporter1000();
+            var showSecondUpgradePrice=document.getElementById("price2");
+            showSecondUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+        }
+        if (secondUpgradeLevel>=100){
+            document.getElementById("b12").style.display="block";
+        }
+        }
+        function buy6(){
+        if (realNumber>=realThirdUpgradePrice){
+            realNumber-=realThirdUpgradePrice
+            auto3();
+            thirdUpgradeLevel+=100
+            var n3=document.getElementById("n1");
+            n3.innerHTML=parseInt(n3.innerHTML)+100*m1;
+            var n6=document.getElementById("upgradeLevel3");
+            n6.innerHTML=parseInt(n6.innerHTML)*0+thirdUpgradeLevel/100;
+            var showThirdUpgradePrice=document.getElementById("price7");
+            showThirdUpgradePrice.innerHTML=parseInt(showThirdUpgradePrice.innerHTML)+thirdUpgradeLevel*thirdUpgradeLevel*3;
+            realThirdUpgradePrice+=thirdUpgradeLevel*thirdUpgradeLevel*3
+            if (realThirdUpgradePrice>=1000000){
+            transitNumber=realThirdUpgradePrice
+            transporter1000();
+            var showThirdUpgradePrice=document.getElementById("price7");
+            showThirdUpgradePrice.innerHTML=parseInt(showThirdUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+        }
+        }
+        function buy3(){
+        if (realNumber>=m1*m1*10000){
+            realNumber-=m1*m1*10000
+            auto3();
+            m1+=1
+            var showFourthUpgradePrice=document.getElementById("price6");
+            showFourthUpgradePrice.innerHTML=parseInt(showFourthUpgradePrice.innerHTML)*0+m1*m1*10000;
+            var n3=document.getElementById("n1");
+            n3.innerHTML=parseInt(n3.innerHTML)*0+(firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1;
+            var n7=document.getElementById("upgradeLevel4");
+            n7.innerHTML=parseInt(n7.innerHTML)*0+m1-1;
+            if (m1*m1*10000>=1000000){
+            transitNumber=m1*m1*10000
+            transporter1000();
+            var showFourthUpgradePrice=document.getElementById("price6");
+            showFourthUpgradePrice.innerHTML=parseInt(showFourthUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+        }
+        }
+        function buy4(){
+        if (realMP>=realFifthUpgradePrice){
+            realMP-=realFifthUpgradePrice
+            var showMP2=document.getElementById("number2");
+            showMP2.innerHTML=parseInt(showMP2.innerHTML)*0+realMP;
+            multiplicationPointGainSpeed+=0.01
+            var showMultiplicationPoint=document.getElementById("mup1");
+            showMultiplicationPoint.innerHTML=parseInt(showMultiplicationPoint.innerHTML)*0+Number(multiplicationPointGainSpeed.toFixed(2));
+            var showFifthUpgradePrice=document.getElementById("price4");
+            showFifthUpgradePrice.innerHTML=parseInt(showFifthUpgradePrice.innerHTML)*2;
+            realFifthUpgradePrice*=2
+            var n8=document.getElementById("upgradeLevel5");
+            n8.innerHTML=parseInt(n8.innerHTML)*0+100*multiplicationPointGainSpeed
+            if (realFifthUpgradePrice>=1000000){
+            transitNumber=realFifthUpgradePrice
+            transporter1000();
+            var showFifthUpgradePrice=document.getElementById("price4");
+            showFifthUpgradePrice.innerHTML=parseInt(showFifthUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+            }
+            clearInterval(time2);
+            time2=setInterval(function(){
+                realMultiplicationPoint+=Number(multiplicationPointGainSpeed.toFixed(2));
+                mu3=((realMultiplicationPoint+1)**0.5)
+                if (cooldown1>0){
+                cooldown1-=1
+                var cooldown=document.getElementById("cooldown0");
+                cooldown.innerHTML=parseInt(cooldown.innerHTML)-1;
+                }
+                var mu1=document.getElementById("mup2");
+                mu1.innerHTML=parseInt(mu1.innerHTML)*0+Number(realMultiplicationPoint.toFixed(2));  
+                var mu2=document.getElementById("mup3");
+                mu2.innerHTML=parseInt(mu2.innerHTML)*0+Number(mu3.toFixed(2));
+            },1000)
+        }
+        }
+        function buy5(){
+        if (realMP>=1){
+            realMP-=1
+            var showMP2=document.getElementById("number2");
+            showMP2.innerHTML=parseInt(showMP2.innerHTML)*0+realMP;
+            auto2+=1
+            t=1000/(auto1*auto2)
+            var autoSpeed2=document.getElementById("autoSpeed1");
+            autoSpeed2.innerHTML=parseInt(autoSpeed2.innerHTML)*0+auto1*auto2;
+            var n9=document.getElementById("upgradeLevel6");
+            n9.innerHTML=parseInt(n9.innerHTML)*0+auto2-1
+            clearInterval(time1);
+            time1=setInterval(function(){
+            if (auto1>=1){
+                realNumber+=((firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1+1)*m2
+                auto3();
+                if (realNumber>=5000){
+                document.getElementById("b5").style.display="block";
+                }
+                if (realNumber>=10000000&&u2==1){
+                document.getElementById("u3").style.display="block";
+                }
+            }
+            },t)
+        }
+        }
+        function mu4(){
+        if (cooldown1==0){
+            realNumber*=Number(mu3.toFixed(2));
+            realNumber=Number(realNumber.toFixed(0));
+            auto3();
+            mu3=1
+            realMultiplicationPoint=0
+            var mu1=document.getElementById("mup2");
+            mu1.innerHTML=parseInt(mu1.innerHTML)*0;
+            var mu2=document.getElementById("mup3");
+            mu2.innerHTML=parseInt(mu2.innerHTML)*0+1;
+            cooldown1=10
+            var cooldown=document.getElementById("cooldown0");
+            cooldown.innerHTML=parseInt(cooldown.innerHTML)*0+10;
+            }
+        }
+        function export1(){
+        var r1=btoa(realNumber+','+u2+','+firstUpgradeLevel+','+realFirstUpgradePrice+','+secondUpgradeLevel+','+realSecondUpgradePrice+','+m1+','+auto1+','+autoPrice1+','+Number(multiplicationPointGainSpeed.toFixed(2))+','+realFifthUpgradePrice+','+Number(realMultiplicationPoint.toFixed(2))+','+auto2+','+goal1_1+','+thirdUpgradeLevel+','+realThirdUpgradePrice+','+goal1_3+','+goal1_7+','+resetTimes+','+realMP);
+        r1=r1.replace('=','');
+        r1=r1.replace('=','');
+        document.getElementById("save").value=r1;
+        //value1=realNumber;
+        //window.localStorage.setItem('key1','value1');
+        }
+        function import1(){
+        var i1=document.getElementById("save");
+        var i2=atob(i1.value);
+        var i3=i2.split(',');
+        var i4=isNaN(i3[i3.length-19]+i3[i3.length-18]+i3[i3.length-17]+i3[i3.length-16]+i3[i3.length-15]+i3[i3.length-14]+i3[i3.length-13]+i3[i3.length-12]+i3[i3.length-11]+i3[i3.length-10])
+        var i5=isNaN(i3[i3.length-9]+i3[i3.length-8]+i3[i3.length-7]+i3[i3.length-6]+i3[i3.length-5]+i3[i3.length-4]+i3[i3.length-3]+i3[i3.length-2]+i3[i3.length-1])
+        var i6=isNaN(i3[i3.length-20])
+        if (i4==false&&i5==false&&i6==false){
+        realMP=Number(i3[i3.length-1]);
+        resetTimes=Number(i3[i3.length-2]);
+        goal1_7=Number(i3[i3.length-3]);
+        goal1_3=Number(i3[i3.length-4]);
+        realThirdUpgradePrice=Number(i3[i3.length-5]);
+        thirdUpgradeLevel=Number(i3[i3.length-6]);
+        goal1_1=Number(i3[i3.length-7]);
+        auto2=Number(i3[i3.length-8]);
+        realMultiplicationPoint=Number(i3[i3.length-9]);
+        realFifthUpgradePrice=Number(i3[i3.length-10]);
+        multiplicationPointGainSpeed=Number(i3[i3.length-11]);
+        autoPrice1=Number(i3[i3.length-12]);
+        auto1=Number(i3[i3.length-13]);
+        m1=Number(i3[i3.length-14]);
+        realSecondUpgradePrice=Number(i3[i3.length-15]);
+        secondUpgradeLevel=Number(i3[i3.length-16]);
+        realFirstUpgradePrice=Number(i3[i3.length-17]);
+        firstUpgradeLevel=Number(i3[i3.length-18]);
+        u2=Number(i3[i3.length-19]);
+        realNumber=Number(i3[i3.length-20]);
+        cooldown1=10
+        var cooldown=document.getElementById("cooldown0");
+        cooldown.innerHTML=parseInt(cooldown.innerHTML)*0+10;
+        auto3();
+        var showFirstUpgradePrice=document.getElementById("price1");
+        showFirstUpgradePrice.innerHTML=parseInt(showFirstUpgradePrice.innerHTML)*0+realFirstUpgradePrice;
+        var showSecondUpgradePrice=document.getElementById("price2");
+        showSecondUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)*0+realSecondUpgradePrice;
+        var showThirdUpgradePrice=document.getElementById("price7");
+        showThirdUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)*0+realThirdUpgradePrice;
+        var showFourthUpgradePrice=document.getElementById("price6");
+        showFourthUpgradePrice.innerHTML=parseInt(showFourthUpgradePrice.innerHTML)*0+m1*m1*10000;
+        var n3=document.getElementById("n1");
+        n3.innerHTML=parseInt(n3.innerHTML)*0+(firstUpgradeLevel-1+secondUpgradeLevel+thirdUpgradeLevel)*m1;
+        var autoSpeed2=document.getElementById("autoSpeed1");
+        autoSpeed2.innerHTML=parseInt(autoSpeed2.innerHTML)*0+(auto1*auto2);
+        var autoPrice2=document.getElementById("price3");
+        autoPrice2.innerHTML=parseInt(autoPrice2.innerHTML)*0+autoPrice1;
+        var showMultiplicationPoint=document.getElementById("mup1");
+        showMultiplicationPoint.innerHTML=parseInt(showMultiplicationPoint.innerHTML)*0+Number(multiplicationPointGainSpeed.toFixed(2));
+        var showFifthUpgradePrice=document.getElementById("price4");
+        showFifthUpgradePrice.innerHTML=parseInt(showFifthUpgradePrice.innerHTML)*0+realFifthUpgradePrice;
+        var mu1=document.getElementById("mup2");
+        mu1.innerHTML=parseInt(mu1.innerHTML)*0+Number(realMultiplicationPoint.toFixed(2));
+        mu3=((realMultiplicationPoint+1)**0.5)
+        var mu2=document.getElementById("mup3");
+        mu2.innerHTML=parseInt(mu2.innerHTML)*0+Number(mu3.toFixed(2));
+        var n4=document.getElementById("upgradeLevel1");
+        n4.innerHTML=parseInt(n4.innerHTML)*0+firstUpgradeLevel-1;
+        var n5=document.getElementById("upgradeLevel2");
+        n5.innerHTML=parseInt(n5.innerHTML)*0+secondUpgradeLevel/10;
+        var n6=document.getElementById("upgradeLevel3");
+        n6.innerHTML=parseInt(n6.innerHTML)*0+thirdUpgradeLevel/100;
+        var n7=document.getElementById("upgradeLevel4");
+        n7.innerHTML=parseInt(n7.innerHTML)*0+m1-1;
+        var n8=document.getElementById("upgradeLevel5");
+        n8.innerHTML=parseInt(n8.innerHTML)*0+100*multiplicationPointGainSpeed
+        var n9=document.getElementById("upgradeLevel6");
+        n9.innerHTML=parseInt(n9.innerHTML)*0+auto2-1
+        var showMP2=document.getElementById("number2");
+        showMP2.innerHTML=parseInt(showMP2.innerHTML)*0+realMP;
+        if (autoPrice1>=1000000){
+            transitNumber=autoPrice1
+            transporter1000();
+            var autoPrice2=document.getElementById("price3");
+            autoPrice2.innerHTML=parseInt(autoPrice2.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (realFirstUpgradePrice>=1000000){
+            transitNumber=realFirstUpgradePrice
+            transporter1000();
+            var showFirstUpgradePrice=document.getElementById("price1");
+            showFirstUpgradePrice.innerHTML=parseInt(showFirstUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (realSecondUpgradePrice>=1000000){
+            transitNumber=realSecondUpgradePrice
+            transporter1000();
+            var showSecondUpgradePrice=document.getElementById("price2");
+            showSecondUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (realThirdUpgradePrice>=1000000){
+            transitNumber=realThirdUpgradePrice
+            transporter1000();
+            var showThirdUpgradePrice=document.getElementById("price7");
+            showThirdUpgradePrice.innerHTML=parseInt(showThirdUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (m1*m1*10000>=1000000){
+            transitNumber=m1*m1*10000
+            transporter1000();
+            var showFourthUpgradePrice=document.getElementById("price6");
+            showFourthUpgradePrice.innerHTML=parseInt(showFourthUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (realFifthUpgradePrice>=1000000){
+            transitNumber=realFifthUpgradePrice
+            transporter1000();
+            var showFifthUpgradePrice=document.getElementById("price4");
+            showFifthUpgradePrice.innerHTML=parseInt(showFifthUpgradePrice.innerHTML)*0+transitShowNumber+'e'+transitNumberDigits;
+        }
+        if (u2==0&&realNumber>=50){
+            document.getElementById("u0").style.display="inline";
+        }
+        else{
+            document.getElementById("u0").style.display="none";
+        }
+        if (u2==0){
+            document.getElementById("o1").style.display="none";
+            document.getElementById("o2").style.display="none";
+        }
+        if (u2==1){
+            document.getElementById("o1").style.display="inline";
+            document.getElementById("o2").style.display="none";
+        }
+        if (u2==2){
+            document.getElementById("o1").style.display="inline";
+            document.getElementById("o2").style.display="inline";
+        }
+        if (firstUpgradeLevel>=11){
+            document.getElementById("b3").style.display="block";
+        }
+        else{
+            document.getElementById("b3").style.display="none";
+        }
+        if (secondUpgradeLevel>=100){
+            document.getElementById("b12").style.display="block";
+        }
+        else{
+            document.getElementById("b12").style.display="none";
+        }
+        if (realNumber>=5000){
+            document.getElementById("b5").style.display="block";
+        }
+        else{
+            document.getElementById("b5").style.display="none";
+        }
+        if (realNumber>=10000000&&(u2==1||u2==0)){
+            document.getElementById("u3").style.display="block";
+        }
+        else{
+            document.getElementById("u3").style.display="none";
+        }
+        clearInterval(time1);
+        t=1000/(auto1*auto2)
+        time1=setInterval(function(){
+        if (auto1>=1){
+            realNumber+=((firstUpgradeLevel+secondUpgradeLevel+thirdUpgradeLevel-1)*m1+1)*m2
+            auto3();
+            if (realNumber>=5000){
+            document.getElementById("b5").style.display="block";
+            }
+            if (realNumber>=10000000&&u2==1){
+            document.getElementById("u3").style.display="block";
+            }
+        }
+        },t)
+        clearInterval(time2);
+        time2=setInterval(function(){
+            realMultiplicationPoint+=Number(multiplicationPointGainSpeed.toFixed(2));
+            mu3=((realMultiplicationPoint+1)**0.5)
+            if (cooldown1>0){
+                cooldown1-=1
+                var cooldown=document.getElementById("cooldown0");
+                cooldown.innerHTML=parseInt(cooldown.innerHTML)-1;
+            }
+            var mu1=document.getElementById("mup2");
+            mu1.innerHTML=parseInt(mu1.innerHTML)*0+Number(realMultiplicationPoint.toFixed(2));  
+            var mu2=document.getElementById("mup3");
+            mu2.innerHTML=parseInt(mu2.innerHTML)*0+Number(mu3.toFixed(2));
+            },1000)
+        }
+        else{
+        alert('存档无效！');
+        }
+        }
+        function auto(){
+            document.getElementById("auto1").style.display="block";
+            document.getElementById("level1.1").style.display="none";
+        }
+        function open3(){
+            document.getElementById("auto1").style.display="none";
+            document.getElementById("level1.1").style.display="block";
+        }
+        function open1(){
+        if (islevel1open==true){
+            document.getElementById("level1").style.display="none";
+            islevel1open=false
+        }
+        else{
+            document.getElementById("level1").style.display="block";
+            islevel1open=true
+        }
+        if (isAuto1open==true){
+            document.getElementById("auto1").style.display="none";
+            isAuto1open=false
+        }
+        if(isSetting1open==true){
+            document.getElementById("s2").style.display="none";
+            isSetting1open=false
+        }
+        if(isSetting2open==true){
+            document.getElementById("s11").style.display="none";
+            isSetting2open=false
+        }
+        if (islevel2open==true){
+            document.getElementById("level2").style.display="none";
+            islevel2open=false
+        }
+        if (isAchievement1open==true){
+            document.getElementById("achievement").style.display="none";
+            isAchievement1open=false
+        }
+        }
+        function open2(){
+        if (islevel2open==true){
+            document.getElementById("level2").style.display="none";
+            islevel2open=false
+        }
+        else{
+            document.getElementById("level2").style.display="block";
+            islevel2open=true
+        }
+        if (isAuto1open==true){
+            document.getElementById("auto1").style.display="none";
+            isAuto1open=false
+        }
+        if (islevel1open==true){
+            document.getElementById("level1").style.display="none";
+            islevel1open=false
+        }
+        if(isSetting1open==true){
+            document.getElementById("s2").style.display="none";
+            isSetting1open=false
+        }
+        if(isSetting2open==true){
+            document.getElementById("s11").style.display="none";
+            isSetting2open=false
+        }
+        if (isAchievement1open==true){
+            document.getElementById("achievement").style.display="none";
+            isAchievement1open=false
+        }
+        }
+        function setting1(){
+        if (isSetting1open==true){
+            document.getElementById("s2").style.display="none";
+            isSetting1open=false
+        }
+        else{
+            document.getElementById("s2").style.display="block";
+            isSetting1open=true
+        }
+        if (isAuto1open==true){
+            document.getElementById("auto1").style.display="none";
+            isAuto1open=false
+        }
+        if (islevel1open==true){
+            document.getElementById("level1").style.display="none";
+            islevel1open=false
+        }
+        if(isSetting2open==true){
+            document.getElementById("s11").style.display="none";
+            isSetting2open=false
+        }
+        if (islevel2open==true){
+            document.getElementById("level2").style.display="none";
+            islevel2open=false
+        }
+        if (isAchievement1open==true){
+            document.getElementById("achievement").style.display="none";
+            isAchievement1open=false
+        }
+        }
+        function setting2(){
+        if (isSetting2open==true){
+            document.getElementById("s11").style.display="none";
+            isSetting2open=false
+        }
+        else{
+            document.getElementById("s11").style.display="block";
+            isSetting2open=true
+        }
+        if (isAuto1open==true){
+            document.getElementById("auto1").style.display="none";
+            isAuto1open=false
+        }
+        if(isSetting1open==true){
+            document.getElementById("s2").style.display="none";
+            isSetting1open=false
+        }
+        if (islevel1open==true){
+            document.getElementById("level1").style.display="none";
+            islevel1open=false
+        }
+        if (islevel2open==true){
+            document.getElementById("level2").style.display="none";
+            islevel2open=false
+        }
+        if (isAchievement1open==true){
+            document.getElementById("achievement").style.display="none";
+            isAchievement1open=false
+        }
+        }
+        function achievement1(){
+        if (isAchievement1open==true){
+            document.getElementById("achievement").style.display="none";
+            isAchievement1open=false
+        }
+        else{
+            document.getElementById("achievement").style.display="block";
+            isAchievement1open=true
+        }
+        if (isAuto1open==true){
+            document.getElementById("auto1").style.display="none";
+            isAuto1open=false
+        }
+        if(isSetting1open==true){
+            document.getElementById("s2").style.display="none";
+            isSetting1open=false
+        }
+        if (isSetting2open==true){
+            document.getElementById("s11").style.display="none";
+            isSetting2open=false
+        }
+        if (islevel1open==true){
+            document.getElementById("level1").style.display="none";
+            islevel1open=false
+        }
+        if (islevel2open==true){
+            document.getElementById("level2").style.display="none";
+            islevel2open=false
+        }
+        }
+        /*
+        function copy1(){
+        var copy2=document.getElementById("save");
+        copy2.select();
+        document.execCommand('Copy');
+        }
+        */
+        function reset1(){
+        var r2=confirm("是否确定重置存档？此操作不可逆！");
+        if (r2==true){
+        alphaReset();
+        betaReset();
+        }else{
+        //window.localStorage.getItem('key1');
+        //alert(value1);
+        }
+        }
+        function reset2(){
+        if (gainMP>=1){
+        var r3=confirm("你将会失去所有大数点、加法升级和自动化，并得到"+gainMP+"乘法点，是否继续？");
+        if (r3==true){
+        realMP+=gainMP
+        var showMP2=document.getElementById("number2");
+        showMP2.innerHTML=parseInt(showMP2.innerHTML)*0+realMP;
+        alphaReset();
+        resetTimes+=1
+        }
+        }
+        }
+        function alphaReset(){
+        showNumber=0
+        realNumber=0
+        numberDigits=0
+        firstUpgradeLevel=1
+        realFirstUpgradePrice=20
+        showFirstUpgradePrice=20
+        secondUpgradeLevel=0
+        realSecondUpgradePrice=1000
+        showSecondUpgradePrice=1000
+        thirdUpgradeLevel=0
+        realThirdUpgradePrice=100000
+        showThirdUpgradePrice=100000
+        isSetting1open=false
+        auto1=0
+        auto2=1
+        autoPrice1=1000
+        autoPrice2=1000
+        m1=1
+        gainMP=0
+        clearInterval(time1);
+        clearInterval(time2);
+        document.getElementById("auto1").style.display="none";
+        document.getElementById("level1.1").style.display="block";
+        time2=setInterval(function(){
+            realMultiplicationPoint+=Number(multiplicationPointGainSpeed.toFixed(2));
+            mu3=((realMultiplicationPoint+1)**0.5)
+            if (cooldown1>0){
+            cooldown1-=1
+            var cooldown=document.getElementById("cooldown0");
+            cooldown.innerHTML=parseInt(cooldown.innerHTML)-1;
+            }
+            var mu1=document.getElementById("mup2");
+            mu1.innerHTML=parseInt(mu1.innerHTML)*0+Number(realMultiplicationPoint.toFixed(2));  
+            var mu2=document.getElementById("mup3");
+            mu2.innerHTML=parseInt(mu2.innerHTML)*0+Number(mu3.toFixed(2));
+        },1000)
+        cooldown1=10
+        var cooldown=document.getElementById("cooldown0");
+        cooldown.innerHTML=parseInt(cooldown.innerHTML)*0+10;
+        var showNumber=document.getElementById("number");
+        showNumber.innerHTML=parseInt(showNumber.innerHTML)*0;
+        var showFirstUpgradePrice=document.getElementById("price1");
+        showFirstUpgradePrice.innerHTML=parseInt(showFirstUpgradePrice.innerHTML)*0+20;
+        var showSecondUpgradePrice=document.getElementById("price2");
+        showSecondUpgradePrice.innerHTML=parseInt(showSecondUpgradePrice.innerHTML)*0+1000;
+        var showThirdUpgradePrice=document.getElementById("price7");
+        showThirdUpgradePrice.innerHTML=parseInt(showThirdUpgradePrice.innerHTML)*0+100000;
+        var n3=document.getElementById("n1");
+        n3.innerHTML=parseInt(n3.innerHTML)*0;
+        var autoSpeed2=document.getElementById("autoSpeed1");
+        autoSpeed2.innerHTML=parseInt(autoSpeed2.innerHTML)*0;
+        var autoPrice2=document.getElementById("price3");
+        autoPrice2.innerHTML=parseInt(autoPrice2.innerHTML)*0+1000;
+        var n4=document.getElementById("upgradeLevel1");
+        n4.innerHTML=parseInt(n4.innerHTML)*0;
+        var n5=document.getElementById("upgradeLevel2");
+        n5.innerHTML=parseInt(n5.innerHTML)*0;
+        var n6=document.getElementById("upgradeLevel3");
+        n6.innerHTML=parseInt(n6.innerHTML)*0;
+        var n7=document.getElementById("upgradeLevel4");
+        n7.innerHTML=parseInt(n7.innerHTML)*0;
+        var n8=document.getElementById("upgradeLevel5");
+        n8.innerHTML=parseInt(n8.innerHTML)*0;
+        var n9=document.getElementById("upgradeLevel6");
+        n9.innerHTML=parseInt(n9.innerHTML)*0;
+        var showMP=document.getElementById("showMP");
+        showMP.innerHTML=parseInt(showMP.innerHTML)*0
+        document.getElementById("level1").style.display="none";
+        document.getElementById("u0").style.display="none";
+        document.getElementById("b3").style.display="none";
+        document.getElementById("s2").style.display="none";
+        document.getElementById("s11").style.display="none";
+        document.getElementById("b5").style.display="none";
+        document.getElementById("u0").style.display="none";
+        document.getElementById("en1").style.display="none";
+        document.getElementById("save").value='';
+        }
+        function betaReset(){
+        goal1_1=0
+        goal1_3=0
+        goal1_7=0
+        theme=1
+        realFifthUpgradePrice=1
+        showFifthUpgradePrice=1
+        multiplicationPointGainSpeed=0.00
+        showMultiplicationPoint=0.00
+        mu3=1.00
+        realMultiplicationPoint=0.00
+        showMP=0
+        realMP=0
+        m2=1
+        u2=0
+        resetTimes=0
+        var showMultiplicationPoint=document.getElementById("mup1");
+        showMultiplicationPoint.innerHTML=parseInt(showMultiplicationPoint.innerHTML)*0;
+        var showFifthUpgradePrice=document.getElementById("price4");
+        showFifthUpgradePrice.innerHTML=parseInt(showFifthUpgradePrice.innerHTML)*0+1;
+        var mu1=document.getElementById("mup2");
+        mu1.innerHTML=parseInt(mu1.innerHTML)*0;  
+        var mu2=document.getElementById("mup3");
+        mu2.innerHTML=parseInt(mu2.innerHTML)*0+1;
+        document.getElementById("o1").style.display="none";
+        document.getElementById("o2").style.display="none";
+        clearInterval(time2);
+        time2=setInterval(function(){
+        if (cooldown1>0){
+            cooldown1-=1
+            var cooldown=document.getElementById("cooldown0");
+            cooldown.innerHTML=parseInt(cooldown.innerHTML)-1;
+        }  
+        },1000)
+        }
+</script>
