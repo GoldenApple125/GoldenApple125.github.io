@@ -1,0 +1,3288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=no">
+    <title>大数之路</title>
+    <style>
+        *{
+            -moz-user-select: none;
+            -o-user-select:none;
+            -khtml-user-select:none;
+            -webkit-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+            -webkit-tap-highlight-color: #00000000;/*消除手机点击元素产生的蓝色块*/
+        }
+        .button_gainLNP {
+            background-color: #eeeeee;
+            border: 3.5px solid #b1b1b1;
+            color: #000000;
+            font-size: 15px;
+            border-style: outset;
+            width: 135px;
+            height: auto;
+            padding: 5.5px 15px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_gainLNP_black {
+            background-color: #636363;
+            border: 3.5px solid #e2e2e2;
+            color: #ffffff;
+            font-size: 15px;
+            border-style: outset;
+            width: 135px;
+            height: auto;
+            padding: 5.5px 15px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_gainLNP:hover {
+            background-color: #d5d5d5;
+        }
+        .button_gainLNP_black:hover {
+            background-color: #7d7d7d;
+        }
+        .button_gainLNP:active {
+            transform: scale(0.98);
+        }
+        .button_gainLNP_black:active {
+            transform: scale(0.98);
+        }
+        .button_unlock {
+            background-color: #d0d0d0;
+            border: 3px solid #222222;
+            color: #000000;
+            padding: 6px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_unlock_black {
+            background-color: #636363;
+            border: 3px solid #ffffff;
+            color: #ffffff;
+            padding: 6px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_unlock:hover {
+            background-color: #a6a6a6;
+        }
+        .button_unlock_black:hover {
+            background-color: #9c9c9c;
+        }
+        .button_unlock:active {
+            transform: scale(0.98);
+        }
+        .button_unlock_black:active {
+            transform: scale(0.98);
+        }
+        .button_hard_reset {
+            background-color: #f12222;
+            border: 3px solid #b90000;
+            color: #000000;
+            padding: 6px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_hard_reset_black {
+            background-color: #b31515;
+            border: 3px solid #ed0d0d;
+            color: #ffffff;
+            padding: 6px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_hard_reset:hover {
+            background-color: #d00f0f;
+        }
+        .button_hard_reset_black:hover {
+            background-color: #d81717;
+        }
+        .button_hard_reset:active {
+            transform: scale(0.98);
+        }
+        .button_hard_reset_black:active {
+            transform: scale(0.98);
+        }
+        .text_input {
+            background-color: #f5f5f5;
+            border: 2px solid #000000;
+            color: #000000;
+            width: 295px;
+            height: 128px;
+            padding: 5px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: text;
+            resize: none;
+            font-size: 14px;
+        }
+        .text_input_black {
+            background-color: #636363;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            width: 295px;
+            height: 128px;
+            padding: 5px 6px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: text;
+            resize: none;
+            font-size: 14px;
+        }
+        .button_option {
+            background-color: #eeeeee;
+            border: 3px solid #444444;
+            border-radius: 4px;
+            color: #000000;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option_black {
+            background-color: #636363;
+            border: 3px solid #ffffff;
+            border-radius: 4px;
+            color: #ffffff;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option:hover {
+            background-color: #c2c2c2;
+        }
+        .button_option_black:hover {
+            background-color: #9c9c9c;
+        }
+        .button_option:active {
+            transform: scale(0.98);
+        }
+        .button_option_black:active {
+            transform: scale(0.98);
+        }
+        .button_option_small {
+            background-color: #eeeeee;
+            border: 2.5px solid #444444;
+            color: #000000;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_small_black {
+            background-color: #636363;
+            border: 2.5px solid #ffffff;
+            color: #ffffff;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_small:hover {
+            background-color: #c2c2c2;
+        }
+        .button_option_small_black:hover {
+            background-color: #9c9c9c;
+        }
+        .button_option_small:active {
+            transform: scale(0.98);
+        }
+        .button_option_small_black:active {
+            transform: scale(0.98);
+        }
+        .button_option_blue {
+            background-color: #7fd6f0;
+            border: 3px solid #004682;
+            border-radius: 4px;
+            color: #000000;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option_blue_black {
+            background-color: #23819b;
+            border: 3px solid #0099ff;
+            border-radius: 4px;
+            color: #ffffff;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option_blue:hover {
+            background-color: #64b0c6;
+        }
+        .button_option_blue_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_option_blue:active {
+            transform: scale(0.98);
+        }
+        .button_option_blue_black:active {
+            transform: scale(0.98);
+        }
+        .button_option_blue_small {
+            background-color: #7fd6f0;
+            border: 2.5px solid #004682;
+            color: #000000;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_blue_small_black {
+            background-color: #23819b;
+            border: 2.5px solid #0099ff;
+            color: #ffffff;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_blue_small:hover {
+            background-color: #64b0c6;
+        }
+        .button_option_blue_small_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_option_blue_small:active {
+            transform: scale(0.98);
+        }
+        .button_option_blue_small_black:active {
+            transform: scale(0.98);
+        }
+        .button_option_purple {
+            background-color: #bb00fb;
+            border: 3px solid #7a00ae;
+            border-radius: 4px;
+            color: #000000;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option_purple_black {
+            background-color: #7a00ae;
+            border: 3px solid #bb00fb;
+            border-radius: 4px;
+            color: #ffffff;
+            padding: 6px 24px;
+            text-decoration: none;
+            margin: 4px 1px;
+            cursor: pointer;
+            font-size: 15px;
+            width: 108px;
+        }
+        .button_option_purple:hover {
+            background-color: #9b08cd;
+        }
+        .button_option_purple_black:hover {
+            background-color: #8f13b8;
+        }
+        .button_option_purple:active {
+            transform: scale(0.98);
+        }
+        .button_option_purple_black:active {
+            transform: scale(0.98);
+        }
+        .button_option_purple_small {
+            background-color: #bb00fb;
+            border: 2.5px solid #7a00ae;
+            color: #000000;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_purple_small_black {
+            background-color: #7a00ae;
+            border: 2.5px solid #bb00fb;
+            color: #ffffff;
+            padding: 4px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 12.5px;
+        }
+        .button_option_purple_small:hover {
+            background-color: #9b08cd;
+        }
+        .button_option_purple_small_black:hover {
+            background-color: #8f13b8;
+        }
+        .button_option_purple_small:active {
+            transform: scale(0.98);
+        }
+        .button_option_purple_small_black:active {
+            transform: scale(0.98);
+        }
+        .button_achievement {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+            background-color: #dddddd;
+            border: 3px solid #666666;
+            color: #000000;
+            width: 106px;
+            height: 106px;
+            text-align: center;
+            text-decoration: none;
+            margin: 1px -0.9px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 15px;
+            line-height: 106px;
+        }
+        .button_achievement .text_achievement {
+            visibility: hidden;
+            width: 120px;
+            height: 20px;
+            line-height: 22px;
+            background-color: #505050;
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 90%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .button_achievement .text_achievement::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555555 transparent transparent transparent;
+        }
+        .button_achievement:hover .text_achievement {
+            visibility: visible;
+            opacity: 1;
+        }
+        .button_achievement:active {
+            transform: scale(0.98);
+            z-index: 1;
+        }
+        .button_achievement_small {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+            background-color: #dddddd;
+            border: 3px solid #666666;
+            color: #000000;
+            width: 56px;
+            height: 56px;
+            text-align: center;
+            text-decoration: none;
+            margin: 1px -0.9px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 15px;
+            line-height: 56px;
+        }
+        .button_achievement_small .text_achievement_small {
+            visibility: hidden;
+            width: 160px;
+            height: 43px;
+            line-height: 22px;
+            background-color: #505050;
+            color: #ffffff;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 2px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: -69%;
+            left: 90%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .button_achievement_small .text_achievement_small::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(255, 0, 0, 0) transparent transparent transparent;
+        }
+        .button_achievement_small:hover .text_achievement_small {
+            visibility: visible;
+            opacity: 1;
+        }
+        .button_achievement_small {
+            transform: scale(0.98);
+        }
+        .div_connect1 {
+            position: relative;
+            height:1px;
+            width:5px;
+            z-index: 1;
+            font-family:verdana;
+            background-color: #828282;
+            padding:2px 15px;
+            border-radius:0px;
+            border:0px solid #444444;
+        }
+        .div_connect2 {
+            position: relative;
+            height:33px;
+            width:1px;
+            z-index: 1;
+            font-family:verdana;
+            background-color: #828282;
+            padding:15px 2px;
+            border-radius:0px;
+            border:0px solid #444444;
+        }
+        .text_upgrade {
+            position: relative;
+            display: inline-block;
+            color: #000000;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-block;
+            line-height: 15px;
+            border-bottom: 1px dotted black;
+        }
+        .text_upgrade .text_information {
+            visibility: hidden;
+            width: 118px;
+            height: 20px;
+            line-height: 22px;
+            background-color: #505050;
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 2px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            left: 55%;
+            margin-left: -65px;
+            margin-top: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .text_upgrade .text_information::after {
+            content: "";
+            position: fixed;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555555 transparent transparent transparent;
+        }
+        .text_upgrade:hover .text_information {
+            visibility: visible;
+            opacity: 1;
+        }
+        .button_upgrade {
+            background-color: #eeeeee;
+            border: 3px solid #444444;
+            color: #000000;
+            padding: 9px 3.34px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_upgrade_black {
+            background-color: #636363;
+            border: 3px solid #ffffff;
+            color: #ffffff;
+            padding: 9px 3.34px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_upgrade:hover {
+            background-color: #c2c2c2;
+        }
+        .button_upgrade_black:hover {
+            background-color: #9c9c9c;
+        }
+        .button_upgrade:active {
+            transform: scale(0.98);
+        }
+        .button_upgrade_black:active {
+            transform: scale(0.98);
+        }
+        .button_upgrade_blue {
+            background-color: #7fd6f0;
+            border: 3px solid #004682;
+            color: #000000;
+            padding: 9px 3.34px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_upgrade_blue_black {
+            background-color: #23819b;
+            border: 3px solid #0099ff;
+            color: #ffffff;
+            padding: 9px 3.34px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_upgrade_blue:hover {
+            background-color: #64b0c6;
+        }
+        .button_upgrade_blue_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_upgrade_blue:active {
+            transform: scale(0.98);
+        }
+        .button_upgrade_blue_black:active {
+            transform: scale(0.98);
+        }
+        .button_blue {
+            background-color: #7fd6f0;
+            border: 3.5px solid #004682;
+            color: #000000;
+            font-size: 15px;
+            height: auto;
+            padding: 5.5px 15px;
+            margin: 4px 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_blue_black {
+            background-color: #23819b;
+            border: 3.5px solid #0099ff;
+            color: #ffffff;
+            font-size: 15px;
+            height: auto;
+            padding: 5.5px 15px;
+            margin: 4px 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button_blue:hover {
+            background-color: #64b0c6;
+        }
+        .button_blue_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_blue:active {
+            transform: scale(0.98);
+        }
+        .button_blue_black:active {
+            transform: scale(0.98);
+        }
+        .button_challenge {
+            position: relative;
+            width: 280px;
+            height: 173px;
+            background-color: #d0d0d0;
+            border: 2.5px solid #222222;
+            color: #000000;
+            padding: 32px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .button_challenge_black {
+            position: relative;
+            width: 280px;
+            height: 173px;
+            background-color: #636363;
+            border: 2.5px solid #ffffff;
+            color: #ffffff;
+            padding: 32px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .button_challenge:hover {
+            background-color: #a6a6a6;
+        }
+        .button_challenge_black:hover {
+            background-color: #9c9c9c;
+        }
+        .button_challenge:active {
+            transform: scale(0.98);
+        }
+        .button_challenge_black:active {
+            transform: scale(0.98);
+        }
+        .button_challenge_finish {
+            position: relative;
+            width: 280px;
+            height: 173px;
+            background-color: #7fd6f0;
+            border: 2.5px solid #004682;
+            color: #000000;
+            padding: 32px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .button_challenge_finish_black {
+            position: relative;
+            width: 280px;
+            height: 173px;
+            background-color: #23819b;
+            border: 2.5px solid #0099ff;
+            color: #ffffff;
+            padding: 32px 0px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .button_challenge_finish:hover {
+            background-color: #64b0c6;
+        }
+        .button_challenge_finish_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_challenge_finish:active {
+            transform: scale(0.98);
+        }
+        .button_challenge_finish_black:active {
+            transform: scale(0.98);
+        }
+        .button_first_reset {
+            background-color: #7fd6f0;
+            border: 3px solid #004682;
+            border-radius: 6px;
+            color: #000000;
+            padding: 28px 14px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_first_reset_black {
+            background-color: #23819b;
+            border: 3px solid #0099ff;
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 28px 14px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_first_reset:hover {
+            background-color: #64b0c6;
+        }
+        .button_first_reset_black:hover {
+            background-color: #2ca3c4;
+        }
+        .button_first_reset:active {
+            transform: scale(0.98);
+        }
+        .button_first_reset_black:active {
+            transform: scale(0.98);
+        }
+        .button_second_reset {
+            background-color: #bb00fb;
+            border: 3px solid #7a00ae;
+            border-radius: 6px;
+            color: #000000;
+            padding: 28px 14px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_second_reset_black {
+            background-color: #7a00ae;
+            border: 3px solid #bb00fb;
+            border-radius: 6px;
+            color: #ffffff;
+            padding: 28px 14px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button_second_reset:hover {
+            background-color: #9b08cd;
+        }
+        .button_second_reset_black:hover {
+            background-color: #8f13b8;
+        }
+        .button_second_reset:active {
+            transform: scale(0.98);
+        }
+        .button_second_reset_black:active {
+            transform: scale(0.98);
+        }
+        .div_getAchievement {
+            position: fixed;
+            right: 16px;
+            font-size: 15px;
+            background-color: #a4ff98;
+            border: 2px solid #08ed08;
+            color: #08d508;
+            padding: 6px 3px;
+            z-index: 101;
+        }
+        .div_getAchievement_black {
+            position: fixed;
+            right: 16px;
+            font-size: 15px;
+            background-color: #409040;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 6px 3px;
+            z-index: 101;
+        }
+        table {
+            border-collapse:collapse;
+        }
+        table,th, td {
+            border: 0px solid black;
+        }
+    </style>
+</head>
+<body id="body1" style="background-color:#ffffff;padding: 0px 16px;" onselectstart ="return false">
+    <div class="div_getAchievement" id="getAchievement">
+        <b>你获得了一个成就！</b>
+    </div>
+    <div class="div_getAchievement" id="finishChallenge">
+        <b>挑战目标已达成！</b>
+    </div>
+    <div style="text-align: center;font-size: 20px;line-height: 34px;">你有 <span style="font-size: 28px;" id="showLNP">0</span> 大数点</div>
+    <div style="text-align: center;font-size: 17px;line-height: 32px;" id="levelText1"><span><span>你有 </span><span style="color: #2897D2;font-size: 24px;" id="showMP">0</span><span> 乘法点</span></span></div>
+    <div style="text-align: center;font-size: 17px;line-height: 32px;" id="levelText2"><span><span>你有 </span><span style="color: #cb06f2;font-size: 24px;" id="showPP">0</span><span> 乘方点</span></span></div>
+    <div class="button_gainLNP" id="gainLNP" onclick="gainLNP()">点击按钮获取大数点</div>
+    <span id="unlockText1"><button class="button_unlock" id="unlock1" onclick="unlock1()">解锁加法</button>100大数点</span>
+    <div>
+        <button class="button_option" id="option1" onclick="option1()">成就</button>
+        <button class="button_option" id="option2" onclick="option2()">统计</button>
+        <button class="button_option" id="option3" onclick="option3()">选项</button>
+        <button class="button_option" id="option4" onclick="option4()">加法</button>
+        <button class="button_option_blue" id="option5" onclick="option5()">乘法</button>
+        <button class="button_option_purple" id="option6" onclick="option6()">乘方</button>
+    </div>
+    <div id="option10">
+        <div id="option11">
+            <div class="button_achievement" id="achievement1_1">开始<span class="text_achievement">点击后继按钮</span></div>
+            <div class="button_achievement" id="achievement1_2">增长率为0<span class="text_achievement">解锁加法</span></div>
+            <div class="button_achievement" id="achievement1_3">自动化<span class="text_achievement">购买自动获取大数点</span></div>
+            <div class="button_achievement" id="achievement1_4">百万富翁<span class="text_achievement">拥有1e6大数点</span></div>
+            <div class="button_achievement" id="achievement1_5">累<span class="text_achievement" style="width: 130px;height: 40px;margin-left: -65px;">手动点击获取大数点<br>按钮1000次</span></div>
+            <div class="button_achievement" id="achievement1_6">增长率为1<span class="text_achievement">解锁乘法</span></div>
+            <div class="button_achievement" id="achievement1_7">准备好了？<span class="text_achievement" style="width: 130px;height: 40px;margin-left: -65px;">重置<br>奖励：双倍大数点获取</span></div>
+            <div class="button_achievement" id="achievement1_8">无效能量<span class="text_achievement">乘法能量达到1000</span></div><span id="screenWidth1"><br></span>
+            <div class="button_achievement" id="achievement1_9">加足马力<span class="text_achievement">自动化速度达到20/s</span></div>
+            <div class="button_achievement" id="achievement1_10">百万²富翁<span class="text_achievement">拥有1e12大数点</span></div>
+            <div class="button_achievement" id="achievement1_11">挂机掉线<span class="text_achievement">乘法能量达到10000</span></div>
+            <div class="button_achievement" id="achievement1_12">很累<span class="text_achievement" style="width: 130px;height: 40px;margin-left: -65px;">手动点击获取大数点<br>按钮5000次</span></div>
+            <div class="button_achievement" id="achievement1_13">简单<span class="text_achievement">完成普通挑战1</span></div>
+            <div class="button_achievement" id="achievement1_14">不那么简单<span class="text_achievement" style="width: 140px;height: 40px;margin-left: -70px;">完成所有普通挑战<br>奖励：解锁“解锁乘方”</span></div>
+            <div class="button_achievement" id="achievement1_15">增长率为2<span class="text_achievement">解锁乘方</span></div>
+            <div class="button_achievement" id="achievement1_16">坐稳了！<span class="text_achievement" style="width: 130px;height: 40px;margin-left: -65px;">乘方重置<br>奖励：双倍大数点获取</span></div>
+        </div>
+        <div style="width: auto;height: 410px;overflow-y: auto;" id="option12">
+            <table border="0" cellpadding="0">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td rowspan="2"><div class="div_connect1" style="left: 15px;top: 37px;"></div><div class="div_connect2" style="left: 15px;top: 37px;height: 43px;"></div></td>
+                    <td rowspan="2"><div class="button_achievement_small" id="achievement2_2" style="z-index: 98;">A2<span class="text_achievement_small"><b>增长率为0</b><br>解锁加法</span></div></td>
+                    <td rowspan="2"><div class="div_connect1" style="top: 5px;left: 15px;"></div><div class="div_connect1" style="top: 34.5px;left: -15px"></div><div class="div_connect1" style="top: 64px;left: 15px;"></div><div class="div_connect2" style="left: 15px;top: -5px;height: 39px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_3" style="z-index: 92;">D1<span class="text_achievement_small"><b>自动化</b><br>购买自动获取大数点</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;left: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_9" style="z-index: 84;">D2<span class="text_achievement_small"><b>加足马力</b><br>自动化速度达到20/s</span></div></td>
+                    <td><div class="div_connect1" style="left: 15px;top: 32px;"></div><div class="div_connect2" style="left: 15px;top: 32px;"></td>
+                    <td><div class="button_achievement_small" id="achievement2_8" style="z-index: 80;">E1<span class="text_achievement_small"><b>无效能量</b><br>乘法能量达到1000</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;left: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_11" style="z-index: 74;">E2<span class="text_achievement_small"><b>挂机掉线</b><br>乘法能量达到10000</span></div></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;</td>
+                    <td></td>
+                    <td><div class="button_achievement_small" id="achievement2_6" style="z-index: 90;">A3<span class="text_achievement_small"><b>增长率为1</b><br>解锁乘法</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;left: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_7" style="z-index: 82;">A4<span class="text_achievement_small" style="width: 160px;height: 63px;bottom: -94%;"><b>准备好了？</b><br>重置<br>奖励：双倍大数点获取</span></div></td>
+                    <td><div class="div_connect1" style="top: 31px;"></div><div class="div_connect2" style="left: 15px;top: -5px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_13" style="z-index: 78;">F1<span class="text_achievement_small"><b>简单</b><br>完成普通挑战1</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;left: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_14" style="z-index: 72;">F2<span class="text_achievement_small" style="width: 160px;height: 63px;bottom: -94%;"><b>不那么简单</b><br>完成所有普通挑战<br>奖励：解锁“解锁乘方”</span></div></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div class="button_achievement_small" id="achievement2_1" style="z-index: 100;">A1<span class="text_achievement_small"><b>开始</b><br>点击后继按钮</span></div></td>
+                    <td><div class="div_connect1" style="left: -15px;top: 33px;"></div><div class="div_connect2" style="left: 15px;top: 1px;height: 33px;"></div></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><div class="div_connect1" style="left: 15px;top: 32px;"></div><div class="div_connect2" style="left: 15px;top: -33px;"></td>
+                    <td><div class="button_achievement_small" id="achievement2_15" style="z-index: 76;">A5<span class="text_achievement_small"><b>增长率为2</b><br>解锁乘方</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;left: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_16" style="z-index: 70;">A6<span class="text_achievement_small" style="width: 160px;height: 63px;bottom: -94%;"><b>坐稳了！</b><br>乘方重置<br>奖励：双倍大数点获取</span></div></td>
+                    
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><div class="div_connect1" style="left: 15px;top: 32px;"></div><div class="div_connect2" style="left: 15px;top: -5px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_4" style="z-index: 96;">B1<span class="text_achievement_small"><b>百万富翁</b><br>拥有1e6大数点</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_10" style="z-index: 88;">B2<span class="text_achievement_small"><b>百万²富翁</b><br>拥有1e12大数点</span></div></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><div class="div_connect1" style="left: 15px;top: 32px;"></div><div class="div_connect2" style="left: 15px;top: -33px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_5" style="z-index: 94;">C1<span class="text_achievement_small" style="width: 160px;height: 63px;bottom: -94%;"><b>累</b><br>手动点击获取大数点按钮<br>1000次</span></div></td>
+                    <td><div class="div_connect1" style="top: 0px;"></div></td>
+                    <td><div class="button_achievement_small" id="achievement2_12" style="z-index: 86;">C2<span class="text_achievement_small" style="width: 160px;height: 63px;bottom: -94%;"><b>很累</b><br>手动点击获取大数点按钮<br>5000次</span></div></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="option20" style="text-align: center;">
+        <div>
+            <br><b><span style="font-size: 19px">常规</span></b><br><br>
+            你最高拥有<span id="statistics1">0</span>大数点<br>
+            你手动点击了后继按钮<span id="statistics2">0</span>次<br>
+        </div>
+        <div>
+            <br><b><span style="font-size: 19px;color: #2897D2">乘法</span></b><br><br>
+            你最高拥有<span id="statistics3">0</span>乘法点<br>
+            你总共乘法重置了<span id="statistics4">0</span>次<br>
+        </div>
+        <div>
+            <br><b><span style="font-size: 19px;color: #cb06f2">乘方</span></b><br><br>
+            你最高拥有<span id="statistics5">0</span>乘方点<br>
+            你总共乘方重置了<span id="statistics6">0</span>次<br>
+        </div>
+    </div>
+    <div id="option30">
+        <div style="text-align:center">
+            <button class="button_option_small" id="option31" onclick="option31()" style="width:45px">设置</button>
+            <button class="button_option_small" id="option32" onclick="option32()" style="width:45px">关于</button><br>
+        </div>
+        <div id="option30_1">
+            <button class="button_unlock" id="setting1" onclick="changeTheme()">主题：<span id="themeText">明亮</span></button>
+            <button class="button_unlock" id="setting2" onclick="changeAchievementTheme()">成就风格：<span id="achievementThemeText">并列</span></button>
+            <button class="button_unlock" id="setting3" onclick="changeAutoSave()">自动保存：<span id="autoSaveText">开</span></button>
+            <br>
+            <button class="button_unlock" id="setting4" onclick="saveSave()">保存游戏</button>
+            <button class="button_unlock" id="setting5" onclick="exportSave()">导出存档</button>
+            <button class="button_unlock" id="setting6" onclick="importSave()">导入存档</button>
+            <button class="button_hard_reset" id="setting7" onclick="deleteSave()">彻底重置</button>
+            <form>
+                <br><span>导出或导入存档：</span>
+                <br><textarea class="text_input" id="setting8" type="text"></textarea>
+            </form>
+        </div>
+        <div id="option30_2">
+            <span style="font-size: 17px;line-height: 26px"><b>大数之路v0.3.0</b></span><br>
+            <span id="optionText1" style="color:#ee6622"><span style="font-weight:bold">开发者：</span>
+                <div class="text_upgrade" id="optionText2" style="color:#ee6622;border-bottom: 1.5px dotted #ee6622">静火Ω<span class="text_information" style="left: 255%;top: -140%;">QQ群：418788176</span></div>
+            </span><br>
+            <button class="button_unlock" id="setting9" onclick="option32_1()">特别感谢</button>
+            <button class="button_unlock" id="setting10" onclick="option32_2()">更新记录</button>
+            <span id="option30_2_1">
+                <div id="setting11" style="height:180px;width:280px;font-family:verdana;background-color: #eeeeee;padding:8px 20px;border-radius:0px;border:4px solid #444444">
+                    <p><b>建议&测试（不分先后）</b></p>
+                    @语丝、@小精灵斯马特º、@用户1986Ω、@增量游戏君、@智神星Pallas、@EdenGameMaster、@efreygrt、@五年高考💯、@鱼青、@墨染
+                </div>
+            </span>
+            <span id="option30_2_2">
+                <div id="setting12" style="height:396px;width:205px;font-family:verdana;background-color: #eeeeee;padding:8px 20px;border-radius:0px;border:4px solid #444444;overflow:auto;">
+                    <p><b>v0.3.0</b><br>-重构代码<br>-增加硬上限突破<br>-增加按钮按下特效<br>-增加一个新的升级<br>-增加层级增益显示<br>-增加新的统计条目<br>-增加旧版存档过渡<br>-更改部分按钮效果<br>-更改挑战目标<br>-更改部分元素布局<br>-更改部分文本<br>-移除后继按钮连按</p>
+                    <p><b>v0.2.1</b><br>-增加版本过渡提示<br>-修复挑战奖励的bug<br>-修复层级显示的bug<br>-修复元素显示的bug</p>
+                    <p><b>v0.2.0</b><br>-增加新的重置层<br>-增加“乘方”选项<br>-增加“普通挑战”<br>-增加“树状”成就风格<br>-增加一些新的成就<br>-更改部分元素外观<br>-更改部分文本<br>-修复重置后价格的bug</p>
+                    <p><b>v0.1.7</b><br>-增加获得成就的动画效果<br>-增加一些新的成就<br>-修复导入存档的bug<br>复重置后显示的bug</p>
+                    <p><b>v0.1.6</b><br>-增加升级的提示信息<br>-更改部分元素外观<br>-更改一些升级的价格<br>-修复硬重置的bug</p>
+                    <p><b>v0.1.5</b><br>-增加一些新的升级<br>-增加旧版存档提醒<br>-更改部分文本<br>-修复统计的bug</p>
+                    <p><b>v0.1.4</b><br>-增加“保存游戏”<br>-更改按钮布局<br>-修复重置后等级的bug</p>
+                    <p><b>v0.1.3</b><br>-增加“统计”选项<br>-更改按钮布局<br>-修复等级显示的bug<br>-修复成就显示的bug</p>
+                    <p><b>v0.1.2</b><br>-增加“黑暗”主题<br>-更改部分元素外观<br>-修复重置后等级的bug<br>-修复元素显示的bug</p>
+                    <p><b>v0.1.1</b><br>-增加“特别感谢”<br>-增加一个成就奖励<br>-更改升级价格<br>-修复数值显示的bug<br>-修复重置后价格的bug</p>
+                    <p><b>v0.1.0</b><br>-增加新的重置层<br>-增加一些新的成就<br>-更改升级按钮布局<br>-更改部分元素外观<br>-更改一些升级的价格<br>-修复价格显示的bug</p>
+                    <p><b>v0.0.6</b><br>-增加一个新的升级<br>-更改升级按钮布局<br>-更改“乘法”效果<br>-更改一些升级的价格</p>
+                    <p><b>v0.0.5</b><br>-增加“成就”选项<br>-增加科学计数法<br>-更改元素布局</p>
+                    <p><b>v0.0.4</b><br>-增加一个新的升级<br>-更改按钮布局<br>-更改存档形式<br>-更改一些升级的价格</p>
+                    <p><b>v0.0.3</b><br>-增加“乘法”选项<br>-更改文本及部分元素外观<br>-修复自动化的bug<br>-修复导入存档的bug</p>
+                    <p><b>v0.0.2</b><br>-增加“自动化”选项<br>-增加“加法增益”显示<br>-增加“更新记录”<br>-更改按钮外观<br>-修复导入存档的bug</p>
+                    <p><b>v0.0.1</b><br>-增加“加法”选项<br>-增加“设置”选项<br>-增加“关于”选项</p>
+                </div>
+            </span>
+        </div>
+    </div>
+    <div id="option40">
+        <div style="text-align:center">
+            <button class="button_option_small" id="option41" onclick="option41()" style="width:67px">加法升级</button>
+            <button class="button_option_small" id="option42" onclick="option42()" style="width:57px">自动化</button><br>
+        </div>
+        <div id="option40_1">
+            <span style="font-size: 18px;">总加法增益：+</span><span style="font-size: 20px;" id="showLevelEffect1">0</span><span style="display: none;" id="showMultiplication1">1</span><span style="display: none;" id="showLevelEffect2">0</span><br>
+            <table border="1" cellpadding="2">
+                <tr id="upgradeLine1">
+                    <td width="105px"><div class="text_upgrade" id="upgradeText1">后继增强器Ⅰ<span class="text_information" id="upgradeText1_1">每级+1加法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel1">0</span></td><td width="115px"><span id="showUpgradePrice1">20</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade1" onclick="upgrade1()">升级</button></td>
+                </tr>
+                <tr id="upgradeLine2">
+                    <td width="105px"><div class="text_upgrade" id="upgradeText2">后继增强器Ⅱ<span class="text_information" id="upgradeText1_2">每级+10加法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel2">0</span></td><td width="115px"><span id="showUpgradePrice2">100</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade2" onclick="upgrade2()">升级</button></td>
+                </tr>
+                <tr id="upgradeLine3">
+                    <td width="105px"><div class="text_upgrade" id="upgradeText3">后继增强器Ⅲ<span class="text_information">每级+100加法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel3">0</span></td><td width="115px"><span id="showUpgradePrice3">1000</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade3" onclick="upgrade3()">升级</button></td>
+                </tr>
+                <tr id="upgradeLine4">
+                    <td width="105px"><div class="text_upgrade" id="upgradeText4">后继增强器Ⅳ<span class="text_information">每级+1000加法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel4">0</span></td><td width="115px"><span id="showUpgradePrice4">10000</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade4" onclick="upgrade4()">升级</button></td>
+                </tr>
+                <tr id="upgradeLine5">
+                    <td width="105px"><div class="text_upgrade" id="upgradeText5">加法强化器<span class="text_information">按比例增加加法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel5">0</span></td><td width="115px"><span id="showUpgradePrice5">100000</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade5" onclick="upgrade5()">升级</button></td>
+                </tr>
+            </table>
+            <span id="unlockText2"><button class="button_unlock" id="unlock2" onclick="unlock2()">解锁乘法</button><span>1e8大数点</span></span>
+        </div>
+        <div id="option40_2">
+            <table border="1" cellpadding="2">
+                <tr>
+                    <td width="140px"><span>自动点击后继按钮</span></td><td width="32px"><span id="showUpgradeLevel10">0</span><span>/s</span></td><td width="105px"><span id="showUpgradePrice10">1000</span><span>大数点</span></td><td width="40px"><button class="button_upgrade" id="upgrade10" onclick="upgrade10()">升级</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="option50">
+        <div style="text-align:center">
+            <button class="button_first_reset" id="reset1" onclick="reset1()">重置以获得<span style="font-size: 17px;" id="showGainMP">0</span>乘法点</button>
+            <button class="button_first_reset" id="reset2" onclick="stopChallenge1()"><span id="resetText2">提前退出挑战</span></button>
+        </div>
+        <div style="text-align:center">
+            <button class="button_option_blue_small" id="option51" onclick="option51()" style="width:67px">乘法升级</button>
+            <button class="button_option_blue_small" id="option52" onclick="option52()" style="width:67px">普通挑战</button><br>
+        </div>
+        <div id="option50_1">
+            <span style="font-size: 18px;">总乘法增益：×</span><span style="font-size: 20px;" id="showLevelEffect3">1</span><span style="display: none;" id="showMultiplication2">1</span><span style="display: none;" id="showMultiplication3">1</span><br>
+            <span>你有<span style="color: #2897D2;font-size: 19px;" id="showME">0</span></span>乘法能量(+<span id="showGainMESpeed">0</span>/s)<button class="button_blue" id="gainLNP2" onclick="useEnergy()">消耗能量将大数点×<span id="showMEEffect">1.00</span></button>冷却：<span id="MECooldown">20</span>s<br>
+            <table border="1" cellpadding="2">
+                <tr>
+                    <td width="105px"><div class="text_upgrade" id="upgradeText6">能量发生器<span class="text_information" style="height: 40px;left: 65%;">每级+1乘法能量<br>获取速度</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel6">0</span></td><td width="115px"><span id="showUpgradePrice6">1</span><span>乘法点</span></td><td width="40px"><button class="button_upgrade_blue" id="upgrade6" onclick="upgrade6()">升级</button></td>
+                </tr>
+                <tr>
+                    <td width="105px"><div class="text_upgrade" id="upgradeText7">自动化增效器<span class="text_information" style="height: 40px;">按比例增加自动点击<br>后继按钮速度</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel7">0</span></td><td width="115px"><span id="showUpgradePrice7">1</span><span>乘法点</span></td><td width="40px"><button class="button_upgrade_blue" id="upgrade7" onclick="upgrade7()">升级</button></td>
+                </tr>
+                <tr>
+                    <td width="105px"><div class="text_upgrade" id="upgradeText8">大数点加成<span class="text_information" style="left: 65%;">每级×2乘法增益</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel8">0</span></td><td width="115px"><span id="showUpgradePrice8">5</span><span>乘法点</span></td><td width="40px"><button class="button_upgrade_blue" id="upgrade8" onclick="upgrade8()">升级</button></td>
+                </tr>
+                <tr>
+                    <td width="105px"><div class="text_upgrade" id="upgradeText9">乘法点加成<span class="text_information" style="left: 65%;">每级×2乘法点获取</span></div></td><td width="64px"><span>等级 </span><span id="showUpgradeLevel9">0</span></td><td width="115px"><span id="showUpgradePrice9">10</span><span>乘法点</span></td><td width="40px"><button class="button_upgrade_blue" id="upgrade9" onclick="upgrade9()">升级</button></td>
+                </tr>
+            </table>
+            <span id="unlockText3"><button class="button_unlock" id="unlock3" onclick="unlock3()">解锁乘方</button><span>1e15大数点</span></span>
+        </div>
+        <div id="option50_2" style="text-align:center">
+            <span style="line-height: 26px" id="resetText3">你当前不在挑战中</span><br>
+            <button class="button_challenge" id="challenge1_1" onclick="challenge1_1()">挑战1<br><br>只有第一个加法升级可购买<br><br>目标：1e6大数点<br>奖励：第一个加法升级效果×2</button>
+            <button class="button_challenge" id="challenge1_2" onclick="challenge1_2()">挑战2<br><br>加法升级价格大幅提升<br><br>目标：1e10大数点<br>奖励：第二个加法升级效果×2</button><br>
+            <button class="button_challenge" id="challenge1_3" onclick="challenge1_3()">挑战3<br><br>大数点获取^0.75<br><br>目标：3e7大数点<br>奖励：三倍大数点获取</button>
+            <button class="button_challenge" id="challenge1_4" onclick="challenge1_4()"><span style="font-size: 13px;line-height: 16px;">挑战4<br><br>禁用手动获取大数点按钮，且自动化速度<br>×0.5，从1000大数点开始<br><br>目标：2e8大数点<br>奖励：自动化速度×2</span></button>
+        </div>
+    </div>
+    <div id="option60">
+        <div style="text-align:center">
+            <button class="button_second_reset" id="reset3" onclick="reset2()">重置以获得<span style="font-size: 17px;" id="showGainPP">0</span>乘方点</button>
+        </div>
+        <div style="text-align:center">
+            <button class="button_option_purple_small" id="option61" style="width:67px">乘方升级</button>
+            <br><br>
+            <div style="font-size: 20px;" id="WIPText">未完待续……</div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var div_gainLNP = document.getElementById("gainLNP");
+    var time_gainLNP = setTimeout("div_gainLNP.style.cssText = 'border-style: outset;';",180);
+    var div_getAchievement = document.getElementById("getAchievement");
+    var div_finishChallenge = document.getElementById("finishChallenge");
+    var div2_1 = document.getElementById("achievement1_1");
+    var div2_2 = document.getElementById("achievement1_2");
+    var div2_3 = document.getElementById("achievement1_3");
+    var div2_4 = document.getElementById("achievement1_4");
+    var div2_5 = document.getElementById("achievement1_5");
+    var div2_6 = document.getElementById("achievement1_6");
+    var div2_7 = document.getElementById("achievement1_7");
+    var div2_8 = document.getElementById("achievement1_8");
+    var div2_9 = document.getElementById("achievement1_9");
+    var div2_10 = document.getElementById("achievement1_10");
+    var div2_11 = document.getElementById("achievement1_11");
+    var div2_12 = document.getElementById("achievement1_12");
+    var div2_13 = document.getElementById("achievement1_13");
+    var div2_14 = document.getElementById("achievement1_14");
+    var div2_15 = document.getElementById("achievement1_15");
+    var div2_16 = document.getElementById("achievement1_16");
+    var div3_1 = document.getElementById("achievement2_1");
+    var div3_2 = document.getElementById("achievement2_2");
+    var div3_3 = document.getElementById("achievement2_3");
+    var div3_4 = document.getElementById("achievement2_4");
+    var div3_5 = document.getElementById("achievement2_5");
+    var div3_6 = document.getElementById("achievement2_6");
+    var div3_7 = document.getElementById("achievement2_7");
+    var div3_8 = document.getElementById("achievement2_8");
+    var div3_9 = document.getElementById("achievement2_9");
+    var div3_10 = document.getElementById("achievement2_10");
+    var div3_11 = document.getElementById("achievement2_11");
+    var div3_12 = document.getElementById("achievement2_12");
+    var div3_13 = document.getElementById("achievement2_13");
+    var div3_14 = document.getElementById("achievement2_14");
+    var div3_15 = document.getElementById("achievement2_15");
+    var div3_16 = document.getElementById("achievement2_16");
+    let cssText1 = "color: #000000;background-color: #5ede5e;border: 3px solid #007400;"
+    let cssText2 = "color: #ffffff;background-color: #409040;border: 3px solid #0cf00c;"
+    let cssText3 = "color: #000000;background-color: #dddddd;border: 3px solid #666666;"
+    let cssText4 = "color: #ffffff;background-color: #818181;border: 3px solid #e8e8e8;"
+    var clickTimes = 0
+    var showClickTimes = document.getElementById("statistics2");
+    var maxLNP1 = 0
+    var maxLNP2 = 0
+    var showMaxLNP = document.getElementById("statistics1");
+    var maxMP1 = 0
+    var maxMP2 = 0
+    var showMaxMP = document.getElementById("statistics3");
+    var maxPP1 = 0
+    var maxPP2 = 0
+    var showMaxPP = document.getElementById("statistics5");
+    var goal1_1 = 0
+    var goal1_2 = 0
+    var goal1_3 = 0
+    var goal1_4 = 0
+    var goal1_5 = 0
+    var goal1_6 = 0
+    var goal1_7 = 0
+    var goal1_8 = 0
+    var goal1_9 = 0
+    var goal1_10 = 0
+    var goal1_11 = 0
+    var goal1_12 = 0
+    var goal1_13 = 0
+    var goal1_14 = 0
+    var goal1_15 = 0
+    var goal1_16 = 0
+    var showResetTimes1 = document.getElementById("statistics4");
+    var showResetTimes2 = document.getElementById("statistics6");
+
+    var tick = 0
+    var autoGainLNP = 0
+
+    var LNP1 = 0
+    var LNP2 = 0
+    var showLNP = document.getElementById("showLNP");//Large Number Points 大数点
+    var isLevelUnlock = 0
+    var levelEffect1_1 = 0
+    var levelEffect1_2 = 0
+    var showLevelEffect1 = document.getElementById("showLevelEffect1");
+    var levelEffect2_1 = 0
+    var levelEffect2_2 = 0
+    var showLevelEffect2 = document.getElementById("showLevelEffect2");
+    var levelEffect3_1 = 1
+    var levelEffect3_2 = 0
+    var showLevelEffect3 = document.getElementById("showLevelEffect3");
+    var upgradeLevel1_1 = 0
+    var upgradeLevel1_2 = 0
+    var showUpgradeLevel1 = document.getElementById("showUpgradeLevel1");
+    var upgradePrice1_1 = 2
+    var upgradePrice1_2 = 1
+    var showUpgradePrice1 = document.getElementById("showUpgradePrice1");
+    var upgradeLevel2_1 = 0
+    var upgradeLevel2_2 = 0
+    var showUpgradeLevel2 = document.getElementById("showUpgradeLevel2");
+    var upgradePrice2_1 = 1
+    var upgradePrice2_2 = 2
+    var showUpgradePrice2 = document.getElementById("showUpgradePrice2");
+    var upgradeLevel3_1 = 0
+    var upgradeLevel3_2 = 0
+    var showUpgradeLevel3 = document.getElementById("showUpgradeLevel3");
+    var upgradePrice3_1 = 1
+    var upgradePrice3_2 = 3
+    var showUpgradePrice3 = document.getElementById("showUpgradePrice3");
+    var upgradeLevel4_1 = 0
+    var upgradeLevel4_2 = 0
+    var showUpgradeLevel4 = document.getElementById("showUpgradeLevel4");
+    var upgradePrice4_1 = 1
+    var upgradePrice4_2 = 4
+    var showUpgradePrice4 = document.getElementById("showUpgradePrice4");
+    var upgradeLevel5_1 = 0
+    var upgradeLevel5_2 = 0
+    var showUpgradeLevel5 = document.getElementById("showUpgradeLevel5");
+    var upgradePrice5_1 = 1
+    var upgradePrice5_2 = 5
+    var showUpgradePrice5 = document.getElementById("showUpgradePrice5");
+    var upgradeLevel6_1 = 0
+    var upgradeLevel6_2 = 0
+    var showUpgradeLevel6 = document.getElementById("showUpgradeLevel6");
+    var upgradePrice6_1 = 1
+    var upgradePrice6_2 = 0
+    var showUpgradePrice6 = document.getElementById("showUpgradePrice6");
+    var upgradeLevel7_1 = 0
+    var upgradeLevel7_2 = 0
+    var showUpgradeLevel7 = document.getElementById("showUpgradeLevel7");
+    var upgradePrice7_1 = 1
+    var upgradePrice7_2 = 0
+    var showUpgradePrice7 = document.getElementById("showUpgradePrice7");
+    var upgradeLevel8_1 = 0
+    var upgradeLevel8_2 = 0
+    var showUpgradeLevel8 = document.getElementById("showUpgradeLevel8");
+    var upgradePrice8_1 = 5
+    var upgradePrice8_2 = 0
+    var showUpgradePrice8 = document.getElementById("showUpgradePrice8");
+    var upgradeLevel9_1 = 0
+    var upgradeLevel9_2 = 0
+    var showUpgradeLevel9 = document.getElementById("showUpgradeLevel9");
+    var upgradePrice9_1 = 1
+    var upgradePrice9_2 = 1
+    var showUpgradePrice9 = document.getElementById("showUpgradePrice9");
+    var upgradeLevel10_1 = 0
+    var upgradeLevel10_2 = 0
+    var showUpgradeLevel10 = document.getElementById("showUpgradeLevel10");
+    var upgradePrice10_1 = 1
+    var upgradePrice10_2 = 3
+    var showUpgradePrice10 = document.getElementById("showUpgradePrice10");
+
+    var multiplication1_1 = 1//大数点获取倍数，来自加法升级
+    var multiplication1_2 = 0
+    var showMultiplication1 = document.getElementById("showMultiplication1");
+    var multiplication2_1 = 1//大数点获取倍数，来自乘法升级
+    var multiplication2_2 = 0
+    var showMultiplication2 = document.getElementById("showMultiplication2");
+    var multiplication3_1 = 1//乘法点获取倍数，来自乘法升级
+    var multiplication3_2 = 0
+    var showMultiplication3 = document.getElementById("showMultiplication3");
+    var multiplication4_1 = 1//大数点获取倍数，来自乘法挑战
+    var multiplication4_2 = 0
+    var multiplication5_1 = 1//大数点获取倍数，来自成就
+    var multiplication5_2 = 0
+    var autoMultiplication1 = 1//自动点击后继按钮倍数，来自乘法升级
+    var autoMultiplication2 = 1//自动点击后继按钮倍数，来自乘法挑战
+    var isChallenge1_1Running = 0
+    var isChallenge1_2Running = 0
+    var isChallenge1_3Running = 0
+    var isChallenge1_4Running = 0
+    var isChallenge1_1Finish = 0
+    var isChallenge1_2Finish = 0
+    var isChallenge1_3Finish = 0
+    var isChallenge1_4Finish = 0
+
+    var alphaResetTimes = 0
+    var MP1 = 0
+    var MP2 = 0
+    var showMP = document.getElementById("showMP");//Multiplication Points 乘法点
+    var gainMP1 = 0
+    var gainMP2 = 0
+    var showGainMP = document.getElementById("showGainMP");
+    var ME1 = 0
+    var ME2 = 0
+    var showME = document.getElementById("showME");//Multiplication Energy 乘法能量
+    var gainMESpeed = 0
+    var showGainMESpeed = document.getElementById("showGainMESpeed");
+    var MEEffect1 = 1
+    var MEEffect2 = 0
+    var showMEEffect = document.getElementById("showMEEffect");
+    var MECooldown = 20
+    var showMECooldown = document.getElementById("MECooldown")
+
+    var betaResetTimes = 0
+    var PP1 = 0
+    var PP2 = 0
+    var showPP = document.getElementById("showPP");//Power Points 乘方点
+    var gainPP1 = 0
+    var gainPP2 = 0
+    var showGainPP = document.getElementById("showGainPP");
+    
+    var theme = 1
+    var achievementTheme = 1
+    var autoSave = 1
+    var autoSave2
+    var saveText = ""
+    var saveText2 = ""
+
+    var warningText1 = "未检测到新版存档，开始载入旧版存档……"
+    var warningText2 = "进入挑战前，会进行一次乘法重置，你需要到达挑战目标才能获得奖励，是否继续？"
+    var warningText3 = "是否确定提前退出挑战？"
+    var warningText4 = "是否确定彻底重置存档？此操作不可逆！"
+
+    option3();
+    document.getElementById("option4").style.display = "none";
+    document.getElementById("option5").style.display = "none";
+    document.getElementById("option6").style.display = "none";
+    document.getElementById("option12").style.display = "none";
+    document.getElementById("option30_2").style.display = "none";
+    document.getElementById("option30_2_2").style.display = "none";
+    document.getElementById("option40_2").style.display = "none";
+    document.getElementById("option50_2").style.display = "none";
+    document.getElementById("unlockText1").style.display = "none";
+    document.getElementById("unlockText2").style.display = "none";
+    document.getElementById("levelText1").style.display = "none";
+    document.getElementById("levelText2").style.display = "none";
+    document.getElementById("upgradeLine1").style.display = "block"
+    document.getElementById("upgradeLine2").style.display = "none";
+    document.getElementById("upgradeLine3").style.display = "none";
+    document.getElementById("upgradeLine4").style.display = "none";
+    document.getElementById("upgradeLine5").style.display = "none";
+    document.getElementById("getAchievement").style.display = "none";
+    document.getElementById("finishChallenge").style.display = "none";
+    document.getElementById("option61").style.display = "none";
+    document.getElementById("option50_1").style.display = "block";
+    document.getElementById("WIPText").style.display = "block";
+
+    if (document.body.clientWidth >= 605) {
+        document.getElementById("challenge1_4").style.cssText += "top: -2px;";
+    }
+
+    if (document.body.clientWidth >= 945) {
+        document.getElementById("screenWidth1").style.display = "inline";
+    }
+    else {
+        document.getElementById("screenWidth1").style.display = "none";
+    }
+
+    function gainLNP() {
+        /*按钮按下特效*/
+        div_gainLNP.style.cssText = "border-style: inset;";
+        clearTimeout(time_gainLNP);
+        time_gainLNP = setTimeout("div_gainLNP.style.cssText = 'border-style: outset;';",180);
+        levelEffect1();
+        levelEffect2();
+        addLNP(levelEffect2_1,levelEffect2_2);
+        clickTimes++
+        showClickTimes.innerHTML = clickTimes
+    }
+
+    function addLNP(a,b) {
+        var arr2 = addAmount(LNP1,LNP2,a,b,showLNP);
+        LNP1 = Number(arr2[0]);
+        LNP2 = Number(arr2[1]);
+    }
+
+    function multiplyLNP(a,b) {
+        var arr2 = multiplyAmount(LNP1,LNP2,a,b,showLNP);
+        LNP1 = Number(arr2[0]);
+        LNP2 = Number(arr2[1]);
+    }
+
+    function powerLNP(a,b) {
+        var arr2 = powerAmount(LNP1,LNP2,a,b,showLNP);
+        LNP1 = Number(arr2[0]);
+        LNP2 = Number(arr2[1]);
+    }
+
+    function changeLNP(a,b) {
+        var arr2 = changeAmount(LNP1,LNP2,a,b,showLNP);
+        LNP1 = Number(arr2[0]);
+        LNP2 = Number(arr2[1]);
+    }
+
+    function addMP(a,b) {
+        var arr2 = addAmount(MP1,MP2,a,b,showMP);
+        MP1 = Number(arr2[0]);
+        MP2 = Number(arr2[1]);
+    }
+
+    function changeMP(a,b) {
+        var arr2 = changeAmount(MP1,MP2,a,b,showMP);
+        MP1 = Number(arr2[0]);
+        MP2 = Number(arr2[1]);
+    }
+
+    function addPP(a,b) {
+        var arr2 = addAmount(PP1,PP2,a,b,showPP);
+        PP1 = Number(arr2[0]);
+        PP2 = Number(arr2[1]);
+    }
+
+    function changePP(a,b) {
+        var arr2 = changeAmount(PP1,PP2,a,b,showPP);
+        PP1 = Number(arr2[0]);
+        PP2 = Number(arr2[1]);
+    }
+
+    function unlock1() {
+        if (checkAmount(LNP1,LNP2,-1,2)) {
+            addLNP(-1,2);
+            document.getElementById("option4").style.display = "inline";
+            isLevelUnlock++
+        }
+    }
+
+    function unlock2() {
+        if (checkAmount(LNP1,LNP2,-1,8)) {
+            addLNP(-1,8);
+            document.getElementById("option5").style.display = "inline";
+            isLevelUnlock++
+        }
+    }
+
+    function unlock3() {
+        if (checkAmount(LNP1,LNP2,-1,15)) {
+            addLNP(-1,15);
+            document.getElementById("option6").style.display = "inline";
+            isLevelUnlock++
+        }
+    }
+
+    function levelEffect1() {
+        levelEffect1_1 = 0
+        levelEffect1_2 = 0
+        var arr2 = addAmount(levelEffect1_1,levelEffect1_2,upgradeLevel1_1 * (isChallenge1_1Finish + 1),upgradeLevel1_2,showLevelEffect1);
+        levelEffect1_1 = Number(arr2[0]);
+        levelEffect1_2 = Number(arr2[1]);
+        var arr2 = addAmount(levelEffect1_1,levelEffect1_2,upgradeLevel2_1 * (isChallenge1_2Finish + 1),upgradeLevel2_2 + 1,showLevelEffect1);
+        levelEffect1_1 = Number(arr2[0]);
+        levelEffect1_2 = Number(arr2[1]);
+        var arr2 = addAmount(levelEffect1_1,levelEffect1_2,upgradeLevel3_1,upgradeLevel3_2 + 2,showLevelEffect1);
+        levelEffect1_1 = Number(arr2[0]);
+        levelEffect1_2 = Number(arr2[1]);
+        var arr2 = addAmount(levelEffect1_1,levelEffect1_2,upgradeLevel4_1,upgradeLevel4_2 + 3,showLevelEffect1);
+        levelEffect1_1 = Number(arr2[0]);
+        levelEffect1_2 = Number(arr2[1]);
+        var arr2 = multiplyAmount(levelEffect1_1,levelEffect1_2,multiplication1_1,multiplication1_2,showLevelEffect1);
+        levelEffect1_1 = Number(arr2[0]);
+        levelEffect1_2 = Number(arr2[1]);
+    }
+
+    function levelEffect2() {
+        levelEffect2_1 = levelEffect1_1
+        levelEffect2_2 = levelEffect1_2
+        var arr2 = addAmount(levelEffect2_1,levelEffect2_2,1,0,showLevelEffect2);
+        levelEffect2_1 = Number(arr2[0]);
+        levelEffect2_2 = Number(arr2[1]);
+        var arr2 = multiplyAmount(levelEffect2_1,levelEffect2_2,multiplication2_1,multiplication2_2,showLevelEffect2);
+        levelEffect2_1 = Number(arr2[0]);
+        levelEffect2_2 = Number(arr2[1]);
+        var arr2 = multiplyAmount(levelEffect2_1,levelEffect2_2,multiplication4_1,multiplication4_2,showLevelEffect2);
+        levelEffect2_1 = Number(arr2[0]);
+        levelEffect2_2 = Number(arr2[1]);
+        var arr2 = multiplyAmount(levelEffect2_1,levelEffect2_2,multiplication5_1,multiplication5_2,showLevelEffect2);
+        levelEffect2_1 = Number(arr2[0]);
+        levelEffect2_2 = Number(arr2[1]);
+        if (isChallenge1_3Running == 1) {
+            var arr2 = powerAmount(levelEffect2_1,levelEffect2_2,7.5,-1,showLevelEffect2);
+            levelEffect2_1 = Number(arr2[0]);
+            levelEffect2_2 = Number(arr2[1]);
+        }
+    }
+
+    function upgrade1() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice1_1,upgradePrice1_2)) {
+            addLNP(-1 * upgradePrice1_1,upgradePrice1_2);
+            var arr2 = addAmount(upgradeLevel1_1,upgradeLevel1_2,1,0,showUpgradeLevel1);
+            upgradeLevel1_1 = Number(arr2[0]);
+            upgradeLevel1_2 = Number(arr2[1]);
+            var arr2 = addAmount(upgradePrice1_1,upgradePrice1_2,upgradeLevel1_1,upgradeLevel1_2,showUpgradePrice1);
+            upgradePrice1_1 = Number(arr2[0]);
+            upgradePrice1_2 = Number(arr2[1]);
+            levelEffect1();
+            if (upgradeLevel1_2 >= 1 && isChallenge1_1Running == 0) {
+                document.getElementById("upgradeLine2").style.display = "block"
+            }
+        }
+    }
+
+    function upgrade2() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice2_1,upgradePrice2_2)) {
+            addLNP(-1 * upgradePrice2_1,upgradePrice2_2);
+            var arr2 = addAmount(upgradeLevel2_1,upgradeLevel2_2,1,0,showUpgradeLevel2);
+            upgradeLevel2_1 = Number(arr2[0]);
+            upgradeLevel2_2 = Number(arr2[1]);
+            var arr2 = addAmount(upgradePrice2_1,upgradePrice2_2,upgradeLevel2_1 * upgradeLevel2_1 * 0.7,upgradeLevel2_2 + 1,showUpgradePrice2);
+            upgradePrice2_1 = Number(arr2[0]);
+            upgradePrice2_2 = Number(arr2[1]);
+            levelEffect1();
+            if (upgradeLevel2_2 >= 1) {
+                document.getElementById("upgradeLine3").style.display = "block"
+            }
+        }
+    }
+
+    function upgrade3() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice3_1,upgradePrice3_2)) {
+            addLNP(-1 * upgradePrice3_1,upgradePrice3_2);
+            var arr2 = addAmount(upgradeLevel3_1,upgradeLevel3_2,1,0,showUpgradeLevel3);
+            upgradeLevel3_1 = Number(arr2[0]);
+            upgradeLevel3_2 = Number(arr2[1]);
+            var arr2 = addAmount(upgradePrice3_1,upgradePrice3_2,upgradeLevel3_1 * upgradeLevel3_1,upgradeLevel3_2 + 2,showUpgradePrice3);
+            upgradePrice3_1 = Number(arr2[0]);
+            upgradePrice3_2 = Number(arr2[1]);
+            levelEffect1();
+            if (upgradeLevel3_2 >= 1) {
+                document.getElementById("upgradeLine4").style.display = "block"
+            }
+        }
+    }
+
+    function upgrade4() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice4_1,upgradePrice4_2)) {
+            addLNP(-1 * upgradePrice4_1,upgradePrice4_2);
+            var arr2 = addAmount(upgradeLevel4_1,upgradeLevel4_2,1,0,showUpgradeLevel4);
+            upgradeLevel4_1 = Number(arr2[0]);
+            upgradeLevel4_2 = Number(arr2[1]);
+            var arr2 = addAmount(upgradePrice4_1,upgradePrice4_2,upgradeLevel4_1 * upgradeLevel4_1 * 1.42,upgradeLevel4_2 + 3,showUpgradePrice4);
+            upgradePrice4_1 = Number(arr2[0]);
+            upgradePrice4_2 = Number(arr2[1]);
+            levelEffect1();
+            if (upgradeLevel4_2 >= 1) {
+                document.getElementById("upgradeLine5").style.display = "block"
+            }
+        }
+    }
+
+    function upgrade5() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice5_1,upgradePrice5_2)) {
+            addLNP(-1 * upgradePrice5_1,upgradePrice5_2);
+            var arr2 = addAmount(upgradeLevel5_1,upgradeLevel5_2,1,0,showUpgradeLevel5);
+            upgradeLevel5_1 = Number(arr2[0]);
+            upgradeLevel5_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(upgradePrice5_1,upgradePrice5_2,2,0,showUpgradePrice5);
+            upgradePrice5_1 = Number(arr2[0]);
+            upgradePrice5_2 = Number(arr2[1]);
+            var arr2 = addAmount(multiplication1_1,multiplication1_2,1,0,showMultiplication1);
+            multiplication1_1 = Number(arr2[0]);
+            multiplication1_2 = Number(arr2[1]);
+            levelEffect1();
+        }
+    }
+
+    function upgrade6() {
+        if (checkAmount(MP1,MP2,-1 * upgradePrice6_1,upgradePrice6_2)) {
+            addMP(-1 * upgradePrice6_1,upgradePrice6_2);
+            var arr2 = addAmount(upgradeLevel6_1,upgradeLevel6_2,1,0,showUpgradeLevel6);
+            upgradeLevel6_1 = Number(arr2[0]);
+            upgradeLevel6_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(upgradePrice6_1,upgradePrice6_2,2,0,showUpgradePrice6);
+            upgradePrice6_1 = Number(arr2[0]);
+            upgradePrice6_2 = Number(arr2[1]);
+            gainMESpeed++
+            showGainMESpeed.innerHTML = gainMESpeed
+        }
+    }
+
+    function upgrade7() {
+        if (checkAmount(MP1,MP2,-1 * upgradePrice7_1,upgradePrice7_2)) {
+            addMP(-1 * upgradePrice7_1,upgradePrice7_2);
+            var arr2 = addAmount(upgradeLevel7_1,upgradeLevel7_2,1,0,showUpgradeLevel7);
+            upgradeLevel7_1 = Number(arr2[0]);
+            upgradeLevel7_2 = Number(arr2[1]);
+            var arr2 = addAmount(upgradePrice7_1,upgradePrice7_2,upgradePrice7_1,upgradePrice7_2,showUpgradePrice7);
+            upgradePrice7_1 = Number(arr2[0]);
+            upgradePrice7_2 = Number(arr2[1]);
+            autoMultiplication1++
+            addAutoGainLNP();
+        }
+    }
+
+    function upgrade8() {
+        if (checkAmount(MP1,MP2,-1 * upgradePrice8_1,upgradePrice8_2)) {
+            addMP(-1 * upgradePrice8_1,upgradePrice8_2);
+            var arr2 = addAmount(upgradeLevel8_1,upgradeLevel8_2,1,0,showUpgradeLevel8);
+            upgradeLevel8_1 = Number(arr2[0]);
+            upgradeLevel8_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(upgradePrice8_1,upgradePrice8_2,2,0,showUpgradePrice8);
+            upgradePrice8_1 = Number(arr2[0]);
+            upgradePrice8_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(multiplication2_1,multiplication2_2,2,0,showMultiplication2);
+            multiplication2_1 = Number(arr2[0]);
+            multiplication2_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(levelEffect3_1,levelEffect3_2,2,0,showLevelEffect3);
+            levelEffect3_1 = Number(arr2[0]);
+            levelEffect3_2 = Number(arr2[1]);
+        }
+    }
+
+    function upgrade9() {
+        if (checkAmount(MP1,MP2,-1 * upgradePrice9_1,upgradePrice9_2)) {
+            addMP(-1 * upgradePrice9_1,upgradePrice9_2);
+            var arr2 = addAmount(upgradeLevel9_1,upgradeLevel9_2,1,0,showUpgradeLevel9);
+            upgradeLevel9_1 = Number(arr2[0]);
+            upgradeLevel9_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(upgradePrice9_1,upgradePrice9_2,1,1,showUpgradePrice9);
+            upgradePrice9_1 = Number(arr2[0]);
+            upgradePrice9_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(multiplication3_1,multiplication3_2,2,0,showMultiplication3);
+            multiplication3_1 = Number(arr2[0]);
+            multiplication3_2 = Number(arr2[1]);
+        }
+    }
+
+    function useEnergy() {
+        if (MECooldown == 0) {
+            var arr2 = changeAmount(ME1,ME2,0,0,showME);
+            ME1 = Number(arr2[0]);
+            ME2 = Number(arr2[1]);
+            multiplyLNP(MEEffect1,MEEffect2);
+            MECooldown = 20
+            showMECooldown.innerHTML = MECooldown
+        }
+    }
+
+    function upgrade10() {
+        if (checkAmount(LNP1,LNP2,-1 * upgradePrice10_1,upgradePrice10_2)) {
+            addLNP(-1 * upgradePrice10_1,upgradePrice10_2);
+            var arr2 = addAmount(upgradeLevel10_1,upgradeLevel10_2,1,0,showUpgradeLevel10);
+            upgradeLevel10_1 = Number(arr2[0]);
+            upgradeLevel10_2 = Number(arr2[1]);
+            var arr2 = multiplyAmount(upgradePrice10_1,upgradePrice10_2,1,1,showUpgradePrice10);
+            upgradePrice10_1 = Number(arr2[0]);
+            upgradePrice10_2 = Number(arr2[1]);
+            tick++
+            addAutoGainLNP();
+        }
+    }
+
+    function addAutoGainLNP() {
+        clearInterval(autoGainLNP);
+        if (tick != 0) {
+            autoGainLNP = setInterval(function() {
+                levelEffect1();
+                levelEffect2();
+                addLNP(levelEffect2_1,levelEffect2_2);
+            },1000 / (tick * autoMultiplication1 * autoMultiplication2 * (1 - 0.5 * isChallenge1_4Running)))
+        }
+        showUpgradeLevel10.innerHTML = (autoMultiplication1 * autoMultiplication2 * (1 - 0.5 * isChallenge1_4Running) * upgradeLevel10_1 * 10 ** (upgradeLevel10_2)).toFixed(0)
+        if (autoMultiplication1 * autoMultiplication2 * (1 - 0.5 * isChallenge1_4Running) * upgradeLevel10_1 * 10 ** (upgradeLevel10_2) == 0.5) {
+            showUpgradeLevel10.innerHTML = 0.5
+        }
+    }
+
+    var gainME = setInterval(function() {
+        var arr2 = addAmount(ME1,ME2,gainMESpeed,0,showME);
+        ME1 = Number(arr2[0]);
+        ME2 = Number(arr2[1]);
+        if (MECooldown >= 1) {
+            MECooldown--
+            showMECooldown.innerHTML = MECooldown
+        }
+    },1000)
+
+    var showCheck = setInterval(function() {
+        if (checkAmount(LNP1,LNP2,-5,1) && isLevelUnlock == 0) {
+            document.getElementById("unlockText1").style.display = "block";
+        }
+        else {
+            document.getElementById("unlockText1").style.display = "none";
+        }
+        if (checkAmount(LNP1,LNP2,-5,7) && isLevelUnlock == 1) {
+            document.getElementById("unlockText2").style.display = "block";
+        }
+        else {
+            document.getElementById("unlockText2").style.display = "none";
+        }
+        if (isLevelUnlock == 2 && isChallenge1_1Finish == 1 && isChallenge1_2Finish == 1 && isChallenge1_3Finish == 1 && isChallenge1_4Finish == 1) {
+            document.getElementById("unlockText3").style.display = "block";
+        }
+        else {
+            document.getElementById("unlockText3").style.display = "none";
+        }
+        if (alphaResetTimes == 0) {
+            document.getElementById("option51").style.display = "none";
+            document.getElementById("option52").style.display = "none";
+            document.getElementById("levelText1").style.display = "none";
+            document.getElementById("option50_1").style.display = "none";
+        }
+        else {
+            document.getElementById("option51").style.display = "inline";
+            document.getElementById("option52").style.display = "inline";
+            document.getElementById("levelText1").style.display = "block";
+        }
+        if (betaResetTimes == 0) {
+            document.getElementById("option61").style.display = "none";
+            document.getElementById("levelText2").style.display = "none";
+            document.getElementById("WIPText").style.display = "none";
+        }
+        else {
+            document.getElementById("option61").style.display = "inline";
+            document.getElementById("levelText2").style.display = "block";
+        }
+        if (LNP2 > 6) {
+            gainMP2 = Math.floor(Math.LOG10E * Math.log(((LNP2 - 6) ** 0.8).toFixed(0)))
+            gainMP1 = 10 ** (Math.LOG10E * Math.log(((LNP2 - 6) ** 0.8).toFixed(0)) - gainMP2)
+            var arr2 = multiplyAmount(gainMP1,gainMP2,multiplication3_1,multiplication3_2,showGainMP);
+            gainMP1 = Number(arr2[0]);
+            gainMP2 = Number(arr2[1]);
+        }
+        else {
+            gainMP2 = 0
+            gainMP1 = 0
+            showNumber(gainMP1,gainMP2,showGainMP);
+        }
+        if (MP2 > 1) {
+            gainPP2 = Math.floor(Math.LOG10E * Math.log(((MP2 - 1) ** 0.9).toFixed(0)))
+            gainPP1 = 10 ** (Math.LOG10E * Math.log(((MP2 - 1) ** 0.9).toFixed(0)) - gainPP2)
+            showNumber(gainPP1,gainPP2,showGainPP);
+        }
+        else {
+            gainPP2 = 0
+            gainPP1 = 0
+            showNumber(gainPP1,gainPP2,showGainPP);
+        }
+        if (isChallenge1_1Running == 1 || isChallenge1_2Running == 1 || isChallenge1_3Running == 1 || isChallenge1_4Running == 1) {
+            document.getElementById("reset1").style.display = "none";
+            document.getElementById("reset2").style.display = "inline";
+        }
+        else {
+            document.getElementById("reset2").style.display = "none";
+            document.getElementById("reset1").style.display = "inline";
+        }
+        if (checkAmount(LNP1,LNP2,-1 * maxLNP1,maxLNP2)) {
+            var arr2 = changeAmount(maxLNP1,maxLNP2,LNP1,LNP2,showMaxLNP);
+            maxLNP1 = Number(arr2[0]);
+            maxLNP2 = Number(arr2[1]);
+        }
+        if (checkAmount(MP1,MP2,-1 * maxMP1,maxMP2)) {
+            var arr2 = changeAmount(maxMP1,maxMP2,MP1,MP2,showMaxMP);
+            maxMP1 = Number(arr2[0]);
+            maxMP2 = Number(arr2[1]);
+        }
+        if (checkAmount(PP1,PP2,-1 * maxPP1,maxPP2)) {
+            var arr2 = changeAmount(maxPP1,maxPP2,PP1,PP2,showMaxPP);
+            maxPP1 = Number(arr2[0]);
+            maxPP2 = Number(arr2[1]);
+        }
+        MEEffect1 = (((ME1 * (10 ** ME2) / 100) + 1) ** 0.25).toFixed(3);
+        showMEEffect.innerHTML = MEEffect1
+        if (LNP1 >= 1||goal1_1 >= 1) {
+            if (goal1_1 == 0){
+                goal1_1++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_1.style.cssText += cssText1;
+                div3_1.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_1.style.cssText += cssText2;
+                div3_1.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_1.style.cssText += cssText3;
+                div3_1.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_1.style.cssText += cssText4;
+                div3_1.style.cssText += cssText4;
+            }
+        }
+        if (isLevelUnlock >= 1||goal1_2 >= 1) {
+            if (goal1_2 == 0){
+                goal1_2++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_2.style.cssText += cssText1;
+                div3_2.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_2.style.cssText += cssText2;
+                div3_2.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_2.style.cssText += cssText3;
+                div3_2.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_2.style.cssText += cssText4;
+                div3_2.style.cssText += cssText4;
+            }
+        }
+        if (tick >= 1||goal1_3 >= 1) {
+            if (goal1_3 == 0){
+                goal1_3++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_3.style.cssText += cssText1;
+                div3_3.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_3.style.cssText += cssText2;
+                div3_3.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_3.style.cssText += cssText3;
+                div3_3.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_3.style.cssText += cssText4;
+                div3_3.style.cssText += cssText4;
+            }
+        }
+        if (LNP2 >= 6||goal1_4 >= 1) {
+            if (goal1_4 == 0){
+                goal1_4++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_4.style.cssText += cssText1;
+                div3_4.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_4.style.cssText += cssText2;
+                div3_4.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_4.style.cssText += cssText3;
+                div3_4.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_4.style.cssText += cssText4;
+                div3_4.style.cssText += cssText4;
+            }
+        }
+        if (clickTimes >= 1e+3||goal1_5 >= 1) {
+            if (goal1_5 == 0){
+                goal1_5++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_5.style.cssText += cssText1;
+                div3_5.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_5.style.cssText += cssText2;
+                div3_5.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_5.style.cssText += cssText3;
+                div3_5.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_5.style.cssText += cssText4;
+                div3_5.style.cssText += cssText4;
+            }
+        }
+        if (isLevelUnlock >= 2||goal1_6 >= 1) {
+            if (goal1_6 == 0){
+                goal1_6++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_6.style.cssText += cssText1;
+                div3_6.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_6.style.cssText += cssText2;
+                div3_6.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_6.style.cssText += cssText3;
+                div3_6.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_6.style.cssText += cssText4;
+                div3_6.style.cssText += cssText4;
+            }
+        }
+        if (alphaResetTimes >= 1||goal1_7 >= 1) {
+            if (goal1_7 == 0){
+                goal1_7++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_7.style.cssText += cssText1;
+                div3_7.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_7.style.cssText += cssText2;
+                div3_7.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_7.style.cssText += cssText3;
+                div3_7.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_7.style.cssText += cssText4;
+                div3_7.style.cssText += cssText4;
+            }
+        }
+        if (ME2 >= 3||goal1_8 >= 1) {
+            if (goal1_8 == 0){
+                goal1_8++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_8.style.cssText += cssText1;
+                div3_8.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_8.style.cssText += cssText2;
+                div3_8.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_8.style.cssText += cssText3;
+                div3_8.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_8.style.cssText += cssText4;
+                div3_8.style.cssText += cssText4;
+            }
+        }
+        if (tick * autoMultiplication1 * autoMultiplication2 * (1 - 0.5 * isChallenge1_4Running) >= 20||goal1_9 >= 1) {
+            if (goal1_9 == 0){
+                goal1_9++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_9.style.cssText += cssText1;
+                div3_9.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_9.style.cssText += cssText2;
+                div3_9.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_9.style.cssText += cssText3;
+                div3_9.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_9.style.cssText += cssText4;
+                div3_9.style.cssText += cssText4;
+            }
+        }
+        if (LNP2 >= 12||goal1_10 >= 1) {
+            if (goal1_10 == 0){
+                goal1_10++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_10.style.cssText += cssText1;
+                div3_10.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_10.style.cssText += cssText2;
+                div3_10.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_10.style.cssText += cssText3;
+                div3_10.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_10.style.cssText += cssText4;
+                div3_10.style.cssText += cssText4;
+            }
+        }
+        if (ME2 >= 4||goal1_11 >= 1) {
+            if (goal1_11 == 0){
+                goal1_11++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_11.style.cssText += cssText1;
+                div3_11.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_11.style.cssText += cssText2;
+                div3_11.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_11.style.cssText += cssText3;
+                div3_11.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_11.style.cssText += cssText4;
+                div3_11.style.cssText += cssText4;
+            }
+        }
+        if (clickTimes >= 5e+3||goal1_12 >= 1) {
+            if (goal1_12 == 0){
+                goal1_12++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_12.style.cssText += cssText1;
+                div3_12.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_12.style.cssText += cssText2;
+                div3_12.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_12.style.cssText += cssText3;
+                div3_12.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_12.style.cssText += cssText4;
+                div3_12.style.cssText += cssText4;
+            }
+        }
+        if (isChallenge1_1Finish >= 1||goal1_13 >= 1) {
+            if (goal1_13 == 0){
+                goal1_13++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_13.style.cssText += cssText1;
+                div3_13.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_13.style.cssText += cssText2;
+                div3_13.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_13.style.cssText += cssText3;
+                div3_13.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_13.style.cssText += cssText4;
+                div3_13.style.cssText += cssText4;
+            }
+        }
+        if (isChallenge1_1Finish >= 1 && isChallenge1_2Finish >= 1 && isChallenge1_3Finish >= 1 && isChallenge1_4Finish >= 1||goal1_14 >= 1) {
+            if (goal1_14 == 0){
+                goal1_14++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_14.style.cssText += cssText1;
+                div3_14.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_14.style.cssText += cssText2;
+                div3_14.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_14.style.cssText += cssText3;
+                div3_14.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_14.style.cssText += cssText4;
+                div3_14.style.cssText += cssText4;
+            }
+        }
+        if (isLevelUnlock >= 3||goal1_15 >= 1) {
+            if (goal1_15 == 0){
+                goal1_15++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_15.style.cssText += cssText1;
+                div3_15.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_15.style.cssText += cssText2;
+                div3_15.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_15.style.cssText += cssText3;
+                div3_15.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_15.style.cssText += cssText4;
+                div3_15.style.cssText += cssText4;
+            }
+        }
+        if (betaResetTimes >= 1||goal1_16 >= 1) {
+            if (goal1_16 == 0){
+                goal1_16++
+                getAchievement();
+            }
+            if (theme == 1){
+                div2_16.style.cssText += cssText1;
+                div3_16.style.cssText += cssText1;
+            }
+            else if (theme == 2){
+                div2_16.style.cssText += cssText2;
+                div3_16.style.cssText += cssText2;
+            }
+        }else{
+            if (theme == 1){
+                div2_16.style.cssText += cssText3;
+                div3_16.style.cssText += cssText3;
+            }
+            else if (theme == 2){
+                div2_16.style.cssText += cssText4;
+                div3_16.style.cssText += cssText4;
+            }
+        }
+        if (theme == 1) {
+            if (isChallenge1_1Finish == 1) {
+                document.getElementById("challenge1_1").setAttribute("class","button_challenge_finish");
+            }
+            else {
+                document.getElementById("challenge1_1").setAttribute("class","button_challenge");
+            }
+            if (isChallenge1_2Finish == 1) {
+                document.getElementById("challenge1_2").setAttribute("class","button_challenge_finish");
+            }
+            else {
+                document.getElementById("challenge1_2").setAttribute("class","button_challenge");
+            }
+            if (isChallenge1_3Finish == 1) {
+                document.getElementById("challenge1_3").setAttribute("class","button_challenge_finish");
+            }
+            else {
+                document.getElementById("challenge1_3").setAttribute("class","button_challenge");
+            }
+            if (isChallenge1_4Finish == 1) {
+                document.getElementById("challenge1_4").setAttribute("class","button_challenge_finish");
+            }
+            else {
+                document.getElementById("challenge1_4").setAttribute("class","button_challenge");
+            }
+        }
+        else if (theme == 2) {
+            if (isChallenge1_1Finish == 1) {
+                document.getElementById("challenge1_1").setAttribute("class","button_challenge_finish_black");
+            }
+            else {
+                document.getElementById("challenge1_1").setAttribute("class","button_challenge_black");
+            }
+            if (isChallenge1_2Finish == 1) {
+                document.getElementById("challenge1_2").setAttribute("class","button_challenge_finish_black");
+            }
+            else {
+                document.getElementById("challenge1_2").setAttribute("class","button_challenge_black");
+            }
+            if (isChallenge1_3Finish == 1) {
+                document.getElementById("challenge1_3").setAttribute("class","button_challenge_finish_black");
+            }
+            else {
+                document.getElementById("challenge1_3").setAttribute("class","button_challenge_black");
+            }
+            if (isChallenge1_4Finish == 1) {
+                document.getElementById("challenge1_4").setAttribute("class","button_challenge_finish_black");
+            }
+            else {
+                document.getElementById("challenge1_4").setAttribute("class","button_challenge_black");
+            }
+        }
+    },0)
+
+    /*原数量 = v1*10^v2 变化量 = v3*10^v4 显示 = y*/
+    function addAmount(v1,v2,v3,v4,y) {
+        if (!checkAmount(v1,v2,v3,v4)) {
+            showNumber(v1,v2,y);
+            var arr1 = [v1.toFixed(10),v2.toFixed(10)]
+            return arr1;
+        }
+        if (v2 == v4) {
+            v1 += v3
+        }
+        else if (v2 > v4) {
+            if (v2 - v4 < 100) {
+                while (v2 > v4) {
+                    v4++
+                    v3 /= 10
+                }
+            v1 += v3
+            }
+        }
+        else if (v2 < v4) {
+            if (v4 - v2 < 100) {
+                while (v2 < v4) {
+                    v2++
+                    v1 /= 10
+                }
+            v1 += v3
+            }
+            else {
+                v1 = v3
+                v2 = v4
+            }
+        }
+        var arr1 = improveNumber(v1,v2);
+        v1 = Number(arr1[0]);
+        v2 = Number(arr1[1]);
+        showNumber(v1,v2,y);
+        var arr1 = [v1.toFixed(10),v2.toFixed(10)]
+        return arr1;
+    }
+
+    function multiplyAmount(v1,v2,v3,v4,y) {
+        v1 *= v3
+        v2 += v4
+        var arr1 = improveNumber(v1,v2);
+        v1 = Number(arr1[0]);
+        v2 = Number(arr1[1]);
+        showNumber(v1,v2,y);
+        var arr1 = [v1.toFixed(10),v2.toFixed(10)]
+        return arr1;
+    }
+
+    function powerAmount(v1,v2,v3,v4,y) {
+        v1 **= v3 * 10 ** v4
+        v2 *= v3 * 10 ** v4
+        if (!Number.isInteger(v2)) {
+            v1 *= 10 ** (v2 - Math.floor(v2))
+            v2 = Math.floor(v2)
+        }
+        var arr1 = improveNumber(v1,v2);
+        v1 = Number(arr1[0]);
+        v2 = Number(arr1[1]);
+        showNumber(v1,v2,y);
+        var arr1 = [v1.toFixed(10),v2.toFixed(10)]
+        return arr1;
+    }
+
+    function changeAmount(v1,v2,v3,v4,y) {
+        v1 = v3
+        v2 = v4
+        var arr1 = improveNumber(v1,v2);
+        v1 = Number(arr1[0]);
+        v2 = Number(arr1[1]);
+        showNumber(v1,v2,y);
+        var arr1 = [v1.toFixed(10),v2.toFixed(10)]
+        return arr1;
+    }
+
+    function checkAmount(v1,v2,v3,v4) {
+        if (v3 < 0 && (v2 < v4 || (v2 == v4 && v1 < -1*v3))) {
+            //confirm("数字不足！");
+            var isAmountEnough = false
+        }
+        else {
+            var isAmountEnough = true
+        }
+        return isAmountEnough;
+    }
+
+    function showNumber(v1,v2,x) {
+        var arr1 = improveNumber(v1,v2);
+        v1 = Number(arr1[0]);
+        v2 = Number(arr1[1]);
+        if (v2 < 6) {
+            var v0 = v1 * (10 ** v2)
+            x.innerHTML = v0.toFixed(0)
+        }
+        else if (v2 >= 6 && v2 < 1e+6) {
+            if (v1.toFixed(2) != 10) {
+                x.innerHTML = v1.toFixed(2) + "e" + v2
+            }
+            else {
+                x.innerHTML = "1.00" + "e" + (Number(v2) + 1)
+            }
+        }
+        else if (v2 >= 1e+6) {
+            var v5 = Math.LOG10E * Math.log(v2);
+            v5 = Math.floor(v5.toFixed(2));
+            var v6 = v2 / (10 ** v5)
+            if (v6.toFixed(2) != 10) {
+                v6 = v6.toFixed(2);
+                x.innerHTML = "e" + v6 + "e" + v5
+            }
+            else {
+                x.innerHTML = "e" + "1.00" + "e" + (Number(v5) + 1)
+            }
+        }
+    }
+
+    function improveNumber(v1,v2) {
+        if (v1 >= 10) {
+            while (v1 >= 10) {
+            v2++
+            v1 /= 10
+            }
+        }
+        else if (v1 == 0) {
+            v2 = 0
+        }
+        else if (v1 < 1) {
+            while (v1 < 1) {
+            v2 -= 1
+            v1 *= 10
+            }
+        }
+        var arr1 = [v1,v2]
+        return arr1;
+    }
+
+    function close1() {
+        document.getElementById("option10").style.display = "none";
+        document.getElementById("option20").style.display = "none";
+        document.getElementById("option30").style.display = "none";
+        document.getElementById("option40").style.display = "none";
+        document.getElementById("option50").style.display = "none";
+        document.getElementById("option60").style.display = "none";
+    }
+
+    function option1() {
+        close1();
+        document.getElementById("option10").style.display = "block";
+    }
+
+    function option2() {
+        close1();
+        document.getElementById("option20").style.display = "block";
+    }
+
+    function option3() {
+        close1();
+        document.getElementById("option30").style.display = "block";
+    }
+
+    function option4() {
+        close1();
+        document.getElementById("option40").style.display = "block";
+    }
+
+    function option5() {
+        close1();
+        document.getElementById("option50").style.display = "block";
+    }
+
+    function option6() {
+        close1();
+        document.getElementById("option60").style.display = "block";
+    }
+
+    function option31() {
+        document.getElementById("option30_1").style.display = "block";
+        document.getElementById("option30_2").style.display = "none";
+    }
+
+    function option32() {
+        document.getElementById("option30_2").style.display = "block";
+        document.getElementById("option30_1").style.display = "none";
+    }
+
+    function option32_1() {
+        document.getElementById("option30_2_1").style.display = "block";
+        document.getElementById("option30_2_2").style.display = "none";
+    }
+
+    function option32_2() {
+        document.getElementById("option30_2_2").style.display = "block";
+        document.getElementById("option30_2_1").style.display = "none";
+    }
+
+    function option41() {
+        document.getElementById("option40_1").style.display = "block";
+        document.getElementById("option40_2").style.display = "none";
+    }
+
+    function option42() {
+        document.getElementById("option40_2").style.display = "block";
+        document.getElementById("option40_1").style.display = "none";
+    }
+
+    function option51() {
+        document.getElementById("option50_1").style.display = "block";
+        document.getElementById("option50_2").style.display = "none";
+    }
+
+    function option52() {
+        document.getElementById("option50_2").style.display = "block";
+        document.getElementById("option50_1").style.display = "none";
+    }
+
+    function changeTheme() {
+        if (theme == 1) {
+            theme = 2
+            document.getElementById("themeText").innerHTML = "黑暗";
+            document.getElementById("body1").style.cssText += "background-color: #222429;color: #ffffff;";
+            document.getElementById("optionText1").style.cssText = "color: #f85200;";
+            document.getElementById("optionText2").style.cssText = "color: #f85200;border-bottom: 1.5px dotted #f85200";
+            document.getElementById("upgradeText1").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText2").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText3").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText4").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText5").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText6").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText7").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText8").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("upgradeText9").style.cssText = "color: #ffffff;border-bottom: 1px dotted white";
+            document.getElementById("gainLNP").setAttribute("class","button_gainLNP_black");
+            document.getElementById("unlock1").setAttribute("class","button_unlock_black");
+            document.getElementById("unlock2").setAttribute("class","button_unlock_black");
+            document.getElementById("unlock3").setAttribute("class","button_unlock_black");
+            document.getElementById("option1").setAttribute("class","button_option_black");
+            document.getElementById("option2").setAttribute("class","button_option_black");
+            document.getElementById("option3").setAttribute("class","button_option_black");
+            document.getElementById("option4").setAttribute("class","button_option_black");
+            document.getElementById("option5").setAttribute("class","button_option_blue_black");
+            document.getElementById("option6").setAttribute("class","button_option_purple_black");
+            document.getElementById("option31").setAttribute("class","button_option_small_black");
+            document.getElementById("option32").setAttribute("class","button_option_small_black");
+            document.getElementById("option41").setAttribute("class","button_option_small_black");
+            document.getElementById("option42").setAttribute("class","button_option_small_black");
+            document.getElementById("option51").setAttribute("class","button_option_blue_small_black");
+            document.getElementById("option52").setAttribute("class","button_option_blue_small_black");
+            document.getElementById("option61").setAttribute("class","button_option_purple_small_black");
+            document.getElementById("setting1").setAttribute("class","button_unlock_black");
+            document.getElementById("setting2").setAttribute("class","button_unlock_black");
+            document.getElementById("setting3").setAttribute("class","button_unlock_black");
+            document.getElementById("setting4").setAttribute("class","button_unlock_black");
+            document.getElementById("setting5").setAttribute("class","button_unlock_black");
+            document.getElementById("setting6").setAttribute("class","button_unlock_black");
+            document.getElementById("setting7").setAttribute("class","button_hard_reset_black");
+            document.getElementById("setting8").setAttribute("class","text_input_black");
+            document.getElementById("setting9").setAttribute("class","button_unlock_black");
+            document.getElementById("setting10").setAttribute("class","button_unlock_black");
+            document.getElementById("setting11").style.cssText += "color: #ffffff;background-color: #636363;padding:8px 20px;border:5px solid #ffffff;";
+            document.getElementById("setting12").style.cssText += "color: #ffffff;background-color: #636363;padding:8px 20px;border:5px solid #ffffff;";
+            document.getElementById("upgrade1").setAttribute("class","button_upgrade_black");
+            document.getElementById("upgrade2").setAttribute("class","button_upgrade_black");
+            document.getElementById("upgrade3").setAttribute("class","button_upgrade_black");
+            document.getElementById("upgrade4").setAttribute("class","button_upgrade_black");
+            document.getElementById("upgrade5").setAttribute("class","button_upgrade_black");
+            document.getElementById("upgrade6").setAttribute("class","button_upgrade_blue_black");
+            document.getElementById("upgrade7").setAttribute("class","button_upgrade_blue_black");
+            document.getElementById("upgrade8").setAttribute("class","button_upgrade_blue_black");
+            document.getElementById("upgrade9").setAttribute("class","button_upgrade_blue_black");
+            document.getElementById("upgrade10").setAttribute("class","button_upgrade_black");
+            document.getElementById("gainLNP2").setAttribute("class","button_blue_black");
+            document.getElementById("reset1").setAttribute("class","button_first_reset_black");
+            document.getElementById("reset2").setAttribute("class","button_first_reset_black");
+            document.getElementById("reset3").setAttribute("class","button_second_reset_black");
+            document.getElementById("getAchievement").setAttribute("class","div_getAchievement_black");
+            document.getElementById("finishChallenge").setAttribute("class","div_getAchievement_black");
+        }
+        else if (theme == 2) {
+            theme = 1
+            document.getElementById("themeText").innerHTML = "明亮";
+            document.getElementById("body1").style.cssText += "background-color: #ffffff;color: #000000;";
+            document.getElementById("optionText1").style.cssText = "color: #ee6622;";
+            document.getElementById("optionText2").style.cssText = "color: #ee6622;border-bottom: 1.5px dotted #ee6622";
+            document.getElementById("upgradeText1").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText2").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText3").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText4").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText5").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText6").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText7").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText8").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("upgradeText9").style.cssText = "color: #000000;border-bottom: 1px dotted black";
+            document.getElementById("gainLNP").setAttribute("class","button_gainLNP");
+            document.getElementById("unlock1").setAttribute("class","button_unlock");
+            document.getElementById("unlock2").setAttribute("class","button_unlock");
+            document.getElementById("unlock3").setAttribute("class","button_unlock");
+            document.getElementById("option1").setAttribute("class","button_option");
+            document.getElementById("option2").setAttribute("class","button_option");
+            document.getElementById("option3").setAttribute("class","button_option");
+            document.getElementById("option4").setAttribute("class","button_option");
+            document.getElementById("option5").setAttribute("class","button_option_blue");
+            document.getElementById("option6").setAttribute("class","button_option_purple");
+            document.getElementById("option31").setAttribute("class","button_option_small");
+            document.getElementById("option32").setAttribute("class","button_option_small");
+            document.getElementById("option41").setAttribute("class","button_option_small");
+            document.getElementById("option42").setAttribute("class","button_option_small");
+            document.getElementById("option51").setAttribute("class","button_option_blue_small");
+            document.getElementById("option52").setAttribute("class","button_option_blue_small");
+            document.getElementById("option61").setAttribute("class","button_option_purple_small");
+            document.getElementById("setting1").setAttribute("class","button_unlock");
+            document.getElementById("setting2").setAttribute("class","button_unlock");
+            document.getElementById("setting3").setAttribute("class","button_unlock");
+            document.getElementById("setting4").setAttribute("class","button_unlock");
+            document.getElementById("setting5").setAttribute("class","button_unlock");
+            document.getElementById("setting6").setAttribute("class","button_unlock");
+            document.getElementById("setting7").setAttribute("class","button_hard_reset");
+            document.getElementById("setting8").setAttribute("class","text_input");
+            document.getElementById("setting9").setAttribute("class","button_unlock");
+            document.getElementById("setting10").setAttribute("class","button_unlock");
+            document.getElementById("setting11").style.cssText += "color: #000000;background-color: #eeeeee;padding:8px 20px;border:5px solid #444444;";
+            document.getElementById("setting12").style.cssText += "color: #000000;background-color: #eeeeee;padding:8px 20px;border:5px solid #444444;";
+            document.getElementById("upgrade1").setAttribute("class","button_upgrade");
+            document.getElementById("upgrade2").setAttribute("class","button_upgrade");
+            document.getElementById("upgrade3").setAttribute("class","button_upgrade");
+            document.getElementById("upgrade4").setAttribute("class","button_upgrade");
+            document.getElementById("upgrade5").setAttribute("class","button_upgrade");
+            document.getElementById("upgrade6").setAttribute("class","button_upgrade_blue");
+            document.getElementById("upgrade7").setAttribute("class","button_upgrade_blue");
+            document.getElementById("upgrade8").setAttribute("class","button_upgrade_blue");
+            document.getElementById("upgrade9").setAttribute("class","button_upgrade_blue");
+            document.getElementById("upgrade10").setAttribute("class","button_upgrade");
+            document.getElementById("gainLNP2").setAttribute("class","button_blue");
+            document.getElementById("reset1").setAttribute("class","button_first_reset");
+            document.getElementById("reset2").setAttribute("class","button_first_reset");
+            document.getElementById("reset3").setAttribute("class","button_second_reset");
+            document.getElementById("getAchievement").setAttribute("class","div_getAchievement");
+            document.getElementById("finishChallenge").setAttribute("class","div_getAchievement");
+        }
+    }
+
+    function changeAchievementTheme() {
+        if (achievementTheme == 1) {
+            achievementTheme = 2
+            document.getElementById("achievementThemeText").innerHTML = "树状";
+            document.getElementById("option11").style.display = "none";
+            document.getElementById("option12").style.display = "block";
+        }
+        else if(achievementTheme == 2) {
+            achievementTheme = 1
+            document.getElementById("achievementThemeText").innerHTML = "并列";
+            document.getElementById("option11").style.display = "block";
+            document.getElementById("option12").style.display = "none";
+        }
+    }
+
+    function changeAutoSave() {
+        if (autoSave == 1) {
+            autoSave = 0
+            document.getElementById("autoSaveText").innerHTML = "关";
+        }
+        else if (autoSave == 0) {
+            autoSave = 1
+            document.getElementById("autoSaveText").innerHTML = "开";
+        }
+        clearInterval(autoSave2)
+        autoSave2 = setInterval(function() {
+        if (autoSave == 1) {
+            saveSave();
+        }
+        },2000)
+    }
+
+
+    function challenge1_1() {
+        if (isChallenge1_1Running == 0 && isChallenge1_2Running == 0 && isChallenge1_3Running == 0 && isChallenge1_4Running == 0) {
+            var warning2 = confirm(warningText2)
+            if (warning2) {
+                if (gainMP1 >= 1) {
+                    alphaResetTimes++
+                    showResetTimes1.innerHTML = alphaResetTimes
+                }
+                alphaReset();
+                addMP(gainMP1,gainMP2);
+                isChallenge1_1Running = 1
+                document.getElementById("resetText3").innerHTML = "你当前在挑战1中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                document.getElementById("upgradeLine2").style.display = "none";
+                document.getElementById("upgradeLine3").style.display = "none";
+                document.getElementById("upgradeLine4").style.display = "none";
+                document.getElementById("upgradeLine5").style.display = "none";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-1,6)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+        }
+    }
+
+    function challenge1_2() {
+        if (isChallenge1_1Running == 0 && isChallenge1_2Running == 0 && isChallenge1_3Running == 0 && isChallenge1_4Running == 0) {
+            var warning2 = confirm(warningText2)
+            if (warning2) {
+                if (gainMP1 >= 1) {
+                    alphaResetTimes++
+                    showResetTimes1.innerHTML = alphaResetTimes
+                }
+                alphaReset();
+                addMP(gainMP1,gainMP2);
+                isChallenge1_2Running = 1
+                document.getElementById("resetText3").innerHTML = "你当前在挑战2中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                var arr2 = changeAmount(upgradePrice1_1,upgradePrice1_2,4,2,showUpgradePrice1);
+                upgradePrice1_1 = Number(arr2[0]);
+                upgradePrice1_2 = Number(arr2[1]);
+                var arr2 = changeAmount(upgradePrice2_1,upgradePrice2_2,2,3,showUpgradePrice2);
+                upgradePrice2_1 = Number(arr2[0]);
+                upgradePrice2_2 = Number(arr2[1]);
+                var arr2 = changeAmount(upgradePrice3_1,upgradePrice3_2,2,4,showUpgradePrice3);
+                upgradePrice3_1 = Number(arr2[0]);
+                upgradePrice3_2 = Number(arr2[1]);
+                var arr2 = changeAmount(upgradePrice4_1,upgradePrice4_2,2,5,showUpgradePrice4);
+                upgradePrice4_1 = Number(arr2[0]);
+                upgradePrice4_2 = Number(arr2[1]);
+                var arr2 = changeAmount(upgradePrice5_1,upgradePrice5_2,2,6,showUpgradePrice5);
+                upgradePrice5_1 = Number(arr2[0]);
+                upgradePrice5_2 = Number(arr2[1]);
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-1,10)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+        }
+    }
+
+    function challenge1_3() {
+        if (isChallenge1_1Running == 0 && isChallenge1_2Running == 0 && isChallenge1_3Running == 0 && isChallenge1_4Running == 0) {
+            var warning2 = confirm(warningText2)
+            if (warning2) {
+                if (gainMP1 >= 1) {
+                    alphaResetTimes++
+                    showResetTimes1.innerHTML = alphaResetTimes
+                }
+                alphaReset();
+                addMP(gainMP1,gainMP2);
+                isChallenge1_3Running = 1
+                document.getElementById("resetText3").innerHTML = "你当前在挑战3中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-3,7)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+        }
+    }
+
+    function challenge1_4() {
+        if (isChallenge1_1Running == 0 && isChallenge1_2Running == 0 && isChallenge1_3Running == 0 && isChallenge1_4Running == 0) {
+            var warning2 = confirm(warningText2)
+            if (warning2) {
+                if (gainMP1 >= 1) {
+                    alphaResetTimes++
+                    showResetTimes1.innerHTML = alphaResetTimes
+                }
+                alphaReset();
+                addMP(gainMP1,gainMP2);
+                isChallenge1_4Running = 1
+                document.getElementById("resetText3").innerHTML = "你当前在挑战4中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                changeLNP(1,3);
+                document.getElementById("gainLNP").style.display = "none";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-2,8)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+        }
+    }
+
+    function stopChallenge1() {
+        if (isChallenge1_1Running == 1) {
+            if (!checkAmount(LNP1,LNP2,-1,6)) {
+                var warning3 = confirm(warningText3)
+                if (warning3){
+                    alphaReset();
+                    isChallenge1_1Running = 0
+                    stopChallenge1_1();
+                }
+            }
+            else {
+                alphaReset();
+                isChallenge1_1Running = 0
+                isChallenge1_1Finish = 1
+                stopChallenge1_1();
+                if (theme == 1){
+                    document.getElementById("challenge1_1").setAttribute("class","button_challenge_finish");
+                }
+                else if (theme == 2){
+                    document.getElementById("challenge1_1").setAttribute("class","button_challenge_finish_black");
+                }
+                document.getElementById("upgradeText1_1").innerHTML = "每级+2加法增益";
+            }
+        }
+        if (isChallenge1_2Running == 1) {
+            if (!checkAmount(LNP1,LNP2,-1,10)) {
+                var warning3 = confirm(warningText3)
+                if (warning3){
+                    alphaReset();
+                    isChallenge1_2Running = 0
+                    stopChallenge1_1();
+                }
+            }
+            else {
+                alphaReset();
+                isChallenge1_2Running = 0
+                isChallenge1_2Finish = 1
+                stopChallenge1_1();
+                if (theme == 1){
+                    document.getElementById("challenge1_2").setAttribute("class","button_challenge_finish");
+                }
+                else if (theme == 2){
+                    document.getElementById("challenge1_2").setAttribute("class","button_challenge_finish_black");
+                }
+                document.getElementById("upgradeText1_2").innerHTML = "每级+20加法增益";
+            }
+        }
+        if (isChallenge1_3Running == 1) {
+            if (!checkAmount(LNP1,LNP2,-3,7)) {
+                var warning3 = confirm(warningText3)
+                if (warning3){
+                    alphaReset();
+                    isChallenge1_3Running = 0
+                    stopChallenge1_1();
+                }
+            }
+            else {
+                alphaReset();
+                isChallenge1_3Running = 0
+                isChallenge1_3Finish = 1
+                stopChallenge1_1();
+                if (theme == 1){
+                    document.getElementById("challenge1_3").setAttribute("class","button_challenge_finish");
+                }
+                else if (theme == 2){
+                    document.getElementById("challenge1_3").setAttribute("class","button_challenge_finish_black");
+                }
+                multiplication4_1 = 3
+                var arr2 = multiplyAmount(levelEffect3_1,levelEffect3_2,3,0,showLevelEffect3);
+                levelEffect3_1 = Number(arr2[0]);
+                levelEffect3_2 = Number(arr2[1]);
+            }
+        }
+        if (isChallenge1_4Running == 1) {
+            if (!checkAmount(LNP1,LNP2,-2,8)) {
+                var warning3 = confirm(warningText3)
+                if (warning3){
+                    alphaReset();
+                    isChallenge1_4Running = 0
+                    stopChallenge1_1();
+                }
+            }
+            else {
+                alphaReset();
+                isChallenge1_4Running = 0
+                isChallenge1_4Finish = 1
+                stopChallenge1_1();
+                if (theme == 1){
+                    document.getElementById("challenge1_4").setAttribute("class","button_challenge_finish");
+                }
+                else if (theme == 2){
+                    document.getElementById("challenge1_4").setAttribute("class","button_challenge_finish_black");
+                }
+                autoMultiplication2 = 2
+                addAutoGainLNP();
+            }
+        }
+    }
+
+    function stopChallenge1_1(){
+        document.getElementById("reset1").style.display = "inline";
+        document.getElementById("reset2").style.display = "none";
+        document.getElementById("resetText3").innerHTML = "你当前不在挑战中";
+        document.getElementById("resetText2").innerHTML = "提前退出挑战";
+        clearInterval(challengeCheck);
+        document.getElementById("upgradeLine2").style.display = "block";
+        document.getElementById("upgradeLine3").style.display = "block";
+        document.getElementById("upgradeLine4").style.display = "block";
+        document.getElementById("upgradeLine5").style.display = "block";
+        document.getElementById("gainLNP").style.display = "block";
+    }
+
+    function getAchievement() {
+        div_getAchievement.style.cssText = "opacity: 0.1";
+        document.getElementById("getAchievement").style.display = "block";
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.2';",50)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.3';",100)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.4';",150)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.5';",200)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.6';",250)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.7';",300)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.8';",350)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.9';",400)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 1.0';",450)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.9';",2200)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.8';",2250)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.7';",2300)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.6';",2350)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.5';",2400)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.4';",2450)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.3';",2500)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.2';",2550)
+        setTimeout("div_getAchievement.style.cssText = 'opacity: 0.1';",2600)
+        setTimeout("document.getElementById('getAchievement').style.display = 'none';",2650)
+    }
+    function finishChallenge() {
+        div_finishChallenge.style.cssText = "opacity: 0.1";
+        document.getElementById("finishChallenge").style.display = "block";
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.2';",25)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.3';",50)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.4';",75)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.5';",100)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.6';",125)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.7';",150)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.8';",175)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.9';",200)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 1.0';",225)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.9';",1100)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.8';",1125)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.7';",1150)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.6';",1175)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.5';",1200)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.4';",1225)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.3';",1250)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.2';",1275)
+        setTimeout("div_finishChallenge.style.cssText = 'opacity: 0.1';",1300)
+        setTimeout("document.getElementById('finishChallenge').style.display = 'none';",1325)
+    }
+
+    function reset1() {
+        if (gainMP1 >= 1) {
+            if (gainMP2 < 6) {
+                var v0 = gainMP1 * (10 ** gainMP2)
+                var showGainMP2 = v0.toFixed(0)
+            }
+            else if (gainMP2 >= 6 && gainMP2 < 1e+6) {
+                if (gainMP1.toFixed(2) != 10) {
+                    var showGainMP2 = gainMP1.toFixed(2) + "e" + gainMP2
+                }
+                else {
+                    var showGainMP2 = "1.00" + "e" + (Number(gainMP2) + 1)
+                }
+            }
+            else if (gainMP2 >= 1e+6) {
+                var v5 = Math.LOG10E * Math.log(gainMP2);
+                v5 = Math.floor(v5.toFixed(2));
+                var v6 = gainMP2 / (10 ** v5)
+                if (v6.toFixed(2) != 10) {
+                    v6 = v6.toFixed(2);
+                    var showGainMP2 = "e" + v6 + "e" + v5
+                }
+                else {
+                    var showGainMP2 = "e" + "1.00" + "e" + (Number(v5) + 1)
+                }
+            }
+            var warning1 = confirm("你将会失去所有大数点、加法升级和自动化，并得到" + showGainMP2 + "乘法点，是否继续？");
+            if (warning1) {
+                alphaReset();
+                alphaResetTimes++
+                showResetTimes1.innerHTML = alphaResetTimes
+                addMP(gainMP1,gainMP2);
+                document.getElementById("levelText1").style.display = "block";
+                document.getElementById("option51").style.display = "inline";
+                document.getElementById("option52").style.display = "inline";
+                document.getElementById("upgradeLine2").style.display = "block";
+                document.getElementById("upgradeLine3").style.display = "block";
+                document.getElementById("upgradeLine4").style.display = "block";
+                document.getElementById("upgradeLine5").style.display = "block";
+                if (alphaResetTimes == 1) {
+                    document.getElementById("option50_1").style.display = "block";
+                    multiplication5_1 = 2
+                    var arr2 = multiplyAmount(levelEffect3_1,levelEffect3_2,2,0,showLevelEffect3);
+                    levelEffect3_1 = Number(arr2[0]);
+                    levelEffect3_2 = Number(arr2[1]);
+                }
+            }
+        }
+    }
+
+    function reset2() {
+        if (gainPP1 >= 1) {
+            if (gainPP2 < 6) {
+                var v0 = gainPP1 * (10 ** gainPP2)
+                var showGainPP2 = v0.toFixed(0)
+            }
+            else if (gainPP2 >= 6 && gainPP2 < 1e+6) {
+                if (gainPP1.toFixed(2) != 10) {
+                    var showGainPP2 = gainPP1.toFixed(2) + "e" + gainPP2
+                }
+                else {
+                    var showGainPP2 = "1.00" + "e" + (Number(gainPP2) + 1)
+                }
+            }
+            else if (gainPP2 >= 1e+6) {
+                var v5 = Math.LOG10E * Math.log(gainPP2);
+                v5 = Math.floor(v5.toFixed(2));
+                var v6 = gainPP2 / (10 ** v5)
+                if (v6.toFixed(2) != 10) {
+                    v6 = v6.toFixed(2);
+                    var showGainPP2 = "e" + v6 + "e" + v5
+                }
+                else {
+                    var showGainPP2 = "e" + "1.00" + "e" + (Number(v5) + 1)
+                }
+            }
+            var warning1 = confirm("你将失去所有大数点和乘法点、加法和乘法升级、自动化和普通挑战，并得到" + showGainPP2 + "乘方点，是否继续？");
+            if (warning1) {
+                alphaReset();
+                betaReset();
+                betaResetTimes++
+                showResetTimes2.innerHTML = betaResetTimes
+                addPP(gainPP1,gainPP2);
+                document.getElementById("levelText2").style.display = "block";
+                document.getElementById("option61").style.display = "inline";
+                document.getElementById("WIPText").style.display = "block";
+                if (betaResetTimes == 1) {
+                    multiplication5_1 = 4
+                    var arr2 = multiplyAmount(levelEffect3_1,levelEffect3_2,4,0,showLevelEffect3);
+                    levelEffect3_1 = Number(arr2[0]);
+                    levelEffect3_2 = Number(arr2[1]);
+                }
+            }
+        }
+    }
+
+    saveText2 = JSON.parse(window.localStorage.getItem("save1"));
+    oldSave = JSON.parse(window.localStorage.getItem("key1"));
+    if (saveText2 != null) {
+        useSaveText();
+    }
+    else if (oldSave != null && saveText2 == null) {
+        alert(warningText1);
+        var os = atob(oldSave).split(",");
+        var checkOldSave = os.includes("NaN");
+        if (!checkOldSave) {
+            var arr2 = changeAmount(PP1,PP2,os[0],0,showPP);
+            PP1 = Number(arr2[0]);
+            PP2 = Number(arr2[1]);
+            clickTimes = os[25];
+            showClickTimes.innerHTML = clickTimes
+            if (PP1 >= 1) {
+                isLevelUnlock = 3
+                alphaResetTimes = 1
+                showResetTimes1.innerHTML = alphaResetTimes
+                betaResetTimes = 1
+                showResetTimes2.innerHTML = betaResetTimes
+                document.getElementById("option4").style.display = "inline"
+                document.getElementById("option5").style.display = "inline"
+                document.getElementById("option6").style.display = "inline"
+                document.getElementById("option50_1").style.display = "block";
+                document.getElementById("WIPText").style.display = "block";
+                document.getElementById("upgradeLine2").style.display = "block";
+                document.getElementById("upgradeLine3").style.display = "block";
+                document.getElementById("upgradeLine4").style.display = "block";
+                document.getElementById("upgradeLine5").style.display = "block";
+            }
+        }
+        else {
+            alert("旧版存档无效！");
+        }
+    }
+
+    function saveSave() {
+        gainSaveText();
+        window.localStorage.setItem("save1",JSON.stringify(saveText));
+    }
+
+    function gainSaveText() {
+        saveText = btoa(LNP1 + "," + LNP2 + "," + isLevelUnlock + "," + levelEffect3_1 + "," + levelEffect3_2 + "," + upgradeLevel1_1 + "," + upgradeLevel1_2 + "," + upgradePrice1_1 + "," + upgradePrice1_2 + "," + upgradeLevel2_1 + "," + upgradeLevel2_2 + "," + upgradePrice2_1 + "," + upgradePrice2_2 + "," + upgradeLevel3_1 + "," + upgradeLevel3_2 + "," + upgradePrice3_1 + "," + upgradePrice3_2 + "," + upgradeLevel4_1 + "," + upgradeLevel4_2 + "," + upgradePrice4_1 + "," + upgradePrice4_2 + "," + upgradeLevel5_1 + "," + upgradeLevel5_2 + "," + upgradePrice5_1 + "," + upgradePrice5_2 + "," + upgradeLevel6_1 + "," + upgradeLevel6_2 + "," + upgradePrice6_1 + "," + upgradePrice6_2 + "," + upgradeLevel7_1 + "," + upgradeLevel7_2 + "," + upgradePrice7_1 + "," + upgradePrice7_2 + "," + upgradeLevel8_1 + "," + upgradeLevel8_2 + "," + upgradePrice8_1 + "," + upgradePrice8_2 + "," + upgradeLevel9_1 + "," + upgradeLevel9_2 + "," + upgradePrice9_1 + "," + upgradePrice9_2 + "," + upgradeLevel10_1 + "," + upgradeLevel10_2 + "," + upgradePrice10_1 + "," + upgradePrice10_2 + "," + multiplication1_1 + "," + multiplication1_2 + "," + multiplication2_1 + "," + multiplication2_2 + "," + multiplication3_1 + "," + multiplication3_2 + "," + multiplication4_1 + "," + multiplication4_2 + "," + multiplication5_1 + "," + multiplication5_2 + "," + autoMultiplication1 + "," + autoMultiplication2 + "," + isChallenge1_1Running + "," + isChallenge1_2Running + "," + isChallenge1_3Running + "," + isChallenge1_4Running + "," + isChallenge1_1Finish + "," + isChallenge1_2Finish + "," + isChallenge1_3Finish + "," + isChallenge1_4Finish + "," + alphaResetTimes + "," + MP1 + "," + MP2 + "," + ME1 + "," + ME2 + "," + gainMESpeed + "," + betaResetTimes + "," + PP1 + "," + PP2 + "," + theme + "," + achievementTheme + "," + clickTimes + "," + maxLNP1 + "," + maxLNP2 + "," + maxMP1 + "," + maxMP2 + "," + maxPP1 + "," + maxPP2 + "," + goal1_1 + "," + goal1_2 + "," + goal1_3 + "," + goal1_4 + "," + goal1_5 + "," + goal1_6 + "," + goal1_7 + "," + goal1_8 + "," + goal1_9 + "," + goal1_10 + "," + goal1_11 + "," + goal1_12 + "," + goal1_13 + "," + goal1_14 + "," + goal1_15 + "," + goal1_16 + "," + autoSave);
+        saveText = saveText.replace("=","");
+        saveText = saveText.replace("=","");
+    }
+
+    function exportSave() {
+        gainSaveText();
+        document.getElementById("setting8").value = saveText
+    }
+
+    function importSave() {
+        saveText2 = document.getElementById("setting8").value;
+        useSaveText();
+    }
+
+    function useSaveText() {
+        var s = atob(saveText2).split(",");
+        var checkSaveStep1 = s.includes("NaN");
+        if (!checkSaveStep1) {
+            changeLNP(s[0],s[1]);
+            isLevelUnlock = s[2]
+            var arr2 = changeAmount(levelEffect3_1,levelEffect3_2,s[3],s[4],showLevelEffect3);
+            levelEffect3_1 = Number(arr2[0]);
+            levelEffect3_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel1_1,upgradeLevel1_2,s[5],s[6],showUpgradeLevel1);
+            upgradeLevel1_1 = Number(arr2[0]);
+            upgradeLevel1_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice1_1,upgradePrice1_2,s[7],s[8],showUpgradePrice1);
+            upgradePrice1_1 = Number(arr2[0]);
+            upgradePrice1_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel2_1,upgradeLevel2_2,s[9],s[10],showUpgradeLevel2);
+            upgradeLevel2_1 = Number(arr2[0]);
+            upgradeLevel2_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice2_1,upgradePrice2_2,s[11],s[12],showUpgradePrice2);
+            upgradePrice2_1 = Number(arr2[0]);
+            upgradePrice2_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel3_1,upgradeLevel3_2,s[13],s[14],showUpgradeLevel3);
+            upgradeLevel3_1 = Number(arr2[0]);
+            upgradeLevel3_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice3_1,upgradePrice3_2,s[15],s[16],showUpgradePrice3);
+            upgradePrice3_1 = Number(arr2[0]);
+            upgradePrice3_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel4_1,upgradeLevel4_2,s[17],s[18],showUpgradeLevel4);
+            upgradeLevel4_1 = Number(arr2[0]);
+            upgradeLevel4_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice4_1,upgradePrice4_2,s[19],s[20],showUpgradePrice4);
+            upgradePrice4_1 = Number(arr2[0]);
+            upgradePrice4_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel5_1,upgradeLevel5_2,s[21],s[22],showUpgradeLevel5);
+            upgradeLevel5_1 = Number(arr2[0]);
+            upgradeLevel5_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice5_1,upgradePrice5_2,s[23],s[24],showUpgradePrice5);
+            upgradePrice5_1 = Number(arr2[0]);
+            upgradePrice5_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel6_1,upgradeLevel6_2,s[25],s[26],showUpgradeLevel6);
+            upgradeLevel6_1 = Number(arr2[0]);
+            upgradeLevel6_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice6_1,upgradePrice6_2,s[27],s[28],showUpgradePrice6);
+            upgradePrice6_1 = Number(arr2[0]);
+            upgradePrice6_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel7_1,upgradeLevel7_2,s[29],s[30],showUpgradeLevel7);
+            upgradeLevel7_1 = Number(arr2[0]);
+            upgradeLevel7_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice7_1,upgradePrice7_2,s[31],s[32],showUpgradePrice7);
+            upgradePrice7_1 = Number(arr2[0]);
+            upgradePrice7_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel8_1,upgradeLevel8_2,s[33],s[34],showUpgradeLevel8);
+            upgradeLevel8_1 = Number(arr2[0]);
+            upgradeLevel8_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice8_1,upgradePrice8_2,s[35],s[36],showUpgradePrice8);
+            upgradePrice8_1 = Number(arr2[0]);
+            upgradePrice8_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel9_1,upgradeLevel9_2,s[37],s[38],showUpgradeLevel9);
+            upgradeLevel9_1 = Number(arr2[0]);
+            upgradeLevel9_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice9_1,upgradePrice9_2,s[39],s[40],showUpgradePrice9);
+            upgradePrice9_1 = Number(arr2[0]);
+            upgradePrice9_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradeLevel10_1,upgradeLevel10_2,s[41],s[42],showUpgradeLevel10);
+            upgradeLevel10_1 = Number(arr2[0]);
+            upgradeLevel10_2 = Number(arr2[1]);
+            var arr2 = changeAmount(upgradePrice10_1,upgradePrice10_2,s[43],s[44],showUpgradePrice10);
+            upgradePrice10_1 = Number(arr2[0]);
+            upgradePrice10_2 = Number(arr2[1]);
+            var arr2 = changeAmount(multiplication1_1,multiplication1_2,s[45],s[46],showMultiplication1);
+            multiplication1_1 = Number(arr2[0]);
+            multiplication1_2 = Number(arr2[1]);
+            var arr2 = changeAmount(multiplication2_1,multiplication2_2,s[47],s[48],showMultiplication2);
+            multiplication2_1 = Number(arr2[0]);
+            multiplication2_2 = Number(arr2[1]);
+            var arr2 = changeAmount(multiplication3_1,multiplication3_2,s[49],s[50],showMultiplication3);
+            multiplication3_1 = Number(arr2[0]);
+            multiplication3_2 = Number(arr2[1]);
+            var arr2 = changeAmount(multiplication4_1,multiplication4_2,s[51],s[52],showLevelEffect2);
+            multiplication4_1 = Number(arr2[0]);
+            multiplication4_2 = Number(arr2[1]);
+            var arr2 = changeAmount(multiplication5_1,multiplication5_2,s[53],s[54],showLevelEffect2);
+            multiplication5_1 = Number(arr2[0]);
+            multiplication5_2 = Number(arr2[1]);
+            autoMultiplication1 = Number(s[55]);
+            autoMultiplication2 = Number(s[56]);
+            isChallenge1_1Running = Number(s[57]);
+            isChallenge1_2Running = Number(s[58]);
+            isChallenge1_3Running = Number(s[59]);
+            isChallenge1_4Running = Number(s[60]);
+            isChallenge1_1Finish = Number(s[61]);
+            isChallenge1_2Finish = Number(s[62]);
+            isChallenge1_1Finish = Number(s[63]);
+            isChallenge1_1Finish = Number(s[64]);
+            alphaResetTimes = Number(s[65]);
+            var arr2 = changeAmount(MP1,MP2,s[66],s[67],showMP);
+            MP1 = Number(arr2[0]);
+            MP2 = Number(arr2[1]);
+            var arr2 = changeAmount(ME1,ME2,s[68],s[69],showME);
+            ME1 = Number(arr2[0]);
+            ME2 = Number(arr2[1]);
+            gainMESpeed = Number(s[70]);
+            betaResetTimes = Number(s[71]);
+            var arr2 = changeAmount(PP1,PP2,s[72],s[73],showPP);
+            PP1 = Number(arr2[0]);
+            PP2 = Number(arr2[1]);
+            theme = Number(s[74]);
+            achievementTheme = Number(s[75]);
+            clickTimes = Number(s[76]);
+            showClickTimes.innerHTML = clickTimes
+            var arr2 = changeAmount(maxLNP1,maxLNP2,s[77],s[78],showMaxLNP);
+            maxLNP1 = Number(arr2[0]);
+            maxLNP2 = Number(arr2[1]);
+            var arr2 = changeAmount(maxMP1,maxMP2,s[79],s[80],showMaxMP);
+            maxMP1 = Number(arr2[0]);
+            maxMP2 = Number(arr2[1]);
+            var arr2 = changeAmount(maxPP1,maxPP2,s[81],s[82],showMaxPP);
+            maxPP1 = Number(arr2[0]);
+            maxPP2 = Number(arr2[1]);
+            goal1_1 = Number(s[83]);
+            goal1_2 = Number(s[84]);
+            goal1_3 = Number(s[85]);
+            goal1_4 = Number(s[86]);
+            goal1_5 = Number(s[87]);
+            goal1_6 = Number(s[88]);
+            goal1_7 = Number(s[89]);
+            goal1_8 = Number(s[90]);
+            goal1_9 = Number(s[91]);
+            goal1_10 = Number(s[92]);
+            goal1_11 = Number(s[93]);
+            goal1_12 = Number(s[94]);
+            goal1_13 = Number(s[95]);
+            goal1_14 = Number(s[96]);
+            goal1_15 = Number(s[97]);
+            goal1_16 = Number(s[98]);
+            autoSave = Number(s[99]);
+            levelEffect1();
+            levelEffect2();
+            addAutoGainLNP();
+            changeTheme();
+            changeTheme();
+            changeAchievementTheme();
+            changeAchievementTheme();
+            changeAutoSave();
+            changeAutoSave();
+            challengeCheck = setInterval(function(){},1000)
+            clearInterval(challengeCheck);
+            if (isChallenge1_1Running == 1) {
+                document.getElementById("resetText3").innerHTML = "你当前在挑战1中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                document.getElementById("upgradeLine2").style.display = "none";
+                document.getElementById("upgradeLine3").style.display = "none";
+                document.getElementById("upgradeLine4").style.display = "none";
+                document.getElementById("upgradeLine5").style.display = "none";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-1,6)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+            if (isChallenge1_2Running == 1) {
+                document.getElementById("resetText3").innerHTML = "你当前在挑战2中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-1,10)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+            if (isChallenge1_3Running == 1) {
+                document.getElementById("resetText3").innerHTML = "你当前在挑战3中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-3,7)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+            if (isChallenge1_4Running == 1) {
+                document.getElementById("resetText3").innerHTML = "你当前在挑战4中";
+                document.getElementById("reset1").style.display = "none";
+                document.getElementById("reset2").style.display = "inline";
+                changeLNP(1,3);
+                document.getElementById("gainLNP").style.display = "none";
+                challengeCheck = setInterval(function(){
+                    if (checkAmount(LNP1,LNP2,-2,8)) {
+                        finishChallenge();
+                        document.getElementById("resetText2").innerHTML = "点此完成挑战";
+                        clearInterval(challengeCheck);
+                    }
+                },0)
+            }
+            if (isLevelUnlock >= 1) {
+                document.getElementById("option4").style.display = "inline"
+            }
+            if (isLevelUnlock >= 2) {
+                document.getElementById("option5").style.display = "inline"
+            }
+            if (isLevelUnlock >= 3) {
+                document.getElementById("option6").style.display = "inline"
+            }
+            document.getElementById("option50_1").style.display = "block";
+            document.getElementById("WIPText").style.display = "block";
+        }
+        else{
+            alert("存档无效！");
+        }
+    }
+
+    function deleteSave() {
+        var warning4 = confirm(warningText4);
+        if (warning4) {
+            alphaReset();
+            betaReset();
+            gammaReset();
+            hardReset();
+            saveSave();
+        }
+    }
+
+    function alphaReset() {
+        clearInterval(autoGainLNP);
+        tick = 0
+        changeLNP(0,0);
+        var arr2 = changeAmount(upgradeLevel1_1,upgradeLevel1_2,0,0,showUpgradeLevel1);
+        upgradeLevel1_1 = Number(arr2[0]);
+        upgradeLevel1_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice1_1,upgradePrice1_2,2,1,showUpgradePrice1);
+        upgradePrice1_1 = Number(arr2[0]);
+        upgradePrice1_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel2_1,upgradeLevel2_2,0,0,showUpgradeLevel2);
+        upgradeLevel2_1 = Number(arr2[0]);
+        upgradeLevel2_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice2_1,upgradePrice2_2,1,2,showUpgradePrice2);
+        upgradePrice2_1 = Number(arr2[0]);
+        upgradePrice2_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel3_1,upgradeLevel3_2,0,0,showUpgradeLevel3);
+        upgradeLevel3_1 = Number(arr2[0]);
+        upgradeLevel3_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice3_1,upgradePrice3_2,1,3,showUpgradePrice3);
+        upgradePrice3_1 = Number(arr2[0]);
+        upgradePrice3_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel4_1,upgradeLevel4_2,0,0,showUpgradeLevel4);
+        upgradeLevel4_1 = Number(arr2[0]);
+        upgradeLevel4_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice4_1,upgradePrice4_2,1,4,showUpgradePrice4);
+        upgradePrice4_1 = Number(arr2[0]);
+        upgradePrice4_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel5_1,upgradeLevel5_2,0,0,showUpgradeLevel5);
+        upgradeLevel5_1 = Number(arr2[0]);
+        upgradeLevel5_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice5_1,upgradePrice5_2,1,5,showUpgradePrice5);
+        upgradePrice5_1 = Number(arr2[0]);
+        upgradePrice5_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel10_1,upgradeLevel10_2,0,0,showUpgradeLevel10);
+        upgradeLevel10_1 = Number(arr2[0]);
+        upgradeLevel10_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice10_1,upgradePrice10_2,1,3,showUpgradePrice10);
+        upgradePrice10_1 = Number(arr2[0]);
+        upgradePrice10_2 = Number(arr2[1]);
+        levelEffect1();
+        levelEffect2();
+        multiplication1_1 = 1
+        multiplication1_2 = 0
+    }
+
+    function betaReset() {
+        changeMP(0,0);
+        var arr2 = changeAmount(upgradeLevel6_1,upgradeLevel6_2,0,0,showUpgradeLevel6);
+        upgradeLevel6_1 = Number(arr2[0]);
+        upgradeLevel6_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice6_1,upgradePrice6_2,1,0,showUpgradePrice6);
+        upgradePrice6_1 = Number(arr2[0]);
+        upgradePrice6_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel7_1,upgradeLevel7_2,0,0,showUpgradeLevel7);
+        upgradeLevel7_1 = Number(arr2[0]);
+        upgradeLevel7_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice7_1,upgradePrice7_2,1,0,showUpgradePrice7);
+        upgradePrice7_1 = Number(arr2[0]);
+        upgradePrice7_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel8_1,upgradeLevel8_2,0,0,showUpgradeLevel8);
+        upgradeLevel8_1 = Number(arr2[0]);
+        upgradeLevel8_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice8_1,upgradePrice8_2,5,0,showUpgradePrice8);
+        upgradePrice8_1 = Number(arr2[0]);
+        upgradePrice8_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradeLevel9_1,upgradeLevel9_2,0,0,showUpgradeLevel9);
+        upgradeLevel9_1 = Number(arr2[0]);
+        upgradeLevel9_2 = Number(arr2[1]);
+        var arr2 = changeAmount(upgradePrice9_1,upgradePrice9_2,1,1,showUpgradePrice9);
+        upgradePrice9_1 = Number(arr2[0]);
+        upgradePrice9_2 = Number(arr2[1]);
+        var arr2 = changeAmount(ME1,ME2,0,0,showME);
+        ME1 = Number(arr2[0]);
+        ME2 = Number(arr2[1]);
+        multiplication2_1 = 1
+        multiplication2_2 = 0
+        multiplication3_1 = 1
+        multiplication3_2 = 0
+        multiplication4_1 = 1
+        multiplication4_2 = 0
+        autoMultiplication1 = 1
+        autoMultiplication2 = 1
+        isChallenge1_1Running = 0
+        isChallenge1_2Running = 0
+        isChallenge1_3Running = 0
+        isChallenge1_4Running = 0
+        isChallenge1_1Finish = 0
+        isChallenge1_2Finish = 0
+        isChallenge1_3Finish = 0
+        isChallenge1_4Finish = 0
+        gainMESpeed = 0
+        showGainMESpeed.innerHTML = gainMESpeed
+    }
+
+    function gammaReset() {
+        changePP(0,0);
+    }
+
+    function hardReset() {
+        document.getElementById("option4").style.display = "none"
+        document.getElementById("option5").style.display = "none"
+        document.getElementById("option6").style.display = "none"
+        document.getElementById("setting8").value = "";
+        isLevelUnlock = 0
+        alphaResetTimes = 0
+        showResetTimes1.innerHTML = alphaResetTimes
+        betaResetTimes = 0
+        showResetTimes2.innerHTML = betaResetTimes
+        clickTimes = 0
+        showClickTimes.innerHTML = clickTimes
+        var arr2 = changeAmount(maxLNP1,maxLNP2,0,0,showMaxLNP);
+        maxLNP1 = Number(arr2[0]);
+        maxLNP2 = Number(arr2[1]);
+        var arr2 = changeAmount(maxMP1,maxMP2,0,0,showMaxMP);
+        maxMP1 = Number(arr2[0]);
+        maxMP2 = Number(arr2[1]);
+        var arr2 = changeAmount(maxPP1,maxPP2,0,0,showMaxPP);
+        maxPP1 = Number(arr2[0]);
+        maxPP2 = Number(arr2[1]);
+        multiplication5_1 = 1
+        multiplication5_2 = 0
+        goal1_1 = 0
+        goal1_2 = 0
+        goal1_3 = 0
+        goal1_4 = 0
+        goal1_5 = 0
+        goal1_6 = 0
+        goal1_7 = 0
+        goal1_8 = 0
+        goal1_9 = 0
+        goal1_10 = 0
+        goal1_11 = 0
+        goal1_12 = 0
+        goal1_13 = 0
+        goal1_14 = 0
+        goal1_15 = 0
+        goal1_16 = 0
+    }
+
+</script>
