@@ -1,0 +1,102 @@
+@font-face {
+    font-family: 梦源黑体W12_min;
+    src: url("font/梦源黑体W12_min.ttf");
+    font-display: swap;
+}
+
+:root {
+    --main-background: #d7c592;
+    --dark-background: #ccb166;
+    --warn-background: #d59e77;
+    --main-text: #473d21;
+    --light-text: #a19267;
+    --border-color: #00000000;
+    --hide: #00000000;
+    --pointer: 0;
+}
+
+* {
+    -moz-user-select: none;
+    -o-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: var(--hide);
+    touch-action: none;
+    border: none;
+    outline: none;
+    overflow: hidden;
+    font-family: "梦源黑体W12_min";
+    image-rendering: pixelated;
+    color-scheme: only light;
+    transition: none;
+}
+
+a {
+    margin-left: -5px;
+    color: var(--main-text);
+    text-decoration: underline solid var(--main-text) 2px;
+}
+
+html {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    color: var(--main-text);
+    background-color: var(--main-background);
+}
+
+.main_table {
+    display: flex;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    padding: 0px 15px;
+    box-sizing: border-box;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title_text {
+    display: block;
+    width: 100%;
+    height: 50px;
+    border-bottom: var(--light-text) 2px solid;
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 50px;
+}
+
+.main_text {
+    height: 30px;
+    font-size: 20px;
+    line-height: 30px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .title_text {
+        width: 500px;
+    }
+}
