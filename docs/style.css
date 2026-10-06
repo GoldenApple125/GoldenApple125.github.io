@@ -1,0 +1,1074 @@
+﻿/* Project Two 0.1.0 —— 遵循 概念报告/10-运行环境约定.md */
+:root {
+    color-scheme: only light;      /* 禁止浏览器切暗色 */
+
+    /* ⭐⭐⭐ **灰阶 / 语义色（沿用美术测试的 token）**
+     * ⚠️ `0.3.0` P0 起：凡**跨语言共用**的值，注释里都标了它在 `core.js` → `PAL` 里的
+     *    对应条目，并由 `tools\test-visual.cjs` 断言"**两边不许漂移**"。
+     *    ⇒ 改这里必须同步改 `PAL`（反之亦然），否则自检会红。
+     *    ⚠️ **没标对应关系的**是界面专属色（`PAL` 里没有这个语义）——
+     *      它们只在 CSS 里有意义，别硬拉一个 PAL 名字来配对。 */
+    --c-bg:      #14161a;          /* = PAL.bg（场地底色，界面深底同色） */
+    --c-bg2:     #1c1f24;
+    --c-panel:   #262626;
+    --c-line:    #4a4a4a;
+    --c-line2:   #535353;
+    --c-line3:   #3a3a3a;          /* 更暗一档的边（锁定态 / 分隔） */
+    --c-dim:     #717171;
+    --c-dim2:    #d1d1d1;
+    --c-text:    #e2e2e2;
+    --c-text-hi: #f5f5f5;
+    --c-white:   #ffffff;          /* = PAL.hitWhite（纯白：HUD 强调文字用） */
+    --c-accent:  #f8d80d;          /* = PAL.accent（**界面主题色**：不跟主角走 —— 用户 2026-10-02："别改主题色"） */
+    --c-accent2: #e4c607;
+    --c-hp:      #ed6060;          /* = PAL.barHp（生命条**填充**，用户 2026-10-05） */
+    --c-hp-edge: #d83a3a;          /* = PAL.barHpEdge（生命条边框） */
+    --c-hp-bg:   #6b2b2b;          /* = PAL.barHpEmpty（生命条「空」的部分） */
+    --c-mp-bg:   #294865;          /* = PAL.barMpEmpty（能量条「空」的部分） */          /* = PAL.barHpEdge（生命条**边框**） */          /* = PAL.barHp（**红 = 生命**，与敌人本体色无关 —— 用户："别改血条颜色"） */
+    --c-mp:      #5a9fe0;
+    --c-mp-dark: #0b77bd;
+          /* 深能量色（= 子弹/激光外圈那个蓝的深色档；HUD 能量半框用） */
+    --c-warn:    #e0a05a;
+    --c-bad:     #ff6b6b;          /* 独立的"出错/失败"红（`0.3.0` 起与警示光束解耦：光束改橙） */
+    --c-heal:    #7de07d;          /* = PAL.heal（回血 / 通过） */
+    --c-hr:      #333;             /* 行分隔线（比 --c-line3 还暗） */
+    --c-sunken:  #1a1c20;          /* 内凹底（HUD 条的槽、输入框） */
+    --c-card-on: #2a2a24;          /* 选中卡片的底（偏黄一档，与强调色呼应） */
+    --c-bar-bg:  #262626;          /* 血条/进度条的槽底（与 --c-panel 同值不同义） */
+    /* ⚠️ `#14161ad9` / `#14161ab8` / `#14161ac9`（半透明底）与 `#000000cc`（遮罩）
+     *    是**带 alpha 的变体**：CSS 变量加 alpha 要 `color-mix`（另一个浏览器特性）
+     *    ⇒ 保留字面量，语义就是"`--c-bg` 加 alpha"。
+     * ⚠️⚠️ 这里**曾经**有 `--c-laser-core: #fff2a8`（激光内芯的亮黄），已删（`0.2.0`）。
+     *    理由两条：① 激光内芯改成由 JS 设之后它成了**死变量**（没人引用，只剩会过期的声明）；
+     *    ② 更要紧的是**它留的是旧颜色**，看到的人会以为"改这个变量就能调激光颜色"，改了却没效果。
+     *    ⚠️ 现在激光配色只有一个来源：`PAL.laserCore`（外圈由它 `dimHex(…, LASER_OUTER_K)` 算）。
+     *      `#laser-outer` / `#laser-core` 只是"JS 还没跑过"的**首帧兜底**，
+     *      那几个兜底数值同样由 `test-visual` 断言不许漂移。 */
+}
+
+/* ---- 输入钳制 + 渲染硬要求（无前缀残留） ---- */
+* {
+    user-select: none;
+    -webkit-user-select: none;      /* 仅保留这一个必要前缀 */
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: #00000000;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0s;             /* 游戏里过渡动画就是延迟 */
+    image-rendering: pixelated;
+}
+
+/* ⭐ 光标策略（按输入能力分支，沿用十万流明的写法）
+ *  · 鼠标设备：**菜单显示系统光标**（否则"看不见鼠标"没法点）；
+ *             关卡内由 canvas 的 cursor:none + 游戏自绘准心接管。
+ *  · 触摸设备：不显示任何光标（本来也没有指针）。
+ *  ⚠️ 千万不要在 `*` 上写 cursor:none —— 那会让菜单也看不见鼠标。
+ *  ⚠️ 按钮一定要给回 pointer，"可点"这件事必须能看出来。
+ *
+ * ⚠️⚠️ `cursor: none` 的适用范围（实测踩过）：以前是**无条件**的 `#game { cursor: none; }`，
+ *    当时画布只在关卡内可见，所以没问题。但标题屏改成**也用画布画星场**之后，
+ *    画布在标题屏也可见了 → 如果标题屏的 DOM 没有盖满整屏，
+ *    鼠标移到没盖住的地方，命中的就是画布 → **指针直接消失**。
+ *    ⇒ 改成只在**关卡内**藏指针（`body.in-game`），标题屏明确还回 `default`。
+ *    再加一条兜底：`#title-fx-show` 时整个 `#stage` 都还回默认指针，
+ *    这样不管 DOM 盖没盖满，都不会出现"没有鼠标"的界面。 */
+@media (hover: hover) and (pointer: fine) {
+    html, body { cursor: default; }
+    button, .btn, .card, .tab, .lv-block { cursor: pointer; }
+    .card.locked, .btn.disabled, .lv-block.locked { cursor: not-allowed; }
+/* ⭐⭐ **未解锁的卡：名字更暗**（用户 2026-10-05："角色配置下 未解锁的技能/饰品/道具 名字更暗以区分" ✗）。
+ *    原来 `.card.locked` **只改了鼠标指针** ✗（`cursor: not-allowed` ✗）⇒ 光看名字分不出锁没锁 ✔。
+ *    ⚠️ 只压**名字**（`.card-name` ✗），卡面其它元素不动 ✔ —— 与"（未解锁）"那三个字配合着看 ✔。
+ *    ⚠️ 用的是暗色 token `--c-dim` ✗（与 `.card-desc` 同一个），不再单独调色 ✔。 */
+.card.locked .card-name { color: var(--c-dim); }
+    /* 只有关卡内才藏指针（自绘准心接管） */
+    body.in-game #game { cursor: none; }
+    /* 标题屏是菜单：整个舞台都显示系统指针（画布显示着星场也不影响） */
+    body.title-fx-show, body.title-fx-show #stage, body.title-fx-show #game { cursor: default; }
+
+    /* ⭐ 结算时把系统指针还回来。
+     *    准心画在 canvas 上，而结算框是 DOM（z 序更高）→ 会互相遮挡、看不清也点不准。
+     *    同时 game.js 的 render 在结算时**停止画准心**，两者配套。 */
+    body.result-show #game { cursor: default; }
+    /* ⚠️⚠️ **`pointer` 只能给按钮，不能给 `#result` 自己**（`0.2.0` 修，实测踩过）。
+     *
+     *    原来这里写的是 `body.result-show #result, body.result-show #result button
+     *    { cursor: pointer; }` —— 把**整个覆盖层**也设成了手掌。
+     *    而 `cursor` 是**继承属性** ⇒ `.panel` / 四行文字 / 所有后代**全继承成手掌**
+     *    ⇒ 用户实测："通关结算界面，按钮虽然正常，但鼠标永远是手掌"。
+     *
+     *    ⚠️ 这条规则是 `0.1.1` 就有的，但**一直没显形**：那时 `.result` 是
+     *      `pointer-events: none`（见 `.result` 那段），鼠标**根本碰不到它** ——
+     *      命中的是底下的 canvas，所以这条 `pointer` 从未生效过。
+     *      ⇒ 上一轮给 `.result` 打开 `pointer-events: auto` 之后它才暴露出来。
+     *    ⚠️ 教训：**改 `pointer-events` 会"唤醒"一批原本死掉的样式** ——
+     *      所以打开一层的事件接收时，要顺手检查它的 `cursor` 与 `user-select`。 */
+    body.result-show #result button { cursor: pointer; }
+}
+/* ⚠️ overflow:hidden 不能放在 * 上：那会连带把 flex 居中也锁死，
+ *    这里只对结构性元素设置。 */
+html, body, #stage, #ui, .screen { overflow: hidden; }
+
+html, body {
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* 用 flex 把舞台在窗口内居中（避免左上角对齐造成的"偏向左上"观感） */
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ⭐ 关键：不做 transform: scale()。
+ * 改为由 JS 直接把 #stage 的宽高设成「逻辑尺寸 × 倍率」的 CSS 像素，
+ * 内部 canvas 用 100% 撑满。这样：
+ *   ① 整套界面与 canvas 同处一个坐标系（不会有缩放偏移）
+ *   ② getBoundingClientRect() 与实际显示尺寸一致 → 鼠标换算准确
+ *   ③ 整套界面不会溢出屏幕（非整数倍也安全） */
+#stage {
+    position: relative;
+    left: auto; top: auto;
+    width: 1280px; height: 720px;   /* JS 会覆盖 */
+    flex: 0 0 auto;
+    background: var(--c-bg);
+}
+
+#game {
+    position: absolute; left: 0; top: 0;
+    width: 100%; height: 100%;
+    /* 光标由上面的 @media 能力分支统一处理 */
+}
+/* ⭐⭐ **两层特效画布**（`0.2.0`）—— 层级见 index.html 顶部那张表。
+ *    ⚠️ 与 `#game` **完全同一套定位与尺寸**（`left/top: 0` + `100%×100%`）：
+ *      三块画布的像素尺寸都由 `fitStage()` 设成同一个值 ⇒ 坐标可以直接照搬，
+ *      不需要任何换算。**别给它们加 padding / border**（那会让坐标系偏移）。
+ *    ⚠️ `pointer-events: none` **必须写**：这两层盖在 `#game` 上面，
+ *      不关掉的话鼠标事件会被它们吃掉（开火、瞄准全会失效）。
+ *    ⚠️ 它们也要跟着 `body:not(.in-game)` 隐藏（见下面那条规则）。 */
+#fx, #fx2 {
+    position: absolute; left: 0; top: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+}
+/* 关卡外把 canvas 藏起来：菜单是 DOM，画布只属于关卡。
+ * ⚠️ 例外：**标题屏**要用画布画星场（titlefx.js），由 `body.title-fx-show` 打开。
+ *    改这里之前先读 core.js 的 changeLayer —— 那个 class 就是它切的。
+ * ⚠️ 三层画布一起切（`#fx` / `#fx2` 是 `0.2.0` 加的）：漏一层就会出现
+ *    "回标题屏了、屏幕角落还糊着一块特效残影"。
+ * ⚠️⚠️ 写成**三条独立规则**，不要用逗号合并成一个选择器列表 ——
+ *    `test-logic` 是按 CSS 原文匹配 `body:not(.in-game) #game { … visibility: hidden }`
+ *    的，合并之后正则匹配不到（写这条时真踩了一次，检查当场红）。 */
+body:not(.in-game) #game { visibility: hidden; }
+body:not(.in-game) #fx { visibility: hidden; }
+body:not(.in-game) #fx2 { visibility: hidden; }
+body.title-fx-show #game { visibility: visible; }
+
+/* ⭐⭐⭐ **激光（HTML 元素画）** —— `0.2.0` 定稿，用户拍板"采用最终方案：用 html 元素"。
+ *
+ * ## 为什么换成 DOM 而不是 canvas
+ * 前面试过三条路，**全被否**：
+ *   · 逐行栅格化 `fillRect`（硬边）—— 1 像素台阶暴露无遗
+ *   · canvas 原生 `stroke`（带抗锯齿）—— 还是有明显台阶
+ *   · 提高画布分辨率 / 背板跟视口 —— 与"填满屏幕"互斥，且引入半像素杂边
+ * ⇒ 根因：**canvas 的斜线是"自己栅格化"的**，而 `#stage` 又带一个非整数倍缩放
+ *    （实测视口 1592 CSS 宽 ⇒ ×1.24），于是每个像素都要被再切一刀。
+ * ⇒ 换成 DOM 之后：浏览器把**旋转交给合成器**、
+ *    在**设备像素比（实测 dpr = 2）**下做抗锯齿渲染 —— 边缘是**设备分辨率级**的柔和，
+ *    这正是《永恒之途》那种"不刺眼、也不糊"的观感来源。
+ *
+ * ⚠️⚠️ **尺寸一律用 `em`**：`#stage` 的 `font-size` = 缩放倍率（由 `fitStage()` 设置），
+ *    所以这里写的数值就是**逻辑像素**，会自动换算成 CSS 像素。
+ *    ⇒ 改了 `LOGICAL_W` 或倍率策略都不用动这里。
+ * ⚠️ `transform-origin: left center` + 元素贴在 `(0,0)`：旋转轴就是**光束起点**
+ *    ⇒ 位置只需写 `left/top`（逻辑像素），不用管角度。
+ * ⚠️ 两层画法照《永恒之途》`v0.1.4`：**外圈宽 + 内芯窄、宽度独立**（不是等比缩小）。 */
+/* ⭐⭐ 光束容器：`#laser`（玩家的）+ `#elaser1~9`（BOSS2 的三道 + 其余光束 ✗，`0.3.1` 扩到 9 ✔）。
+ *    ⚠️ 两者是**同一套画法**（`laserdom.js` 的光束池），所以 CSS 也共用：
+ *       `#elaserN` 直接挂同一个选择器列表，**别再抄一份** —— 抄的那份迟早不同步
+ *       （颜色、旋转轴、overflow 少一样都会出问题，而且只在某一条光束上看得出）。 */
+#laser, #elaser1, #elaser2, #elaser3, #elaser4, #elaser5, #elaser6, #elaser7, #elaser8, #elaser9, #elaser10, #elaser11, #elaser12, #elaser13, #elaser14, #elaser15, #elaser16, #elaser17 {
+    position: absolute;
+    left: 0; top: 0;
+    /* ⚠️⚠️ **尺寸 = 逻辑区域，多出来的部分裁掉**（`0.2.0` 实测补的）。
+     *
+     * 为什么必须裁：`#stage` 的尺寸是「逻辑 × 倍率」，而画布背板恒为 1280×720、
+     *    CSS 是 `width: 100%`（背板被**拉伸**到 stage 尺寸）。
+     *    ⇒ 窗口小于 1280×720 时 `curScale < 1`（实测小窗口是 ×0.5），
+     *      **`#stage` 的裁剪边界落在"逻辑区域之外"** —— canvas 上的绘制被背板天然限制住，
+     *      但 DOM 元素没有这层限制 ⇒ **激光会画到游戏区域外面去**。
+     *    ⇒ 给 `#laser` 定成逻辑尺寸 + `overflow: hidden`，
+     *      让 DOM 的可见范围与 canvas 的**完全一致**。
+     * ⚠️⚠️ **宽高由 JS 设**（`fitStage()`，用 `LOGICAL_W/H` 写成 `em`）——
+     *    不写死在这里，否则改了逻辑分辨率就与代码分家了。
+     * ⚠️⚠️ **`#laser` 自己的 `font-size` 由 `fitStage()` 设**（= 缩放倍率），
+     *    `em` 就按它解析。**绝不能设在 `#stage` 上** —— 那会让商店 / 设置的文字
+     *    也继承倍率（菜单时 `curScale` 是 1 ⇒ 字号成 1px，用户实测报过）。
+     *    详见 core.js 的 `fitStage()`。 */
+    overflow: hidden;
+    display: none;                 /* 只有关卡内且有激光时由 render() 打开 */
+    pointer-events: none;
+    /* ⚠️ 不要加 filter（阴影 / 发光）—— 任何滤镜都会让边缘重新变糊 */
+}
+#laser > div, #elaser1 > div, #elaser2 > div, #elaser3 > div, #elaser4 > div, #elaser5 > div, #elaser6 > div, #elaser7 > div, #elaser8 > div, #elaser9 > div, #elaser10 > div, #elaser11 > div, #elaser12 > div, #elaser13 > div, #elaser14 > div, #elaser15 > div, #elaser16 > div, #elaser17 > div {
+    position: absolute;
+    left: 0; top: 0;
+    transform-origin: left center; /* 旋转轴 = 光束起点 */
+    will-change: transform;        /* 每帧都在变，交给合成器 */
+}
+/* ⭐⭐ **颜色由 JS 设，这里不再写死**（`0.2.0`，用户要求"激光改成淡蓝色的"）。
+ *    ⚠️⚠️ 原来这两行是 `#7a4a10`（写死暗橙）和 `var(--c-laser-core)`（亮黄），
+ *      而 canvas 兜底那边还有一份写死的 `#7a4a10` ⇒ **外圈色有两个来源**，
+ *      改配色时必然漏一个（改淡蓝就会留个橙色外圈）。
+ *    ⇒ 现在两边同一个来源：只有 `LASER_CORE`（game.js），外圈由它
+ *      `dimHex(LASER_CORE, LASER_OUTER_K)` 算出来，在 `render()` 里一次性算好、
+ *      DOM 与 canvas 兜底**共用**。
+ *    ⚠️ 这里保留 `background` 的**兜底值只是为了"JS 还没跑过"的第一帧**不出现黑条；
+ *      正常运行时每帧之前就被 `LaserDom.draw()` 真值覆盖了。 */
+#laser-outer { background: #0b77bd; }   /* 兜底 = dimHex(PAL.laserCore, LASER_OUTER_K)（真值每帧由 JS 设） */
+#laser-core  { background: #549dcd; }   /* 兜底 = PAL.laserCore（真值每帧由 JS 设） */
+/* ⚠️ BOSS2 那三道的兜底色是**红系**（警示线就是红的，`0.2.1`）——
+ *    真值每帧由 `render.js` 传进来（警示期细红、生效期粗亮粉红），
+ *    这里只是"JS 还没跑过"的第一帧不出现黑条。 */
+/* ⚠️ 这两个兜底值原来写的是 `#ff5a5a` / `#8c1f1f` —— 与 JS 真值**不是同一个红**
+ *    （真值 = `PAL.beamWarnCore` 与 `dimHex(PAL.beamWarnCore, LASER_OUTER_K)`）。
+ *    `0.3.0` P0 抓到的**第二来源**，已改成算出来的真值，并由 `test-visual` 钉住。 */
+#elaser1-outer, #elaser2-outer, #elaser3-outer, #elaser4-outer, #elaser5-outer, #elaser6-outer, #elaser7-outer, #elaser8-outer, #elaser9-outer, #elaser10-outer, #elaser11-outer, #elaser12-outer, #elaser13-outer, #elaser14-outer, #elaser15-outer, #elaser16-outer, #elaser17-outer { background: #bc4f4f; }
+#elaser1-core, #elaser2-core, #elaser3-core, #elaser4-core, #elaser5-core, #elaser6-core, #elaser7-core, #elaser8-core, #elaser9-core, #elaser10-core, #elaser11-core, #elaser12-core, #elaser13-core, #elaser14-core, #elaser15-core, #elaser16-core, #elaser17-core { background: #e29393; }   /* = PAL.beamWarnCore（0.3.0 起是橙，不再是红） */
+/* ⚠️ 关卡外藏起来（与 canvas 同一套开关，避免菜单上出现一条光束） */
+body:not(.in-game) #laser,
+body:not(.in-game) #elaser1,
+body:not(.in-game) #elaser2,
+body:not(.in-game) #elaser3,
+body:not(.in-game) #elaser4,
+body:not(.in-game) #elaser5,
+body:not(.in-game) #elaser6,
+body:not(.in-game) #elaser7,
+body:not(.in-game) #elaser8,
+body:not(.in-game) #elaser10,
+body:not(.in-game) #elaser11,
+body:not(.in-game) #elaser12,
+body:not(.in-game) #elaser13,
+body:not(.in-game) #elaser14,
+body:not(.in-game) #elaser15,
+body:not(.in-game) #elaser16,
+body:not(.in-game) #elaser17,
+body:not(.in-game) #elaser9 { display: none !important; }
+
+/* ⭐ 关卡内必须让鼠标事件穿透到 canvas，否则按不动、开不了火。
+ *    #ui 容器整体不吃事件；菜单自身需要点击的元素再单独打开。
+ * ⚠️⚠️ 这份"放行名单"必须包含**所有可点控件**。实测踩过（`0.1.1`，用户试玩报"第一关按不动"）：
+ *    选关改成**方块网格**后，方块是 `div`（不是 `button`），
+ *    而名单里当时只有 `button / .card / .btn / .tab` → **方块点不动**；
+ *    同一屏上的"碰撞测试场"是 `<button>`，所以它有反应 ——
+ *    现象看起来像"只有第一关坏了"，其实是**整类元素**都点不到。
+ *    ⇒ 加任何新的可点元素时，**记得往这里加一条**。
+ *    ⚠️⚠️ 还有第二条规则，同样踩过：**事件委托的容器也必须打开**。
+ *       子元素写了 `pointer-events: auto` 还不够 —— 浏览器的命中测试要求
+ *       **整条祖先链**都不是 `none`，否则事件传不到挂在容器上的监听器。
+ *       选关网格的容器是 `#lv-list`，方块（`.lv-block`）在它里面，
+ *       所以**两个都要放行**。
+ *    ⚠️ 这类问题自检抓不到"点不动"本身：测试是直接调处理器（绕过了命中测试），
+ *       只有真机点一下才知道。`test-screens` 的第 ⑬ 节只能守住"名单有没有漏项"。 */
+/* ⭐⭐ **界面层实时跟随窗口缩放**（`0.3.0`，用户 2026-10-02：
+ *    "关卡内画布现在能按实际窗口大小缩放，但 hud 和关卡外界面不行 —— 我指实时的"）。
+ *
+ * 原因：`fitStage()` 只改 `#stage` 的**尺寸**（`逻辑 × 倍率`）✗，而这一层里的
+ *    `font-size: 15px` / `left: 16px` 这些值是**绝对 px** ✗ ⇒ 画布位图被整体放大了、
+ *    界面文字与间距却纹丝不动 ✗ ⇒ 看着就是"界面没跟随" ✔。
+ * ⇒ `zoom: var(--ui-scale)`（倍率由 `fitStage()` 写在 `#stage` 上 ✔）会把该元素的
+ *    **布局坐标系**整体缩放 ⇒ 里面的 px 相当于"逻辑像素" ✔；而 `#ui` 是 `inset: 0`
+ *    ⇒ 缩放后**恰好**铺满 1280×720 的逻辑空间 ✔（窗口一变就跟着变，实时 ✔）。
+ * ⚠️ `#hud` 在 `#ui` **里面** ⇒ 一起跟随 ✔；
+ *    而**光束层（`#laser` / `#elaser1~3`）是它的兄弟**（不在里面）⇒ 不会被二次缩放 ✔
+ *    （那几层的 `em` 尺寸已经由 `fitStage()` 设的 `font-size = curScale` 管着 ✔）。
+ * ⚠️ 不支持 `zoom` 的浏览器退化成"不缩放"= **今天的行为** ✔（不会更糟 ✗）。 */
+#ui { position: absolute; inset: 0; pointer-events: none; zoom: var(--ui-scale, 1); }
+.screen.active { pointer-events: none; }        /* 屏幕容器本身也不吃事件 */
+.screen.active button,
+.screen.active .card,
+.screen.active .btn,
+.screen.active .tab,
+.screen.active .lv-block,
+.screen.active .vscroll,
+.screen.active .vscroll-list,
+.screen.active #lv-list { pointer-events: auto; }   /* 只有可交互控件吃事件
+                                                     * （#lv-list 是**委托容器**，见上；
+                                                     *   `.vscroll` / `.vscroll-list` 是
+                                                     *   **滚动容器**（外层兜底 + 内层限高），
+                                                     *   见下面"长列表的长久方案"那段 ——
+                                                     *   不放行的话滚轮事件根本到不了它们） */
+
+/* ---- 屏幕状态机 ---- */
+.screen { position: absolute; inset: 0; display: none; }
+.screen.active { display: block; }
+
+/* ⚠️ 原来这里有个 `.corner-ver`（右下角版本号水印）—— `0.1.1` 已删：
+ *    版本号现在只写在**标题屏**那行（`#ver-title`）与**设置页签**（`#ver-settings`），
+ *    两处都由 `GAME_VERSION` 填。右下角再挂一个就是同一个数字的第三份。 */
+
+/* ---- 主界面：顶栏（资源 + 页签）与内容区 ----
+ * ⭐ 结构（为什么这么切）：
+ *    `.main-top` 常驻不动，只有下面的 `.panes` 里的 `.pane` 换。
+ *    这样"选关 / 角色 / 商店 / 设置"是**同一屏的四个页签**，
+ *    不是四块屏 —— 层级压平，来回切页签不丢上下文。
+ * ⚠️ `.main-top` 是 flex 纵向布局里的固定块，`.panes` 用 flex:1 吃掉剩下的高度；
+ *    两者都别写死高度，否则改字号就会溢出被 overflow:hidden 剪掉。 */
+#layer2 { display: none; }
+#layer2.active { display: flex; flex-direction: column; }
+
+.main-top {
+    flex: 0 0 auto;
+    padding: 14px 26px 0;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 20px;
+}
+.res { display: flex; gap: 22px; align-items: baseline; }
+/* ⭐⭐ **升级进度条**（用户 2026-10-05："主界面的经验加个(升级进度)条" ✔）。
+ *    跟 HUD 那两条状态条同一套手法：外套 + 填充，宽度用百分比 ✔。
+ *    ⚠️ 填充色用**主题强调色** `--c-accent` ✗ —— 它是 UI 元素，**不跟实体颜色走** ✔
+ *      （项目铁律：UI 颜色不镜像素材 ✗）。
+ *    ⚠️ 尺寸写死在这（顶栏不跟 `--hud-scale` ✗），与旁边的数字同一行 ✔。 */
+/* ⭐⭐ 经验这一项的**纵向容器**（用户 2026-10-05："对应数字放在其上方(左对齐)" ✔）：
+ *    数字在上、条在下，两者**左对齐** ✔（`align-items: flex-start` ✗）。
+ *    ⚠️ 用 `inline-flex` + `column`：不占整行宽度 ✗（否则会把顶栏其它项挤开 ✔）。 */
+.exp-wrap { display: inline-flex; flex-direction: column; align-items: flex-start; margin-left: 6px; }
+.exp-wrap b { line-height: 1.1; }
+
+.exp-bar {
+    display: block;
+    /* ⭐⭐ **细长**（用户 2026-10-05："做得细长一点" ✗）：90×10 → **140×6** ✔ */
+    width: 140px;
+    height: 4px;
+    /* ⭐⭐ **无框、无彩色，只有「实 / 虚」两块**（用户 2026-10-05：
+     *    "不要彩色的，另外做成无框(仅'实虚'两部分)" ✗）。
+     *    · 虚 = `--c-dim`（"没到的部分" ✔）· 实 = `--c-white`（"已攒到的部分" ✔，见下）
+     *    ⚠️ 原来用的是主题强调色 + 深底 + 1px 边框 ✗ ⇒ 现在就两块颜色，边界靠明暗自己分 ✔。
+     *    ⚠️ 两块都是**纯色**（不是半透明 ✗）⇒ 在深色顶上对比清楚、也不会随背景变样 ✔。 */
+    background: var(--c-dim);
+    overflow: hidden;   /* 只防填充溢出，不产生任何视觉 ✗ */
+}
+.exp-bar-fill { display: block; height: 100%; width: 0%; background: var(--c-white); }
+.res-i { color: var(--c-dim); font-size: 14px; letter-spacing: 1px; }
+.res-i b { color: var(--c-text-hi); font-weight: normal; font-size: 17px; margin-left: 4px; }
+
+.tabs { display: flex; gap: 6px; }
+.tab {
+    padding: 8px 24px;
+    background: var(--c-bg2);
+    color: var(--c-dim);
+    font-family: inherit; font-size: 16px; letter-spacing: 3px;
+    border-bottom: 3px solid transparent;   /* 未选中：只留位置，不画线 */
+}
+.tab.on {
+    background: var(--c-panel);
+    color: var(--c-accent);
+    border-bottom-color: var(--c-accent);
+}
+
+.panes { position: relative; flex: 1 1 auto; min-height: 0; }
+/* ⚠️ 切页签只切 `.on`：display:none 的页签**不参与布局**，
+ *    所以四个页签的排版互不影响（也不用绝对定位，省掉一堆 inset）。 */
+.pane { display: none; position: absolute; inset: 0; }
+.pane.on { display: block; }
+
+/* ---- 通用排版 ----
+ * ⚠️ `.head` 在 `0.1.0` 是 `position:absolute; top:34px` —— 那是因为当时一屏只有
+ *    "标题 + 垂直居中的内容"，标题钉在顶上就行。
+ *    但内容全是 `justify-content:center`（垂直居中）：内容一高，
+ *    **绝对定位的标题就会压到它上面**（`0.1.1` 里"商店"页签内容最高，最容易撞）。
+ *    ⇒ 改成 `position:static`：标题成为**正常流里的一行**，`.vcenter` 再吃掉剩下的高度。
+ *      两者一个占位、一个铺满，不会再叠。 */
+.head {
+    position: static; margin: 20px 0 0;
+    text-align: center; font-size: 26px; font-weight: bold;
+    color: var(--c-accent); letter-spacing: 4px;
+}
+/* ⚠️ 这里原来有 `.head.tight`（20px 字 + 10px 上边距，`0.2.0` 给商店专用的紧凑版）——
+ *    `0.2.1` **整个类已删**。原因：用户实测指出
+ *    **"商店的标题位置和大小都与其他如角色配置对不上，统一之"**，
+ *    而它当初存在的唯一理由是"商店内容最多，普通 `head` 的 65px 会把内容顶出 720"。
+ *    那个高度问题现在由滚动容器（`.vscroll`）解决了 ⇒ **四屏标题统一用 `.head`**。
+ *    ⚠️ 别再为"省高度"加第二个标题变体：高度已经不是稀缺资源了。 */
+.vcenter {
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+}
+/* ⭐⭐⭐ **长列表的长久方案：滚动兜底**（`0.2.1`）。
+ *
+ * 用户原话：**"考虑到商店可能有许多被动技能和道具，想一个长久的解决方案，
+ * 而不是满了再改一点"**。
+ *
+ * ## 之前为什么是"补丁式"的
+ * 商店 / 角色用的是上面的 `.vcenter`（内容**垂直居中**）。那套在"刚好装得下"时很好看，
+ * 但内容有**硬上限 720px**，而且一溢出就是**上下两头对称裁掉、还滚不动**：
+ *   · `0.2.0`：三层竖排量出 **772px > 720px** ⇒ 改成两列（省掉一半高度）；
+ *   · `0.2.1`：被动 6 → 7 件，又顶到边缘，于是又要量一次高度。
+ * ⇒ 每加一件内容都要回来量高度、挪布局 —— 这就是"满了再改一点"。
+ *
+ * ## 现在：高度**不再是内容量的函数**（两层，见下）
+ * ```
+ * .pane（flex 纵向）
+ *   ├── h2             标题：留在正常流里，**不跟着滚**
+ *   └── .vscroll       外层滚动容器（**兜底**）：flex:1 + overflow-y:auto
+ *         └── .vscroll-in   内容列：margin:auto 0 ⇒ 装得下居中（原样），装不下顶开
+ *               └── #up-passives / #up-items  ← **内层限高框 `.vscroll-list`**（主力，见下）
+ * ```
+ * 用户随后又收紧了用法：**"滚动条（框）可以单独给'被动技能'用，而非整个'商店'"** ——
+ * ⇒ 限高下沉到**那一栏自己**（`.vscroll-list`，5~6 行），外层只当保险。
+ * 加内容只需往 `PASSIVES` / `ITEMS` 表里加一行数据（`buildShop()` 遍历生成），
+ * **CSS 一行都不用动**。结构 + "撑到 47 件也建得出来"有断言守着：`test-screens` ⑳。
+ *
+ * ⚠️⚠️ **`.vscroll-in` 必须用 `margin: auto 0`，不能用 `justify-content: center`**：
+ *    居中属性在**滚动容器里溢出时会裁掉顶部、而且滚不上去**（那部分内容永远够不着）。
+ *    auto margin 不会变负 ⇒ 装不下时自动退化成"从顶部开始排"。
+ * ⚠️⚠️ `.vscroll` 必须在上面 `pointer-events` **放行名单**里：
+ *    `#ui` / `.screen.active` 都是 `pointer-events: none`，不放行的话
+ *    **滚轮事件根本到不了这个容器** —— 表现是"看着能滚，滚不动"。
+ * ⚠️ 只给**内容会长**的两屏用（商店 / 角色）。选关（关卡网格）与设置内容有限，
+ *    继续用 `.vcenter` 居中；哪天关卡多到顶出去，把 `.vcenter` 换成这两个类就行。 */
+#pane-shop.on, #pane-character.on { display: flex; flex-direction: column; }
+.vscroll {
+    display: flex; flex-direction: column;
+    flex: 1 1 auto; min-height: 0;
+    overflow-y: auto; overflow-x: hidden;
+    padding-bottom: 16px;                 /* 滚到底时最后一行不贴着屏幕边 */
+    scrollbar-width: thin;                /* 细滚动条（Firefox / 新版 Chromium） */
+    scrollbar-color: var(--c-line2) transparent;
+}
+.vscroll-in {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; margin: auto 0;          /* ⚠️ 见上：装得下居中、装不下顶开 */
+}
+/* 细滚动条（WebKit / 旧版 Chromium 走这一套；上面那两行新属性它们不认） */
+.vscroll::-webkit-scrollbar { width: 8px; }
+.vscroll::-webkit-scrollbar-track { background: transparent; }
+.vscroll::-webkit-scrollbar-thumb { background: var(--c-line2); }
+.vscroll::-webkit-scrollbar-thumb:hover { background: var(--c-line); }
+
+/* ⭐⭐⭐ **内层滚动框**：滚动条只给"被动技能 / 道具"这两栏用（`0.2.1`）。
+ *
+ * 用户原话（两轮）：
+ *   ① **"我觉得滚动条（框）可以单独给'被动技能'用，而非整个'商店'，
+ *      然后就可以让被动技能一框大约 5~6 个，来降低其所在框的高度了"**
+ *   ② **"确保'被动技能''道具'所在的这个框大小不因其内容改变，
+ *      或者说保持'充满被动道具'的大小"**
+ *
+ * ## 两层各管什么（**别把职责搞混**）
+ * ```
+ * ① 内层 .vscroll-list（主）：**定死**在 5~6 行高 —— 内容多少都一样高，
+ *    于是"商店"整屏**根本不会长高、也不会跳动**；
+ * ② 外层 .vscroll（兜底）：万一还有别的东西把它顶出去（窗口特别小 / 又加了一整块面板），
+ *    至少还能滚得到 —— 内容够得着这件事**永远有保险**。
+ * ```
+ * 两者的区别是**要不要出现滚动条**：内层**经常**出现（内容超过框就有），
+ * 外层**几乎不出现**（只有兜底时才出现）。
+ *
+ * ## 尺寸的算法（改的时候照这个算）
+ *   一行 `.up` ≈ **60px**：上下 padding 7+7 + 两行文字（名字 15px×1.5 与说明 15px×1.5
+ *   = 45px）+ 下边框 1px。
+ *   ⇒ **330px ≈ 5 行整 + 第 6 行的名字露出来**（说明被切）——
+ *      那半行**故意留着**：它就是"下面还有"的提示（比只有一根细滚动条显眼）。
+ *   ⇒ 想要正好 5 行就改 `300px`、正好 6 行改 `360px`（**只有这一个数**）。
+ *   ⚠️ 别用 `100%` / `vh` 之类的相对值：那等于没定尺寸，又退回"整屏滚动"。
+ *
+ * ## ⚠️⚠️ 为什么是 `height` 而**不是** `max-height`（第②轮要求的关键）
+ *   · `max-height` 只在内容**多**时封顶 —— **内容一少（买掉几件）框就跟着缩**，
+ *     于是**每买一件，整个商店都会跳一下**（重建 → 框变矮 → `.vscroll-in` 重新垂直居中）；
+ *   · `height` 是**定死**的 ⇒ **空着也是这么大**，布局一动不动。
+ *   「保持充满时的大小」= 就是下面这个数。想改大小只改它。
+ * ⚠️ 两栏（被动 / 道具）挂的是**同一个类** ⇒ 高度必然一致，不会一高一矮。
+ *
+ * ⚠️⚠️ **它同样必须在 `pointer-events` 放行名单里**（见上面 `.screen.active` 那条）——
+ *    嵌套滚动容器不放行，滚轮事件会被 `#ui` 的 `pointer-events:none` 吃掉。
+ * ⚠️ `padding-right: 6px` 是**给滚动条让位**：不留的话细滚动条会压在价格按钮上。 */
+.vscroll-list {
+    height: 330px;                        /* ⚠️ 定死，不是 max-height（见上），≈5.5 行 */
+    overflow-y: auto; overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-line2) transparent;
+}
+.vscroll-list::-webkit-scrollbar { width: 8px; }
+.vscroll-list::-webkit-scrollbar-track { background: transparent; }
+.vscroll-list::-webkit-scrollbar-thumb { background: var(--c-line2); }
+.vscroll-list::-webkit-scrollbar-thumb:hover { background: var(--c-line); }
+/* 标题 + 版本号 = **一组**（`0.2.0`）。
+ * ⚠️⚠️ 为什么要包一层：`.vcenter` 是 `justify-content:center` 的纵向 flex，
+ *    直接放三个子元素时它们会**均分**剩余空间 —— 那时"版本号↔标题"只隔 6px、
+ *    "版本号↔按钮"却隔了近百 px，版本号看着像**按钮的说明**而不是标题的附属
+ *    （用户原话："把标题界面的版本号上移一点，更接近标题而非开始按钮"）。
+ * ⚠️ 只调 `.version` 的 `margin` 是**做不到**这件事的：那会把两侧间距一起改。
+ *    ⇒ 分包之后，组内贴紧、组外靠 `margin-bottom` 拉开，两个间距可以分别调。 */
+.title-block {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 36px;          /* 这一组与「开始」按钮之间的留白 */
+}
+.title {
+    font-size: 68px; font-weight: bold; letter-spacing: 10px;
+    color: var(--c-accent); text-align: center;
+}
+/* 标题屏的版本号（顶掉了原来的副标题）。
+ * ⚠️ 界面显示**不带 `v`**（与文档统一）；值由 `GAME_VERSION` 填，别在这里写死。 */
+.version { color: var(--c-dim); margin-top: -10px; text-align: center; letter-spacing: 2px; font-size: 18px;}
+
+/* ---- 选关：关卡方块网格（样式参照《十万流明》的选关界面） ----
+ * 参照点：方块等大、`flex-wrap` 换行、整体居中；方块里**只有一个数字**。
+ * 本项目多两件事：`.locked` 未解锁（压暗 + 显示"锁" + 不可点）、`.cleared` 已通关（角上一颗 ★）。
+ * ⚠️ 尺寸用**固定 px**，不跟舞台缩放 —— 与现有菜单一致。 */
+.lv-grid {
+    display: flex; flex-wrap: wrap;
+    justify-content: center; align-content: center;
+    /* ⭐ **一行 4 个**（`0.2.1` 用户："关卡4个一行"）。
+     * ⚠️⚠️ 这个宽度**不是随便给的**，它是"一行几个"的**唯一决定因素**（flex-wrap 按它折行）：
+     *    一行 n 个 = `n × (方块 64 + 左右边距 2×10)` = `n × 84`
+     *      · 4 个 ⇒ **336**（现在）
+     *      · （历史：5 个 ⇒ 420）
+     *    ⇒ **改方块尺寸或边距时，必须回来重算这个数**，否则一行会变成 3 个或 5 个。
+     *    `test-screens` 里有一条断言按这个公式核算（改坏了会红）。 */
+    width: 336px;
+    margin: 0 auto;
+}
+.lv-block {
+    position: relative;
+    width: 64px; height: 64px;
+    margin: 10px;
+    border: 2px solid var(--c-line);
+    background: var(--c-bg2);
+    color: var(--c-text-hi);
+    font-size: 26px; font-weight: bold;
+    line-height: 60px;                /* 60 = 64 - 上下边框 2×2 → 数字垂直居中 */
+    text-align: center;
+    cursor: pointer;
+}
+
+/* ---- 间距工具类 ----
+ * ⚠️⚠️ 这几个类**以前只写在 HTML 里、CSS 里根本没有**（`mt16` / `mt24` / `mt28`）。
+ *    于是它们一直**等于没写**：设置页的「返回标题」按钮紧贴着上面的面板，
+ *    各个 `.panel` 之间也是贴着的 —— 用户报"不要贴在上面那个元素下面"就是这个原因。
+ *    ⇒ 现在补齐。以后用 `mt*` 之前先确认这里真的有。 */
+.mt8  { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.mt24 { margin-top: 24px; }
+.mt28 { margin-top: 28px; }
+
+/* ---- 商店的两列布局 ----
+ * ⚠️ 为什么需要：商店要放"属性提升 + 槽位 + 被动技能"三栏，
+ *    竖着堆在 720 高里**放不下** —— 三块面板合计约 550px，
+ *    再加页签标题 65px 与面板间距就顶出去了（实测溢出）。
+ *    ⇒ 两列并排，高度直接省一半。
+ * ⚠️ `align-items: start`：两列各自从顶部排，不会因为一列高就把另一列拉长。 */
+.shop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 28px;
+    align-items: start;
+}
+/* ⭐⭐ **商店两行都是 1:1 等宽**（`0.2.0`，用户要求
+ *    "现在属性那栏和槽位那栏的比例不对（**回到 1:1**）"）。
+ *
+ * ⚠️⚠️ 我一度把上面那一行改成 `auto 1fr`（按内容分列）来治"数值换行"——
+ *    那是**用错了药**：换行的真正原因是**面板太窄**（760 → 每列 346px），
+ *    而 `auto 1fr` 顺带把两列比例也改了（属性列被压窄、槽位列变宽）。
+ *    ⇒ 定稿：**列宽恢复 1:1**，宽度靠 `.w860` 解决（那一处已够）。
+ * ⚠️ 两个类都留着（`-fit` / `-even`）是**故意的**：
+ *    · 现在**取值相同**，但它们表达的是**两件不同的意图** ——
+ *      `-fit` 那一行将来若再加一列窄内容，可以单独改而不动下面；
+ *      `-even` 那一行（被动 / 道具）是内容对等的两列，本来就该平分。
+ *    ⚠️ 合并成一个类的前提是"两行的分列策略永远一致"—— 那不是现在的事实。
+ * ⚠️ `minmax(0, 1fr)` 里的 `0` 不能省：grid 子项默认 `min-width: auto`，
+ *    不给 0 的话长内容会把列**撑破**容器而不是收缩。 */
+.shop-grid-fit,
+.shop-grid-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* 占位格：让「被动技能」那一栏的两列宽度与上面一行对齐（本身不放内容） */
+.shop-spacer { visibility: hidden; }
+
+/* 已通关：数字右上角一个 ★（用伪元素，不占方块里的排版） */
+.lv-block.cleared::after {
+    content: '★';
+    position: absolute; right: 1px; top: -3px;
+    font-size: 13px; line-height: 1;
+    color: var(--c-accent);
+}
+/* 未解锁：压暗 + 不可点（边框与文字都退到"禁用"色） */
+.lv-block.locked {
+    border-color: var(--c-line3);
+    color: var(--c-line2);
+    background: var(--c-sunken);
+    cursor: not-allowed;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+/* 鼠标设备才有悬停反馈（能力分支，与光标策略同一套写法） */
+@media (hover: hover) and (pointer: fine) {
+    .lv-block:not(.locked):hover { border-color: var(--c-accent); }
+}
+/* 顶部 ★ 计数框 */
+.lv-star {
+    width: 200px; height: 34px; margin: 0 auto 14px;
+    border: 2px solid var(--c-line);
+    color: var(--c-accent);
+    font-size: 17px; line-height: 30px; text-align: center;
+}
+/* 网格下方的额外入口（测试场） */
+.lv-extra { margin-top: 6px; text-align: center; }
+
+/* ---- 面板与行 ----
+ * ⚠️⚠️ **宽度一律写成"弹性"形式**（`0.2.0` 手机适配时改的）：
+ *    `width: Npx; max-width: calc(100% - 2 * PAD)` —— 想宽就宽，
+ *    但**永远不许超出舞台**。原来只有 `width: Npx`，于是：
+ *      · 上一轮把商店加宽到 860 之后，它占了舞台的 **67%**，
+ *        两边各只剩 210 逻辑像素 ⇒ 用户实测反馈 **"关卡外布局太挤"**
+ *      · 而固定 px 在窄屏上还可能**顶出舞台**（没有上限）
+ *    ⇒ 现在两边都有保障：宽屏上"留白够"，窄屏上"不溢出"。
+ *    ⚠️ 加宽面板时**先看它占舞台多少**（1280 是分母），别只盯着内容放不放得下。 */
+.panel {
+    background: var(--c-panel);
+    border-left: 4px solid var(--c-line);
+    padding: 14px 18px;
+    max-width: calc(100% - 48px);
+}
+.w520 { width: 520px; }
+.w760 { width: 760px; }
+/* ⭐⭐ **商店专用的宽面板**（`0.2.0`）。
+ * ⚠️⚠️ **不要直接改 `.w760`**：它是选关 / 角色 / 商店**共用**的类（5 处），
+ *    改它会把角色页签那三块也一起变宽 —— 而那三块本来没有换行问题，
+ *    属于"改了不该改的"。⇒ 新增一个类，只挂在商店那两块上。
+ * ⚠️ 为什么要更宽：商店的行是"名字 + 数值 + 按钮"三段，
+ *    760 时每列只有约 346px，「槽位」列（90+35+96+间距≈235）尚可、
+ *    但「属性」列的值一旦是**亮色正文**（不再是小号暗灰角标）就会被挤到第二行
+ *    —— 正是用户报的"数字单独换行"。
+ * ⚠️⚠️ **但别再加宽了**：860 已经是"够用 + 不挤"的平衡点
+ *    （占舞台 67%，两边各 210）。用户对更宽的面板反馈过"太挤"。 */
+.w860 { width: 860px; }
+.pane-title { color: var(--c-dim2); font-size: 14px; letter-spacing: 2px; margin-bottom: 8px; }
+/* ⭐ 这里原来有 `#btn-quit`（关卡内「退出关卡」按钮）的样式 ——
+ *    用户 2026-10-05 把按钮删了（Esc 足够 ✔）⇒ 样式一并删掉 ✔。 */
+
+/* 选卡被拒绝时的提示（如"最多带 3 个"）。
+ * ⚠️ 用 min-height **常驻占位**：提示出现/消失时下面的面板不会上下跳。
+ *    （不是"留空就不占高度"——它一直占着 22px，这是有意的。） */
+.pick-hint {
+    min-height: 22px; margin-bottom: 6px;
+    color: var(--c-warn, #e0a05a); font-size: 14px; letter-spacing: 1px;
+}
+.row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; padding: 5px 0;
+    border-bottom: 1px solid var(--c-hr);
+}
+.row:last-child { border-bottom: none; }
+.tag { color: var(--c-line2); font-size: 13px; }
+
+/* ---- 按钮 ---- */
+.btn-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.btn {
+    min-width: 200px; padding: 10px 22px;
+    background: var(--c-bg2);
+    border-left: 4px solid var(--c-accent);
+    color: var(--c-text-hi);
+    font-family: inherit; font-size: 17px; letter-spacing: 2px;
+}
+.btn.ghost { border-left-color: var(--c-line); color: var(--c-dim2); }
+/* ⭐⭐ **横排按钮**（`0.2.0` 加，给设置页签的「返回标题 / 删除存档」那一行用）。
+ *
+ * ⚠️ 原来只有竖排的 `.btn-col`，两个按钮并排会**顶到容器外面**：
+ *    `.btn` 是 `min-width: 200px`，面板 `w520` 扣掉内边距只剩约 460px，
+ *    两个 200px 的按钮再加间距就超了。⇒ 横排时把 `min-width` 放开、让它们平分。
+ * ⚠️ 用 `flex: 1`（平分）而不是固定宽度：以后加第三个按钮也不用改这里。 */
+.btn-row {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.btn-row .btn { min-width: 0; flex: 1 1 0; padding: 10px 12px; }
+/* 「删除存档」的二次确认态：第一次点击后变色并显示「确认删除」（见 ui.js）。
+ * 不用弹窗——弹窗要多一层界面，而这一步用颜色就够表达"待确认"。 */
+.btn.ghost.arming { border-left-color: var(--c-warn); color: var(--c-warn); }
+.btn.small { min-width: 96px; padding: 5px 14px; font-size: 15px; }
+/* ⭐⭐ **设置页里那两颗开关必须真正等宽**（用户 2026-10-05：
+ *    "我说都改回，现在血条开关比下面那个窄了" ✗）。
+ *    为什么 96px 会不等：`min-width` 只是下限 ✗ —— 文字更长的那个（「像素对齐」4 个字）
+ *    会把按钮**撑过 96px**（约 100px），于是「关」那颗看起来就窄了一截 ✔。
+ *    ⇒ 给这一列的开关一个**共同下限 110px**（够放下 4 个汉字 + 内边距 ✔，又不至于像 200px 那样宽 ✗）。
+ *    ⚠️ 只作用于 `.row` 里的 `.btn.small` ✗（标题屏 / 帮助框的小按钮不受影响 ✔）。 */
+.row .btn.small { min-width: 110px; }
+/* ⚠️ 这里曾经加过 `.row .btn.small { min-width: 200px }`（想让设置页的开关按钮和下面的大按钮一样宽 ✗）——
+ *    用户 2026-10-05 复查："**设置按钮又太宽了，都改回上一轮「画面缩放」的切换按钮的宽度**" ✗
+ *    ⇒ 已撤掉 ✔：这一列回到 `.btn.small` 自己的 `min-width: 96px` ✔（两颗开关宽度**彼此一致** ✔）。 */
+/* ⭐ 开关类按钮的「已开启」态（用户 2026-10-01 定的「小怪血条」开关）。
+ * ⚠️ 关着时是普通按钮（强调色左边框），开着时**整块底色变亮** ——
+ *    光靠文字「显示 / 隐藏」也能读懂，但一眼扫过去时颜色更快。
+ * ⚠️⚠️ 可用变量只有 `--c-accent` / `--c-accent2`（**没有** `--c-accent-dim`）——
+ *    我第一版写了个不存在的变量名，会**静默失效**（CSS 里未定义的 `var()` 不报错，
+ *    只是整条声明作废）。改这里时先确认变量在 `:root` 里真的存在。
+ * ⚠️⚠️ 文字**必须用深色**（`--c-bg`）：底色是亮金黄 `#e4c607`，
+ *    配 `--c-text-hi` 的白字对比度极低、基本看不清 —— 第一版就是这么写的。
+ *    「亮底配深字」在这一套暗色主题里也只有开关这一处，所以显式写出来。 */
+.btn.on {
+    background: var(--c-accent2);
+    border-left-color: var(--c-accent);
+    color: var(--c-bg);
+}
+.btn.disabled { border-left-color: var(--c-line); color: var(--c-line2); }
+.btn.wide { min-width: 100%; }
+
+/* ---- 配置屏的选择格 ---- */
+.pick { display: flex; flex-wrap: wrap; gap: 10px; }
+.card {
+    width: 172px; padding: 9px 11px;
+    background: var(--c-bg2);
+    border-left: 3px solid var(--c-line);
+}
+.card.on { border-left-color: var(--c-accent); background: var(--c-card-on); }
+.card.locked { border-left-color: var(--c-line3); color: var(--c-line2); }
+.card-name { color: var(--c-text-hi); font-size: 15px; }
+.card-desc { color: var(--c-dim); font-size: 12.5px; margin-top: 3px; }
+
+/* ---- 成长屏 ---- */
+.up {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--c-hr);
+}
+.up:last-child { border-bottom: none; }
+.up-name { color: var(--c-text-hi); }
+.up-val { color: var(--c-dim); }
+/* ⭐⭐ **同一行右侧的数值/标签**（`0.2.0`，用户要求
+ *    "「属性提升」改「属性」，下面那些数字不要单独换行"）。
+ *
+ * ⚠️⚠️ 为什么需要这一条：`.up` 是 `justify-content: space-between` 的 flex，
+ *    左边那块（`<div>` 包着名字）**默认可以换行**，于是内容一宽就变成
+ *    "名字一行、数值一行" —— 这正是用户看到的现象。
+ * ⚠️ 判据用 `.up > div`（**直接子元素**才是左侧那一块）：
+ *    写成 `.up div` 会把里面的 `.up-name` / `.up-val` 也一起选中。
+ * ⚠️ `min-width: 0` 是配套的：flex 子项默认 `min-width: auto`，
+ *    光加 `nowrap` 在某些浏览器上仍会溢出而不是收缩。
+ * ⚠️ 右侧的 `.tag` / `.up-num` 也一起 nowrap（它们本来就是短标签，不该折）。 */
+.up > div { white-space: nowrap; min-width: 0; }
+.tag, .up-num { white-space: nowrap; }
+/* 「属性」那一栏的**只读数值**（同行显示）。
+ * ⚠️ 它**不是** `.tag`：`.tag` 是 `--c-line2`（`#535353`，亮度 83）的**角标**，
+ *    用在"按等级 / 已满"那种注释上；而属性数值是要读的**正文**，
+ *    必须和名字同档亮度（`--c-text-hi`），否则又回到用户报的"属性文字太淡"。
+ * ⚠️ 所以它单独一个类比"复用 .tag"更准确 —— 语义不同，别为省一行 CSS 硬套。 */
+.up-num { color: var(--c-text-hi); }
+
+/* ---- 结算 / 帮助覆盖层 ----
+ *
+ * ⚠️⚠️ **必须自己重新打开 `pointer-events`**（`0.2.0`，用户实测"帮助的返回点不了"）。
+ *
+ *    它是 `#ui` 的子级，而 `#ui` 是 `pointer-events: none`（**故意**的：
+ *    整层要透过去让 canvas 收到瞄准/开火）。别的子树各自重新打开了：
+ *      · `.screen.active button / .card / .btn / …` → `auto`
+ *    但这两种覆盖**都不管 `.result`**（它是 `.screen` 的**兄弟**，不是后代）——
+ *    ⇒ 整层不透光，点「返回」时事件**穿过覆盖层**落到下面的标题界面按钮上。
+ *
+ *    ⚠️ 表现容易误判成"按钮坏了"：按钮看得见、样式正常、`onclick` 也挂上了，
+ *      只是**根本收不到事件**。`pointer-events` 是**继承属性**，
+ *      祖先写了 `none`、后代不重新打开，整棵子树就都是死的。
+ *    ⚠️ 别只给按钮加 `auto`：那样**面板本身仍然"不存在"**，
+ *      点面板空白处 / 半透明背景也会穿到后面去（会误触底下的按钮）。
+ *      ⇒ 覆盖层整体 `auto`，让它像真正的弹窗那样**挡住下层**。 */
+.result {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: #14161ad9;
+    pointer-events: auto;
+    /* ⚠️⚠️ **必须明确写 `default`，不能靠继承**（`0.2.0` 修"鼠标永远是手掌"）：
+     *    `cursor` 是继承属性，而这条覆盖层现在吃指针事件了 ⇒
+     *    只要**任何一条**规则给 `#result` 或它的祖先设了 `pointer`，
+     *    整层（含面板文字、四行结算数据）就会全变手掌。
+     *    ⇒ 在这里钉死 `default`，把"可点"的表达留给 `button` / `.btn` 自己。
+     *    ⚠️ 同理提醒：以后给某个容器打开 `pointer-events` 时，
+     *      **顺手也要看一眼它的 `cursor`** —— 不然会"唤醒"一批原本死掉的样式。 */
+    cursor: default;
+}
+.hidden { display: none !important; }
+
+/* ---- 诊断面板（F1 开关）---- */
+.debug {
+    position: absolute; left: 8px; top: 8px;
+    padding: 8px 10px;
+    background: #000000cc;
+    color: var(--c-heal);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 13px; line-height: 1.6;
+    white-space: pre;
+    pointer-events: none;
+    z-index: 99;
+}
+
+/* ============ 关卡内 HUD（DOM 文字，按屏幕分辨率渲染 → 放大也清晰） ============
+ * 为什么用 DOM：canvas 内部分辨率固定 1280×720，汉字画进去再放大会糊；
+ *               DOM 文字由浏览器按真实设备像素绘制，放大多少都清楚。
+ * 布局：#hud 在 #stage 的逻辑坐标系里，所有尺寸 × --hud-scale（= 缩放倍率）。
+ * ⚠️ 必须 pointer-events:none，否则会挡住 canvas 的开火判定。
+ */
+#hud {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    --hud-scale: 1;
+}
+body:not(.in-game) #hud { display: none; }
+
+/* ⭐⭐ **左侧留出图标的宽度**（用户 2026-10-05："对齐双条"）：
+ *    两条状态条的**图标挂在条外侧左边**（`.hud-bar-icon` 的 `left: -24px` ✗）⇒
+ *    如果 `.hud-left` 还贴在 `16px`，图标会**有一半跑到屏幕外** ✗（实测 ✔）。
+ *    ⇒ 左移量 16 → **40px**（= 16 + 24 ✔）⇒ 图标完整可见，两条条子的左边缘仍然对齐 ✔。 */
+.hud-left { position: absolute; left: calc(40px * var(--hud-scale)); top: calc(14px * var(--hud-scale)); }
+.hud-right {
+    position: absolute; right: calc(16px * var(--hud-scale)); top: calc(14px * var(--hud-scale));
+    text-align: right;
+    /* ⭐⭐ 竖着排一列（用户 2026-10-02："右上角的那个进度和波次，文字也用一样的边框效果，
+     *    顺便带上退出按钮让布局好看一些"）⇒ 文字牌与按钮牌**同宽同风格**，右对齐成一列 ✔ */
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: calc(6px * var(--hud-scale));
+}
+.hud-line {
+    /* ⭐⭐ 用户 2026-10-02 澄清："**我指的边框是文字的硬描边**" ⇒
+     *    这里要的是**四向硬描边**（与 `.hud-bar-txt` / 槽位按键数字同一套），
+     *    不是在外面套一层牌 ✗（那版已撤）。
+     * ⚠️ 描边用 `text-shadow` 四向各 1px（× `--hud-scale`）：
+     *    不能用 `-webkit-text-stroke` —— 那是"往字形里描"，笔画细的字会糊成一团 ✗。 */
+    font-size: calc(15px * var(--hud-scale));
+    color: var(--c-dim2);
+    line-height: 1.7;
+    text-shadow: 0 calc(-1px * var(--hud-scale)) 0 #000, 0 calc(1px * var(--hud-scale)) 0 #000,
+                 calc(-1px * var(--hud-scale)) 0 0 #000, calc(1px * var(--hud-scale)) 0 0 #000;
+}
+/* ⚠️ 亮色那半边（`<b>` 里的数字）**也继承描边** —— 否则"进度 4 / 8"里 4 有边、"/" 没边，看着断 ✔ */
+.hud-line b { text-shadow: inherit; }
+.hud-line b { color: var(--c-text-hi); font-weight: normal; }
+
+.hud-bar {
+    position: relative;
+    /* ⭐ 基准长度 260 → **180**（用户 2026-10-05："把条都变短一些"）。
+     *    ⚠️ 长度**只随"能量/生命比例"变** ✗：生命条恒为这个基准 ✔，
+     *      能量条 = 基准 × `--mp-ratio` ✔ —— **数值的绝对值涨不会让条变长** ✔。 */
+    width: calc(180px * var(--hud-scale));
+    height: calc(20px * var(--hud-scale));
+    background: var(--c-bar-bg);
+    /* ⭐⭐ 边框 **1px → 2px**（`0.3.0` 画风统一，用户 2026-10-02："①的前两项改"）。
+     *    理由：1px 是"线"的粗细里最细的一档，在 `--hud-scale`（**小数**，例如 ×1.24）下
+     *    会被拆到两个物理像素上做**抗锯齿** ⇒ 边是"毛"的，而画布里的块边是硬的（最近邻）。
+     *    ⚠️ 2px 不是"数值对齐"的意思 —— 是**看起来更硬**：2px 在 ×1.24 下是 2.48px，
+     *      抗锯齿的影响仍小于 1px（1px 时几乎一半的边是半透明的）。
+     *    ⚠️ 想彻底硬边只有两条路：整数倍缩放（用户说"等会说"）或 HUD 不跟舞台缩放。 */
+    border: 2px solid var(--c-line);
+    margin-bottom: calc(6px * var(--hud-scale));
+}
+/* ⭐⭐ **两条状态条各自的框色**（用户 2026-10-05：生命条框 `#d83a3a`、能量条框用**深能量色** ✗）。
+ *    ⚠️ 默认那条 `border: 2px solid var(--c-line)` 只是**兜底** ✗ —— 这两条各自覆盖 ✔。
+ *    ⚠️ 生命条没有单独的类 ✗ ⇒ 用 `:not(.thin)` 选中它（能量条带 `.thin` ✔），
+ *      这样 `index.html` 一个字都不用改 ✔。 */
+.hud-bar:not(.thin) { border-color: var(--c-hp-edge); background: var(--c-hp-bg); }
+/* 能量条的空色见 .hud-bar.thin 那段 */
+/* ⚠️ `.hud-bar.thin` = **能量条**（`index.html` 里第二个条，`hud-mp-fill` 那个）——
+ *    它比生命条矮一档。高度现在是 **15**（奇数）：用户 2026-10-02 问"第 3 项具体是什么"，
+ *    答案是"能量条的高度"，**这一项本轮先不改**（与用户说的"第 4 项先不改"同类，等一起定）。 */
+/* `.hud-bar.thin` = **能量条**（`index.html` 里第二个条，装 `hud-mp-fill` 那个）。
+ * ⭐ `0.3.0` 画风统一：高度 **15 → 14**（用户 2026-10-02："能量条改 14"）。
+ *    ⚠️ 15 是奇数 ⇒ 与其它偶数尺寸并排时不齐；14 仍明显比生命条（20）矮一档。 */
+/* ⭐⭐ 能量条（用户 2026-10-05）：**厚度与生命条相等**（原来 14 ✗，比生命条的 20 矮一档 ✗），
+ *    **长度按数值与生命条成比例** —— 用 `--mp-ratio`（= `mpMax / hpMax`，由 `hud.js` 写入 ✔）
+ *    去乘基准宽度 ⇒ 两条条子变成**同一个单位**：10 点生命与 5 点能量 ⇒ 后者正好一半长 ✔。
+ * ⚠️ 厚度写死成与 `.hud-bar` 相同的 20px —— 两处必须**一起改** ✗（否则又会出现"两条不一样厚" ✔）。
+ * ⚠️ `--mp-ratio` 由 JS 设（`mpMax`/`hpMax` 会随等级变 ✗），并有**上限夹取**防长条顶到右边 ✔。 */
+.hud-bar.thin {
+    height: calc(20px * var(--hud-scale));
+    width: calc(180px * var(--hud-scale) * var(--mp-ratio, 1));
+    /* ⭐ 能量条的框 = **深能量色**（用户 2026-10-05）✔ */
+    border-color: var(--c-mp-dark);
+    /* 能量条的「空」色（用户 2026-10-05）✔ */
+    background: var(--c-mp-bg);
+}
+/* ⭐⭐ **条左侧的像素图标**（用户 2026-10-05）。
+ *    ⚠️ 放在条的**外面**（`left: -22px` ✗）⇒ 条本身的宽度/坐标一个都不用改 ✔，
+ *      也不占条内部的位置（文字仍居中 ✔）。20px = 10 美术像素 × `PIXEL` ✔，与条同高 ✔。 */
+.hud-bar-icon {
+    position: absolute;
+    left: calc(-24px * var(--hud-scale));
+    /* ⚠️⚠️ **`top` 必须抵消上边框**（用户 2026-10-05："我感觉图标还是比框低了 1 美术像素"）——
+     *    绝对定位子元素的包含块是**定位祖先的 padding box** ✗ ⇒ `top: 0` 其实落在 **2px 边框的内侧** ✗；
+     *    而 `.hud-bar` 是 `box-sizing: border-box`（总高 20 = 内容 16 + 上下边框 2+2 ✗）
+     *    ⇒ 图标整体下移 **2px = 1 美术像素** ✔ —— 与用户看到的一模一样 ✔。
+     *    ⇒ 用 `-边框宽` 抵回来：图标上边缘与条的**外**上边缘齐平 ✔，20px 的图标正好铺满 20px 的条 ✔。
+     * ⚠️⚠️ **这个 2px 绝不能乘 `--hud-scale`**（用户 2026-10-05 复查："现在高了**不到一个逻辑像素**，
+     *    我用 16 倍放大镜看了"）—— 原因：`.hud-bar` 的 `border: 2px` **本身没乘任何系数** ✗，
+     *    而 `top` 和它**在同一个坐标系里**（都在 `#ui` 的 `zoom` 空间内 ✗）⇒
+     *    写成 `calc(-2px * var(--hud-scale))` 时，`--hud-scale` = 1.25 就会补偿成 **-2.5px** ✗，
+     *    比实际边框多 0.5px ⇒ 图标**偏高 0.5 个逻辑像素** ✗ ✔ —— 正是用户量到的那点偏差 ✔。
+     * ⚠️ 以后改边框宽度时这里要**一起改** ✗（值 = 边框宽本身，不带系数 ✗）。 */
+    top: -2px;
+    width: calc(20px * var(--hud-scale));
+    height: calc(20px * var(--hud-scale));
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+.hud-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; }
+.hud-bar-fill.hp { background: var(--c-hp); }
+.hud-bar-fill.mp { background: var(--c-mp); }
+.hud-bar-txt {
+    /* ⭐⭐ **数字在条的右边**（用户 2026-10-05："双条里的文字不要了，数字移到框右边"）。
+     *    ⚠️ 绝对定位的包含块是条的 padding box ✗ ⇒ `left: 100%` 是"内容区右缘" ✗，
+     *      还要再加上**右侧边框 2px** 才到条的**外**右缘 ✔（与 `.hud-bar-icon` 的 `top: -2px` 同一道理 ✗）。
+     *    ⚠️ `white-space: nowrap` 必须留着：`12 / 20` 折行会变成两行 ✗。 */
+    position: absolute; left: calc(100% + 2px + 8px * var(--hud-scale)); top: 0; bottom: 0;
+    display: flex; align-items: center;
+    white-space: nowrap;
+    font-size: calc(13px * var(--hud-scale));
+    color: var(--c-white);
+    /* ⭐⭐ 文字阴影：**柔化 → 硬描边**（`0.3.0` 画风统一，用户 2026-10-02："①的前两项改"）。
+     *    原来 `0 0 2px #000` 是**模糊阴影**（`blur = 2px`）—— 全项目唯一一处"柔化"手法，
+     *    和像素风不一致。改成**四方向 0 模糊**的硬描边：作用一样（压在血条上还看得清），
+     *    但边缘是硬的。
+     *    ⚠️ 四个方向的 `text-shadow` 是**硬描边**的常规写法；`0 0 2px` 那种带 blur 的才是柔化。
+     *    ⚠️ 若嫌四行太长，也可以整条删掉 —— 代价是文字压在亮色填充上时对比度下降。 */
+    text-shadow: calc(-1px * var(--hud-scale)) 0 0 #000,
+                 calc(1px * var(--hud-scale)) 0 0 #000,
+                 0 calc(-1px * var(--hud-scale)) 0 #000,
+                 0 calc(1px * var(--hud-scale)) 0 #000;
+}
+
+.hud-bottom {
+    /* ⭐⭐ **底部居中排开**（用户 2026-10-02："主动技能和道具都在底部居中位置排开"）。
+     * ⚠️ 原来是 `left: 16px`（左下角）✗；道具另有 `#hud-item { right: 16px }`（右下角）✗。
+     *    现在：道具槽在 `hud.js` 里**并进同一行**（`#hud-slots` 的最后一位）✔，
+     *    整行用 `left: 50%` + `translateX(-50%)` 居中 ✔（这样槽位数变化也不会偏 ✔）。 */
+    position: absolute; left: 50%;
+    bottom: calc(14px * var(--hud-scale));
+    transform: translateX(-50%);
+    display: flex; align-items: center;
+    gap: calc(8px * var(--hud-scale));
+}
+
+/* ⭐⭐ **技能槽 / 道具槽 = 正方形**（`0.2.0`，用户要求"关卡内主动技和道具框改正方形"）。
+ *
+ * ⚠️⚠️ 原来是 **94×62 的横向矩形**。改正方形时**高度不能照抄旧值** ——
+ *    有两处依赖它，必须一起改：
+ *      ① 这里的 `width` / `height`（两个值相等才是正方形）
+ *      ② `hud.js` 里冷却遮罩的基准高度（原来是写死的 **62**，见那里的说明）
+ *    ⚠️ `.hud-slot .mask` 本身不写死高度（由 JS 给 px），所以那一块不用动。
+ * ⚠️ 取 **74** 的理由：内容约需 13+3+14+12 = 42px 行高，加上下内边距 10px
+ *    ⇒ **62 是"刚好够"的下限**；而 4 个槽并排（`#hud-slots` 是 flex，
+ *    左 16px + 4×74 + 3×8 间距 = 336px）在 1280 逻辑宽下还很宽松，
+ *    再往上加就只是变大、没有额外好处 ⇒ **74 是"够内容 + 不臃肿"的值**。
+ * ⚠️ 观感上正方形比扁矩形更像"按键"，也接近多数躲弹游戏的道具栏。 */
+.hud-slot {
+    /* ⭐⭐ 尺寸 = **20 美术像素 × PIXEL(2) = 40px**（用户 2026-10-02：
+     *    "框的比例不对，太大了，像素画是 20*20 的"）。
+     *    原来写的 74px 是**旧的文字槽**尺寸 ⇒ 把 20px 的牌拉到 3.7 倍（非整数 ⇒ 糊）✗。
+     * ⚠️ 旧外观（背景色块 + **左侧黄色竖条** + 内边距）全部删掉：
+     *    用户："框左侧的黄色竖条（原来的元素）没有删掉" ✗。 */
+    position: relative;
+    width: calc(40px * var(--hud-scale));
+    height: calc(40px * var(--hud-scale));
+}
+/* ⭐ 按键数字（用户 2026-10-02："在每个技能框/道具框上加对应的按钮数字"）。
+ *    放在框**内右下角**；字号小 + 四向硬描边（与 `.hud-bar-txt` 同一套做法）⇒ 压在图上也看得清 ✔。
+ *    ⚠️ 数字从 `hud.js` 来（技能 = 槽位 + 1、道具 = `E`），与 `core.js` 的 `Digit1..5` / `KeyE` 对应 ✔。 */
+.hud-slot-key {
+    position: absolute;
+    right: calc(1px * var(--hud-scale));
+    bottom: 0;
+    font-size: calc(11px * var(--hud-scale));
+    line-height: 1;
+    color: var(--c-text-hi);
+    text-shadow: 0 calc(-1px * var(--hud-scale)) 0 #000, 0 calc(1px * var(--hud-scale)) 0 #000,
+                 calc(-1px * var(--hud-scale)) 0 0 #000, calc(1px * var(--hud-scale)) 0 0 #000;
+    pointer-events: none;
+}
+/* ⭐⭐ **不可用 = 变灰**（用户 2026-10-02："技能不可用用灰色"）。
+ *    判据就是 `sync()` 里的 `ready`（冷却好了**且**蓝够）⇒ 没有 `.ready` 就是不可用 ✔
+ *    （冷却中、蓝不够、空槽三种情况都落在这里 ✔）。
+ *    ⚠️⚠️ 用户 2026-10-02 澄清："**我指按钮数字/字母变灰，不是背景变**" ⇒
+ *      **只改数字的颜色**：牌、图标、两侧半框都**不动** ——
+ *      牌/图标是"这是什么技能"（灰了就认不出 ✗）、半框是"还差多少"（灰了看不出进度 ✗）。
+ *    ⚠️ 描边（`text-shadow`）保留：数字压在图上，没描边会看不清 ✔；
+ *      也**不要**用 `opacity` —— 那会把描边一起变淡，反而更糊 ✗。 */
+.hud-slot:not(.ready) .hud-slot-key {
+    color: var(--c-dim);
+}
+/* HUD icon (0.3.0): skill icons are 16x16 art px, item icons 7x7 => shown at 2x integer scale. */
+.hud-slot-icon {
+    display: block;
+    width: calc(32px * var(--hud-scale));
+    height: calc(32px * var(--hud-scale));
+    pointer-events: none;   /* no margin-top: the icon goes FIRST in the slot (see hud.js) */
+}
+/* 旧的“就绪/冷却”靠**左侧色条**表达 ⇒ 已删除（现在靠两侧半框） */
+.hud-slot-frame {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    image-rendering: pixelated;
+}
+.hud-slot-ring {
+    /* ⭐ **贴着框的外侧**（用户 2026-10-02："让进度条贴合框的外侧"）。
+     * 原来写的是 `-4px` 内缩 + `+8px` 尺寸 ⇒ 半框漂在框外 **4px** 处（有缝 ✗）。
+     * 现在盒子**与框同大同位** ⇒ 路径正好贴着框的边，
+     * 而笔画的一半落在框**外侧** ⇒ 正好“包着框”的观感 ✔。
+     * ⚠️ `overflow: visible` 不能去 —— 否则外半边笔画会被 SVG 自己裁掉 ✗。 */
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+.hud-slot-ring path {
+    fill: none;
+    /* viewBox 是 100 × 100、盒子是 40px ⇒ 笔画 7.5 个 viewBox 单位 = **3px**（与框的边粗细相称） */
+    /* ⭐ **宽度 = 1 美术像素**（用户 2026-10-02）：
+     * 盒子是 40px、viewBox 是 100 ⇒ 1 美术像素 = 2px = **5 个 viewBox 单位** ✔。
+     * ⚠️ 用 viewBox 单位而不是 px ⇒ --hud-scale 变化时粗细**按同一比例缩放**（始终是 1 美术像素）✔。 */
+    stroke-width: 5;
+    /* ⭐ **平头**（utt）：方头（square）会把笔画在端点外**再延一个半宽**（1px），
+     *    于是 100% 时看起来**越过了上边中点、偏右**（用户 2026-10-02 实测 ✗）。
+     *    平头则**端点就是端点** ⇒ 100% 正好停在上边中点 ✔。
+     * ⚠️ 转角处是“接头”不是“端头” ⇒ 不受影响，四个角仍然是方的 ✔。 */
+    stroke-linecap: butt;
+}
+.hud-slot-ring.left path  { stroke: var(--c-white); }   /* 冷却：白（用户 2026-10-02） */
+.hud-slot-ring.right path { stroke: var(--c-mp-dark); } /* 能量：**深**能量色（用户 2026-10-02） */
+/* 道具：**两边都是剩余次数比例** ⇒ 两边都用白色 */
+.hud-slot.item .hud-slot-ring path { stroke: var(--c-white); }
+.hud-slot-icon {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+}
+.hud-slot .k { font-size: calc(13px * var(--hud-scale)); color: var(--c-dim); }
+.hud-slot.ready .k { color: var(--c-accent); }
+.hud-slot .n { font-size: calc(14px * var(--hud-scale)); color: var(--c-dim2); margin-top: calc(3px * var(--hud-scale)); }
+.hud-slot.ready .n { color: var(--c-text-hi); }
+.hud-slot .d { font-size: calc(12px * var(--hud-scale)); color: var(--c-dim); }
+.hud-slot .mask {
+    position: absolute; left: 0; right: 0; top: 0;
+    background: #14161ab8;
+    pointer-events: none;
+}
+
+/* ---- 测试关：碰撞哨兵面板（DOM，文字清晰） ---- */
+#hud-test { display: none; }
+body.test-level #hud-test {
+    display: block;
+    position: absolute;
+    left: 50%; top: calc(10px * var(--hud-scale));
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: calc(14px * var(--hud-scale));
+    line-height: 1.6;
+    color: var(--c-dim2);
+    background: #14161ac9;
+    padding: calc(6px * var(--hud-scale)) calc(14px * var(--hud-scale));
+}
+body.test-level #hud-test .ok  { color: var(--c-heal); }
+body.test-level #hud-test .bad { color: var(--c-bad); }
+#hud-test .tip { color: var(--c-dim); font-size: calc(12px * var(--hud-scale)); }

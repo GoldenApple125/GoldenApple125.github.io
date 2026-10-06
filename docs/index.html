@@ -1,0 +1,546 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Project Two</title>
+<!-- ⚠️ 网页标题（浏览器标签页）**不写版本号**（用户 2026-10-01 定）。
+     理由：它和 `GAME_VERSION` 是两份，改版本时必然漏一处 —— 实测就从 `0.1.0`
+     一路留到 `0.2.0` 都没改。**版本号只保留两个来源**：
+       · `core.js` 的 `GAME_VERSION`（唯一字符串来源）
+       · 界面上的标题屏那行（`#ver-title`）与设置页签（`#ver-settings`，都由它填）
+     以后再想往别处加版本号（页面标题、水印、注释头…）之前先想想这件事。 -->
+<!-- ⚠️ 资源带 ?v= 版本号：直接打开本地文件时浏览器会缓存 css/js，
+     改了代码却"看起来没生效"多半是缓存。改动后请把版本号 +1。 -->
+<link rel="stylesheet" href="style.css?v=580">
+</head>
+<body>
+<div id="stage">
+    <!-- ⭐⭐⭐ **三层画布**（`0.2.0`，用户要求"喝药火花高于玩家、激光主闪和火花高于激光"）。
+         DOM 顺序 = 叠放顺序（都在 `position: absolute` 下，后者盖前者）：
+
+            ① `#game`  —— 背景 / 障碍 / 敌人 / 子弹 / `pop` 特效 / **玩家**
+            ② `#fx`    —— **激光命中特效**（主闪 + 火花）、药品火花
+            ③ `#laser` —— 激光**光束**（DOM 元素，为了消除斜线锯齿）
+            ④ `#fx2`   —— **光束之上的火花**（`layer: 'over'`）
+            ⑤ `#ui`    —— HUD / 菜单
+
+         ⚠️⚠️ **为什么要分成两层特效画布**：光束是 DOM、永远盖住 `#game`，
+            所以"光效要在光束之上"必须**画到光束之后的画布上**。
+            而"主闪要在火花之上、火花要在光束之上"这两个要求
+            **靠一层做不到**（同一层里只有绘制先后，没有穿插）。
+            ⇒ `#fx`（光束之下）放主闪 + 玩家火花的碎屑；
+              `#fx2`（光束之上）放激光的碎屑。
+            ⚠️ 两块画布的像素尺寸与 `#game` **完全一致**（都是 1280×720 逻辑像素），
+              由 `fitStage()` 统一设，坐标可以直接照搬、不用换算。
+         ⚠️ 只在需要时才清空重画（见 render.js）——空白帧直接 `clearRect` 一次，
+            不跑任何粒子循环。 -->
+    <canvas id="game"></canvas>
+    <canvas id="fx"></canvas>
+    <!-- ⭐⭐ 激光：**用 HTML 元素画**（`0.2.0` 定稿，用户拍板"采用最终方案：用 html 元素"）。
+         ⚠️ 放在 canvas 之后、#ui 之前 ⇒ 盖在画布上、被 HUD 盖住（层级刚好）。
+         ⚠️ 尺寸用 `em`：`#stage` 的 font-size = 缩放倍率（见 fitStage），
+            所以这里写"逻辑像素"的数值，会自动按倍率换算成 CSS 像素。
+         ⚠️ 平时 `display: none`，只有关卡内且有激光时由 render() 打开（见 laserdom.js）。 -->
+    <div id="laser">
+        <div id="laser-outer"></div>
+        <div id="laser-core"></div>
+    </div>
+    <!-- ⭐⭐ **BOSS2 的三道激光**（`0.2.1`）—— 与 `#laser` 同一套 DOM 画法，
+         只是**多开若干个槽位**（`laserdom.js` 的"光束池"：0 号是玩家的、1~9 号是这里的 ✔）。
+         ⚠️ 为什么也要 DOM：与玩家激光**同一条理由**（斜线在 canvas 上会被自己栅格化，
+             `#stage` 又是非整数倍缩放 ⇒ 台阶明显；DOM 的旋转交给合成器、按设备像素比抗锯齿）。
+         ⚠️ 每个槽位**三个 id**（容器 / 外圈 / 内芯）—— `laserdom.js` 是按 id 抓元素的
+            （测试桩也按 id 造元素，所以不能改成 `querySelector`）。
+         ⚠️ 平时 `display: none`，由 `render.js` 按 `Game.beams` 的长度逐帧开关。 -->
+    <div id="elaser1">
+        <div id="elaser1-outer"></div>
+        <div id="elaser1-core"></div>
+    </div>
+    <div id="elaser2">
+        <div id="elaser2-outer"></div>
+        <div id="elaser2-core"></div>
+    </div>
+    <div id="elaser3">
+        <div id="elaser3-outer"></div>
+        <div id="elaser3-core"></div>
+    </div>
+    <div id="elaser4">
+    <div id="elaser4-outer"></div>
+    <div id="elaser4-core"></div>
+    </div>
+    <div id="elaser5">
+    <div id="elaser5-outer"></div>
+    <div id="elaser5-core"></div>
+    </div>
+    <div id="elaser6">
+    <div id="elaser6-outer"></div>
+    <div id="elaser6-core"></div>
+    </div>
+    <div id="elaser7">
+    <div id="elaser7-outer"></div>
+    <div id="elaser7-core"></div>
+    </div>
+    <div id="elaser8">
+    <div id="elaser8-outer"></div>
+    <div id="elaser8-core"></div>
+    </div>
+    <div id="elaser9">
+    <div id="elaser9-outer"></div>
+    <div id="elaser9-core"></div>
+    </div>
+    <div id="elaser10">
+    <div id="elaser10-outer"></div>
+    <div id="elaser10-core"></div>
+    </div>
+    <div id="elaser11">
+    <div id="elaser11-outer"></div>
+    <div id="elaser11-core"></div>
+    </div>
+    <div id="elaser12">
+    <div id="elaser12-outer"></div>
+    <div id="elaser12-core"></div>
+    </div>
+    <div id="elaser13">
+    <div id="elaser13-outer"></div>
+    <div id="elaser13-core"></div>
+    </div>
+    <div id="elaser14">
+    <div id="elaser14-outer"></div>
+    <div id="elaser14-core"></div>
+    </div>
+    <div id="elaser15">
+    <div id="elaser15-outer"></div>
+    <div id="elaser15-core"></div>
+    </div>
+    <div id="elaser16">
+    <div id="elaser16-outer"></div>
+    <div id="elaser16-core"></div>
+    </div>
+    <div id="elaser17">
+    <div id="elaser17-outer"></div>
+    <div id="elaser17-core"></div>
+    </div>
+    <!-- ⭐⭐ **光束之上的特效层**（`layer: 'over'`）—— 见上面那段的层级表。
+         ⚠️ 它必须放在 `#laser` **之后**：DOM 里后出现的盖住先出现的。
+         ⚠️ 别把它挪到 `#laser` 前面 —— 那就退回"火花被光束盖住"了。 -->
+    <canvas id="fx2"></canvas>
+    <div id="ui">
+        <!-- 诊断面板：按 F1 开关（找不到问题时用它） -->
+        <div id="debug" class="debug hidden"></div>
+
+        <!-- 1 标题屏 -->
+        <section class="screen" id="layer1">
+            <!-- ⚠️ 标题屏的背景特效**不在这里**：它画在 `#game` 那块 canvas 上
+                 （titlefx.js 的像素风星场），由 `body.title-fx-show` 让画布显示出来。
+                 所以本层只有 DOM 文字与按钮，没有特效容器。 -->
+            <div class="vcenter">
+                <!-- ⭐ 标题 + 版本号**归成一组**（`0.2.0`，用户要求"版本号上移一点、
+                     更接近标题而非开始按钮"）。
+                     ⚠️ 为什么包一层而不是调 `.version` 的 margin：
+                      `.vcenter` 是 `justify-content:center` 的纵向 flex，三段会**均分**剩余空间 ——
+                      只调 margin 会把"版本号↔标题"和"版本号↔按钮"**一起**改，
+                      做不到"靠近标题、远离按钮"。分包后组间留白由 `.title-block` 的
+                      `margin-bottom` 单独控制，语义也清楚。 -->
+                <div class="title-block">
+                    <h1 class="title">PROJECT TWO</h1>
+                    <!-- ⭐ 版本号（**界面显示不带 `v`**，与文档统一）= 这里的**唯一来源**。
+                         ⚠️ 不要在 HTML 里写死版本：`ui.js` 的 `syncVersion()` 会用
+                            `GAME_VERSION` 填它，"设置"页签那行也是同一个来源 ——
+                            一个数字写两处，迟早不一致。 -->
+                    <p class="version" id="ver-title"></p>
+                </div>
+                <div class="btn-col">
+                    <button class="btn" id="btn-start">开始</button>
+                    <!-- ⭐⭐ 「帮助」（`0.2.0`，用户要求"标题界面加入帮助，把操作说明移到那里面"）。
+                         ⚠️ 它**只负责打开覆盖层**（`#help`），内容在那边 ——
+                            操作说明从此**只有一份**，不再在设置页签里重复一遍。
+                         ⚠️ 放在「开始」下面、清档**不在这一列**了（清档已挪去设置页签）。 -->
+                    <button class="btn ghost" id="btn-help">帮助</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2 主界面 = 「选关 / 角色 / 商店 / 设置」四个**页签**，不是四块屏
+             ⭐ 页签结构（按 p13 新界面层级图）：
+                主界面 ──┬── 选关 —— 选关卡 → 出击
+                         ├── 角色 —— 出战配置（主动 / 被动 / 道具）
+                         ├── 商店 —— 花金币（属性提升 / 扩槽位）
+                         └── 设置
+             ⚠️⚠️ 切页签**不换屏**（不调 changeLayer）：顶栏与页签栏常驻，
+                 只有 .pane 的内容区换掉 —— 层级就此压平，不再一层套一层。
+             ⚠️ 每个 .pane 里仍保留 `<h2 class="head">`：test-screens.cjs
+                 靠它认"这块内容是什么"，标题文字是那条链路的**唯一真相**，别删。
+             ⚠️ 资源（金币 / 等级 / 经验）常驻顶栏：原稿 p11/p13 都写明
+                 「资源（金、经）」，并要求商店/角色入口**最优先显示**。 -->
+        <section class="screen" id="layer2">
+            <div class="main-top">
+                <div class="res">
+                    <span class="res-i">金币 <b id="m-gold">0</b></span>
+                    <span class="res-i">等级 <b id="m-level">1</b></span>
+                    <!-- ⭐⭐ 经验后面跟一条**升级进度条**（用户 2026-10-05："主界面的经验加个(升级进度)条" ✔）
+     宽度由 `ui.js` 的 `syncRes()` 按 `Save.exp / levelNeed(Save.level)` 写 ✔ -->
+                    <span class="res-i">经验<span class="exp-wrap"><b id="m-exp">0 / 10</b><span class="exp-bar"><span class="exp-bar-fill" id="m-exp-fill"></span></span></span></span>
+                </div>
+                <div class="tabs" id="tabs">
+                    <button class="tab on" id="tab-select"    data-tab="select">选关</button>
+                    <button class="tab"    id="tab-character" data-tab="character">角色</button>
+                    <button class="tab"    id="tab-shop"      data-tab="shop">商店</button>
+                    <button class="tab"    id="tab-settings"  data-tab="settings">设置</button>
+                </div>
+            </div>
+
+            <div class="panes">
+                <!-- 页签 1：选关（关卡列表由 JS 按 LEVELS 自动生成） -->
+                <div class="pane on" id="pane-select">
+                    <h2 class="head">选择关卡</h2>
+                    <div class="vcenter">
+                        <!-- ⚠️ 关卡网格由 JS 按 LEVELS **自动生成**（见 UI.buildLevelList）。
+                             加关只需在 level.js 的 LEVELS 里加一行，不用改这里。
+                             它**不套 .panel**：方块自己就是边框，外面再包一层会显得很闷。 -->
+                        <div id="lv-list"></div>
+                        <!-- ⚠️ 这里**故意没有**"金币/等级/经验/槽位"面板（0.1.1 删掉的）：
+                             那四项在别处都已有 —— 金/等/经在**顶栏常驻**，
+                             槽位在**角色页签**（「技能 0/3」）。
+                             一个数字写两处，就得两处都记得刷新，漏一处就显示旧值；
+                             实测踩过：在商店买东西时，顶栏金币没跟着变。
+                             现在资源显示**只有一个出口**（UI.syncRes()），别再复制一份。 -->
+                        <!-- ⚠️ 「返回标题」**已挪到设置页签**（`0.1.1`）——
+                             它和"删除存档"都是标题屏级别的操作，放在设置里，
+                             选关页签就只剩关卡本身（网格 + ★ 进度）。 -->
+                        <!-- ⭐⭐ **碰撞测试场入口**（`0.2.0`）。
+                             ⚠️⚠️ **只有按 `/` 进入调试模式后才看得见**
+                                （用户要求"开启调试模式才可使用…碰撞测试"）——
+                                由 `UI.syncTestLevel()` 每帧对齐，这里**写不写 `hidden`
+                                都不影响**（第一帧就会被对齐），但写上更符合直觉。
+                             ⚠️ 结构**静态写在这里**（不是 JS 凭空创建）：见
+                                `ui.js` 的 `buildLevelList()` 那段说明 ——
+                                动态创建会被"JS 引用的 id 必须在 HTML 里"那条断言判红。
+                             ⚠️ 按钮 id 与关卡 id 的绑定在 `buildLevelList()` 里做
+                                （因为关卡 id 来自 `level.js` 的数据，HTML 里写不了）。 -->
+                        <div class="lv-extra hidden" id="lv-extra-test">
+                            <button class="btn small ghost" id="btn-test-level">碰撞测试场</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 页签 2：角色（原「战前配置」整屏并进来） -->
+                <div class="pane" id="pane-character">
+                    <h2 class="head">角色配置</h2>
+                    <!-- ⭐ 与商店同一套**滚动兜底**（`0.2.1`，见 `.vscroll` 那段说明）——
+                         这一屏的卡片数 = 主动 + 被动 + 道具的**池子**大小，
+                         池子一涨（被动现在 7 件）它就会顶到 720。
+                         ⚠️ 卡片本身是 `.pick` 的 `flex-wrap`（自动换行，加内容不用改 CSS），
+                            这里只负责"换行之后还长得下去"。
+                         ⚠️ 结构有断言守着：`test-screens` ⑳。 -->
+                    <div class="vscroll" id="char-scroll">
+                    <div class="vscroll-in">
+                        <!-- 选卡被拒绝时的一句话反馈（如"最多带 N 个"）。
+                             ⚠️ 它**一直占着 min-height**（不是"留空就不占高度"），
+                                这样提示出现/消失时下面的面板不会上下跳。 -->
+                        <div class="pick-hint" id="pick-hint"></div>
+                        <div class="panel w760">
+                            <div class="pane-title">技能 <span id="a-count">0</span>/<span id="a-max">3</span></div>
+                            <div class="pick" id="pick-active"></div>
+                        </div>
+                        <div class="panel w760 mt16">
+                            <div class="pane-title">饰品 <span id="p-count">0</span>/<span id="p-max">1</span></div>
+                            <div class="pick" id="pick-passive"></div>
+                        </div>
+                        <div class="panel w760 mt16">
+                            <div class="pane-title">道具 <span id="i-count">0</span>/1</div>
+                            <div class="pick" id="pick-item"></div>
+                        </div>
+                        <!-- ⚠️ 这里原来有两个按钮（「出击」和「返回选关」），`0.1.1` 删掉了：
+                             · 「返回选关」与点页签栏的「选关」**完全重复**（页签就在头顶）；
+                             · 「出击」与"在选关页签点关卡方块"**完全重复** ——
+                               配好装回选关点一下就开打，多一个按钮只是多一条要记的路。
+                             ⇒ 角色页签现在就是**纯配置**：改完直接点头顶的「选关」。 -->
+                    </div>
+                    </div>
+                </div>
+
+                <!-- 页签 3：商店（原「成长」整屏并进来）
+                     ⚠️ 这里**不再重复显示金币/等级/经验** —— 顶栏已经常驻了，
+                        重复一份既占高度、又可能和顶栏数字不一致（0.1.1 去掉）。 -->
+                <!-- 页签 3：商店（花金币的地方）
+                     ⭐⭐ 标题**与其他三屏完全一致**（`<h2 class="head">`，`0.2.1` 统一）。
+                        ⚠️ 它原来是 `head tight`（20px 字 + 10px 上边距）——
+                           那是 `0.2.0` 的**救急**：商店内容最多，普通 `head` 的 65px
+                           "就是溢出的最后一根稻草"。用户 2026-10-02 实测指出
+                           **"商店的标题位置和大小都与其他如角色配置对不上，统一之"**。
+                           ⇒ `0.2.1` 把高度上限拿掉（下面 `#shop-scroll` 的滚动兜底）之后，
+                             这 25px 再也不用省了，**`.head.tight` 整个类已删**。
+                           ⚠️ 别再退回紧凑版：高度问题已经由滚动容器解决，
+                              再省标题只会让四屏看起来不齐。
+                     ⚠️⚠️ **不能直接删掉这个标题**：`tools\test-screens.cjs` 的
+                        `currentScreen()` 是**按 `<h2 class="head">` 判定屏标题**的
+                        （每个 section 里第一个 h2 = 该层的标题），删了之后
+                        商店在测试的屏模型里会变成"(无标题)"（实测踩过）。
+                     ⚠️ 布局用**两列**（`shop-grid`）：属性/槽位并排、被动排两列
+                        （`0.2.0` 的解法：竖着堆三块面板会顶出 720，两列省掉一半高度）。
+                        ⭐ `0.2.1` 起**高度上限已经拿掉**（下面 `#shop-scroll` 的滚动兜底）
+                        ⇒ 以后加内容**不用再算高度**，两列只是排版口味，不是"塞不下"的补丁。 -->
+                <div class="pane" id="pane-shop">
+                    <h2 class="head">商店</h2>
+                    <!-- ⭐⭐ **长列表的长久方案**（`0.2.1`）。用户原话：
+                            **"考虑到商店可能有许多饰品和道具，想一个长久的解决方案，
+                              而不是满了再改一点"**。
+
+                         之前是"内容垂直居中"（`.vcenter`）—— 那套在**刚好装得下**时很好看，
+                         但内容的**高度上限被 720 锁死**：被动从 6 件加到 7 件，
+                         就已经在溢出边缘试探，每加一件都要回来量高度、挪布局 ⇒ 典型的补丁式维护。
+
+                         ⇒ 现在改成**两层**：
+                           ① `#shop-scroll`（`.vscroll`）= 滚动容器：吃掉标题以外的全部高度，
+                              `overflow-y: auto` ⇒ **内容再高也够得着**，高度不再是内容量的函数；
+                           ② `.vscroll-in` = 内容列：`margin: auto 0` ⇒
+                              **装得下时仍然垂直居中（与改之前一模一样）**，
+                              装不下时从顶部开始排、能一路滚到底。
+                         ⚠️⚠️ 别再退回 `justify-content: center`：它在滚动容器里溢出时
+                            **顶部会被裁掉且滚不上去**（内容永远够不着）——
+                            这正是 `.vscroll-in` 用 auto margin 而不用居中属性的原因。
+                         ⚠️ 结构（哪些东西在滚动容器里）有断言守着：
+                            `test-screens` ⑳ = 长列表滚动兜底。 -->
+                    <div class="vscroll" id="shop-scroll">
+                    <div class="vscroll-in">
+                        <!-- ① 花金币**可重复购买**的两类：属性（只读展示）+ 槽位
+                             ⚠️ 用 `w860`（比共用的 `w760` 宽）：这一行的内容是
+                                "名字 + 数值 + 按钮"三段，760 会把数值挤到第二行
+                                （用户报过"下面那些数字不要单独换行"）。
+                             ⚠️ 列宽用 `shop-grid-fit`（`auto 1fr`）——
+                                两列需求差很多（属性 140px vs 槽位 235px），
+                                等宽就是让宽的那列把窄的挤到换行。 -->
+                        <div class="panel w860">
+                            <div class="shop-grid shop-grid-fit">
+                                <div>
+                                    <div class="pane-title">属性</div>
+                                    <div id="up-attrs"></div>
+                                </div>
+                                <div>
+                                    <div class="pane-title">槽位</div>
+                                    <div id="up-slots"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ② 一次性买断的两类：饰品 + 道具（买完永久解锁）
+                             ⚠️ 它们在页面上**并排两列**（`.shop-grid`），不是上下两块 ——
+                                两者是同一类东西（买一次就有），并排一眼看得出这个共性。
+                             ⭐⭐ 道具原来挂在上面「槽位」那一栏里（`0.2.0` 挪来，用户要求
+                                "商店的道具回蓝药放下面那块（饰品右边）"）。
+                                ⚠️ 原来那三行是"技能槽 / 饰品槽 / 道具"挤在一栏，
+                                   而道具**既不是槽位、也和槽位上限无关** ——
+                                   它和被动一样是"一次性买断"，放这里才对。
+                             ⭐⭐ **加内容不用动这里**：两栏都由 `ui.js` 的 `buildShop()`
+                                遍历 `PASSIVES` / `ITEMS` 生成（`passiveRow(pi)`），
+                                加一件被动 = 往表里加一行数据。
+                             ⭐⭐⭐ `class="vscroll-list"` = **定死的滚动框**（`0.2.1`）。用户两轮要求：
+                                ① "滚动条（框）可以单独给'饰品'用，而非整个'商店'，
+                                   然后就可以让饰品一框大约 5~6 个"；
+                                ② **"确保'饰品''道具'所在的这个框大小不因其内容改变，
+                                   或者说保持'充满被动道具'的大小"**。
+                                ⇒ 尺寸**定死**（`height` 而**不是** `max-height`）：买掉几件也不会缩，
+                                  于是**商店整屏一动不动**；内容超过框就自己滚。
+                                  外面的 `.vscroll` 只当兜底。算法见 style.css 那段说明。
+                                ⚠️ 两栏挂**同一个类** ⇒ 高度必然一致（不会一高一矮）。 -->
+                        <div class="panel w860 mt16">
+                            <div class="shop-grid shop-grid-even">
+                                <div>
+                                    <div class="pane-title">饰品</div>
+                                    <div class="vscroll-list" id="up-passives"></div>
+                                </div>
+                                <div>
+                                    <div class="pane-title">道具</div>
+                                    <div class="vscroll-list" id="up-items"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- 页签 4：设置（原设计 p11/p13 都有「设置」这一项） -->
+                <div class="pane" id="pane-settings">
+                    <h2 class="head">设置</h2>
+                    <div class="vcenter">
+                        <!-- ⚠️⚠️ **「操作」那块已挪到标题屏的「帮助」覆盖层**（`0.2.0`，用户要求
+                             "标题界面加入帮助，把操作说明移到那里面"）。
+                             ⇒ 操作说明全项目**只有一份**（`#help`），设置页签不再重复一遍。
+                             这样"怎么玩"在**开始之前**就看得到，而不是进了主界面才找得到。 -->
+                        <div class="panel w520">
+                            <div class="pane-title">显示</div>
+                            <!-- ⭐ 小怪血条开关（用户 2026-10-01 定）。
+                                 ⚠️ 默认**关**（= 原设计「只有 BOSS 显示血条」，见 08 L288）。
+                                 搬动这条时注意：BOSS 的血条**不受它影响**，永远显示。 -->
+                            <div class="row">
+                                <span>小怪血条</span>
+                                <button class="btn small" id="btn-mobhp"></button>
+                            </div>
+                            <!-- ⭐⭐ 「画面像素对齐」开关（用户 2026-10-02：
+                                 "试试 A′，最好也保留原来的模式，做成选项"）。
+                                 · 开（默认）= 舞台倍率量化到 **0.5 步进**
+                                   ⇒ `PIXEL(2) × 倍率` 恒为整数 ⇒ 每个美术像素在屏幕上一样大 ✔
+                                   （代价：舞台最多留 ~0.5× 空边）
+                                 · 关 = 原来的 **0.1 步进**（填满屏幕优先，但像素偶尔差 1 ✗）
+                                 ⚠️ 值在 `Save.scaleCrisp`，真相来源只有一处（见 core.js 的 pickScaleFor）。 -->
+                            <div class="row">
+                                <span>画面缩放</span>
+                                <button class="btn small" id="btn-scale"></button>
+                            </div>
+                        </div>
+                        <div class="panel w520 mt16">
+                            <div class="pane-title">关于</div>
+                            <!-- ⭐⭐ **作者 / 设计两行**（`0.2.0`，用户要求
+                                 "关于里面，作者写你的名字，设计写我（或者按你认为符合实际的写）"）。
+                                 ⚠️ 它们是**静态文字、直接写在 HTML 里**（不像版本号要走 JS）：
+                                    这是"人"的信息，没有第二个来源，不需要同步。
+                                 ⚠️ 只有**版本号**必须由 `UI.syncVersion()` 填 —— 它的唯一来源是
+                                    `core.js` 的 `GAME_VERSION`。写死在这里就会成为**第二份**，
+                                    改版时必漏一处（这是踩过的坑，见本文件头的说明）。 -->
+                            <div class="row"><span>作者</span><span>DeepSeek Harness</span></div>
+                            <div class="row"><span>设计</span><span>静火Ω</span></div>
+                            <div class="row"><span>版本</span><span id="ver-settings"></span></div>
+                            <!-- ⚠️ 原来这里还有一行「存档 · 自动保存在本机浏览器」——
+                                 已删（用户 2026-10-01）。理由：这行是在**解释实现细节**
+                                 （localStorage），玩家不需要知道。 -->
+                        </div>
+                        <!-- ⭐⭐ **主界面的出入口都收在这一行**（`0.2.0`，用户要求
+                             "删除存档移到设置那里（与返回标题同一行）"）。
+                             · 「返回标题」= 主界面唯一的出口（`0.1.1` 从选关页签挪来）
+                             · 「删除存档」= 原来在**标题屏**（`0.1.1`～`0.2.0`），现挪来此处
+                             ⚠️ 用户最初（2026-10-01）定的是"清档只留标题屏那一个"，
+                                理由是"想从头再来"是开局前的决定。`0.2.0` 改主意了：
+                                把它和「返回标题」并排 —— 两者都是**标题屏级别的操作**，
+                                放一起语义更整齐（也正是 `0.1.1` 把「返回标题」挪进来的同一条逻辑）。
+                             ⚠️ 两击确认**照旧**（`UI.wipeConfirm`），挪位置不改这个保护。 -->
+                        <div class="btn-row mt28">
+                            <button class="btn ghost" id="btn-back1">返回标题</button>
+                            <!-- ⚠️ 文案是「**删除**存档」（`0.2.0`，用户要求把"清空"改成"删除"）——
+                                 与确认态的「确认删除」配套。两处文字**要一起改**。 -->
+                            <button class="btn ghost" id="btn-wipe">删除存档</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 关卡内 + 结算 -->
+        <section class="screen" id="layer3">
+            <!-- ⭐ HUD 用 DOM 渲染（不是 canvas）：
+                 画布分辨率固定 1280×720，把汉字画进去再放大会糊；
+                 DOM 文字由屏幕分辨率渲染，放大多少都清晰。 -->
+            <div id="hud">
+                <div class="hud-left">
+                    <!-- ⚠️ 条上的文字是**中文**（用户定：生命 / 能量）。
+                         ⚠️ 别混：JS 里的内部变量名仍是 `hp` / `mp` / `hpMax` / `mpMax`
+                            —— 那是几百处引用，与这条文案无关，不要去改。
+                         初值只是"还没进关"时显示什么，进关后由 hud.js 每帧覆盖。 -->
+                    <div class="hud-bar">
+                        <div class="hud-bar-fill hp" id="hud-hp-fill"></div>
+                        <span class="hud-bar-txt" id="hud-hp-txt">生命 12 / 20</span>
+                    </div>
+                    <div class="hud-bar thin">
+                        <div class="hud-bar-fill mp" id="hud-mp-fill"></div>
+                        <span class="hud-bar-txt" id="hud-mp-txt">能量 5 / 30</span>
+                    </div>
+                </div>
+                <div class="hud-right">
+                    <!-- ⭐ 「进度」= **击败数 / 本关总数**（`0.2.0` 把原来两行
+                         「剩怪」与「击杀」合并成这一行）。
+                         ⚠️ 分母是 `Game.enemiesTotal`（进关时记一次），不是现算 —— 见它的说明。
+                         ⚠️ 原来那个 `#hud-kills` 元素已删除，`hud.js` 里也不要再引用它。
+                         ⭐⭐ **`#hud-wave`（`0.2.1`）**：多波关卡在这一行**前面**补一句
+                         「波次 x/y 」（由 hud.js 写入，单波关卡写空字符串 ⇒ 一个字都不显示）。
+                         用户要求："有复数波次的关卡，右上角一行内写：波次x/y 进度a/b"，
+                         ⇒ 所以是**同一行**，不是再加一行。
+                         ⚠️ 多波时 `#hud-progress` 里的两个数是**本波**的击败数 / 本波总数
+                         （用户明确："其中 b 为本波进度，而非关卡进度"）。 -->
+                    <div class="hud-line"><b id="hud-wave"></b>进度 <b id="hud-progress">0 / 8</b></div>
+                </div>
+                <div class="hud-bottom" id="hud-slots"></div>
+                <div class="hud-bottom" id="hud-item"></div>
+                <!-- 测试关：碰撞几何可视化 + 哨兵结果 -->
+                <div id="hud-test"></div>
+            </div>
+            <div id="result" class="result hidden">
+                <div class="panel w520">
+                    <div class="pane-title" id="r-title">通关</div>                    <!-- ⚠️ 这四行原本是「击败怪物 / 获得经验 / 获得金币 / 等级提升」——
+                         四个"动词+名词"整齐排一列，是典型的机器腔。
+                         换成名词短语，一眼扫得完（`0.1.1` 改）。 -->
+                    <div class="row"><span>击杀</span><span id="r-kills">0</span></div>
+                    <div class="row"><span>经验</span><span id="r-exp">0</span></div>
+                    <div class="row"><span>金币</span><span id="r-gold">0</span></div>
+                    <div class="row" id="r-lvrow"><span>升级</span><span id="r-lv">—</span></div>
+                    <div class="btn-col mt24">
+                        <!-- ⭐「下一关」：通关后的**主行动**（放第一个）。
+                             ⚠️ 最后一关、失败结算、或下一关还没解锁时，由 JS 藏掉
+                                （见 level.js 的 nextLevelId + ui.js 的 syncResultButtons）。
+                             ⚠️ **初始必须带 `hidden`**：结算是它唯一的显示时机，
+                                不写就会在"还没结算"时就先亮出来（实测踩过）。 -->
+                        <button class="btn hidden" id="btn-next">下一关</button>
+                        <button class="btn ghost" id="btn-again">再打一次</button>
+                        <button class="btn ghost" id="btn-result-back">回主界面</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⭐⭐ **帮助覆盖层**（`0.2.0`，用户要求"标题界面加入帮助，把操作说明移到那里面"）。
+             ⚠️ 它**不在任何 `.screen` 里**（放在 `#ui` 的直接子级）——
+                因为它要能**在任何一层之上**弹出来，而 `.screen` 是"哪层激活显示哪层"，
+                塞进某一层就只能在那一层用（标题屏的帮助塞进 layer1，进主界面就没了）。
+             ⚠️ 复用 `.result` 那套覆盖层样式（半透明底 + 居中面板），
+                不另写一份 CSS —— 两者的视觉要求完全一样。
+             ⚠️ 初始**必须带 `hidden`**：它唯一的显示时机是点「帮助」，
+                不写就会一进游戏就盖在标题屏上（结算框踩过同一个坑）。
+             ⚠️ 内容（操作说明）**全项目只有这一份** —— 设置页签那块已删。 -->
+        <div id="help" class="result hidden">
+            <div class="panel w520">
+                <div class="pane-title">操作说明</div>
+                <div class="row"><span>移动</span><span>W A S D</span></div>
+                <div class="row"><span>开火</span><span>按住左键</span></div>
+                <div class="row"><span>技能</span><span>数字键 1~4</span></div>
+                <div class="row"><span>道具</span><span>E</span></div>
+                <div class="row"><span>退出关卡</span><span>Esc</span></div>
+                <!-- ⚠️⚠️ **这里不再列调试功能**（`0.2.0`，用户要求删掉时间流速那行）。
+                     `[` `]` `\`（时间流速）、`F1`（诊断面板）、「碰撞测试场」
+                     现在**都要先按 `/` 进入调试模式**才可用 ——
+                     那是开发者工具，摆在"操作"表里会像正式玩法。
+                     ⚠️ 但 `/` 本身也**故意不列**：它是个开发者后门，
+                       写进帮助就等于告诉玩家"这里有个调试入口"。
+                       需要时看 `core.js` 的 keydown 段落。 -->
+                <div class="btn-col mt24">
+                    <button class="btn ghost" id="btn-help-close">返回</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ⭐ 事件追踪（诊断用，`0.2.0`）。**必须最先加载**：core/game/level 里的埋点
+     是"运行时才调"，但早加载最省心；而且它自己不依赖任何别的文件。
+     ⚠️ 定位完"点关卡闪回选关"那个偶发 bug 后可以整块删掉（含 trace.js 与各埋点）。 -->
+<script src="trace.js?v=580"></script>
+<script src="collision.js?v=580"></script>
+<script src="core.js?v=580"></script>
+<script src="level.js?v=580"></script>
+<!-- 标题屏星场：依赖 core.js 的常量/ctx 与 level.js 的 TILE，且被 game.js 的 render 调用 -->
+<script src="titlefx.js?v=580"></script>
+<!-- ⭐ 素材层（`0.3.0` 像素化）：必须在 render.js 之前（它画实体与子弹），也必须能在 core.js 的 boot 里被调到 ⇒ 放在 core 之后、laserdom 之前。 -->
+<script src="sprites.js?v=580"></script>
+<script src="laserdom.js?v=580"></script>
+<!-- ⭐ 特效画布句柄（0.2.0）：两层特效布的 canvas/ctx，与 laserdom.js 同一个职责分工
+     （render.js 只管"画什么"，这里管"画到哪块布上"）。
+     ⚠️ 必须在 render.js 之前 —— render.js 启动时就会用到 `FxDom`。 -->
+<script src="fxdom.js?v=580"></script>
+<script src="hud.js?v=580"></script>
+<script src="ui.js?v=580"></script>
+<!-- ⚠️ **render.js 必须在 game.js 之前**（`0.2.0` 从 game.js 拆出来的纯绘制层：
+     `snap()` / `render()` / `drawCollisionDebug()`）。
+     ⚠️ 两边都是**函数声明**（会被提升），所以只要都赶在 `start()` 之前加载就安全；
+        放在前面只是为了读起来顺 —— 别据此以为顺序可以随便调。 -->
+<script src="render.js?v=580"></script>
+<script src="game.js?v=580"></script>
+</body>
+</html>
